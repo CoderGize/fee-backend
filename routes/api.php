@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthDesignerController;
 use App\Http\Controllers\Api\Auth\AuthUserController;
+use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Product\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('user')->group(function (){
         Route::get('products', [ProductController::class, 'index']);
         Route::get('/products/designer', [ProductController::class, 'getDesignerProductsForUsers']);
+        Route::post('cart/add', [CartController::class, 'addToCart']);
+        Route::post('cart/update', [CartController::class, 'updateCart']);
     });
 });
 

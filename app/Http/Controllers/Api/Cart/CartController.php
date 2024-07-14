@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Http\Controllers\Api\Cart;
+
+use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
+class CartController extends Controller
+{
+    public function addToCart(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'cart' => 'required|array',
+                'cart.*.product_id' => 'required|exists:products,id',
+                'cart.*.quantity' => 'required|integer|min:1',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $user = Auth::user();
+
+            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+
+            foreach ($request->cart as $item) {
+
+                $product = Product::find($item['product_id']);
+
+
+                $cart->products()->syncWithoutDetaching([
+                    $product->id => ['quantity' => $item['quantity']]
+                ]);
+            }
+
+
+            $cart = $cart->load('products');
+
+
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Products added to cart successfully.',
+                'cart' => $cart,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateCart(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'cart' => 'required|array',
+                'cart.*.product_id' => 'required|exists:products,id',
+                'cart.*.quantity' => 'required|integer|min:0',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $user = Auth::user();
+
+            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+            foreach ($request->cart as $item) {
+                if ($item['quantity'] == 0) {
+
+                    $cart->products()->detach($item['product_id']);
+                } else {
+
+                    $cart->products()->syncWithoutDetaching([
+                        $item['product_id'] => ['quantity' => $item['quantity']]
+                    ]);
+                }
+            }
+
+            $cart = $cart->load('products');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cart updated successfully.',
+                'cart' => $cart,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+}
