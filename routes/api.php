@@ -38,6 +38,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('designer')->group(function (){
         Route::post('/products', [ProductController::class, 'create']);
         Route::post('/products/update/{id}', [ProductController::class, 'update']);
+        Route::get('/products/designer', [ProductController::class, 'getDesignerProducts']);
+    });
+
+    Route::prefix('user')->group(function (){
+        Route::get('products', [ProductController::class, 'index']);
+        Route::get('/products/designer', [ProductController::class, 'getDesignerProductsForUsers']);
     });
 });
 

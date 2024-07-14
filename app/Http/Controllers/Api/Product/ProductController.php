@@ -158,4 +158,66 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+
+       public function index(Request $request)
+        {
+            try {
+                $perPage = $request->per_page ? $request->per_page : 10;
+                $products = Product::with('images', 'designer')->paginate($perPage);
+                return response()->json([
+                    'status' => 'success',
+                    'data'=>$products
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
+        public function getDesignerProducts(Request $request)
+        {
+            try {
+                $designerId = Auth::id();
+                $perPage = $request->per_page ? $request->per_page : 10;
+
+                $products = Product::with('images', 'designer')
+                    ->where('designer_id', $designerId)
+                    ->paginate($perPage);
+                return response()->json([
+                    'status' => 'success',
+                    'data'=>$products
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
+
+        public function getDesignerProductsForUsers(Request $request)
+        {
+            try {
+                $designerId = $request->designer_id;
+                $perPage = $request->per_page ? $request->per_page : 10;
+
+                $products = Product::with('images', 'designer')
+                    ->where('designer_id', $designerId)
+                    ->paginate($perPage);
+                return response()->json([
+                    'status' => 'success',
+                    'data'=>$products
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
 }
