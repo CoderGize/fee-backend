@@ -100,4 +100,58 @@ class CartController extends Controller
             ], 500);
         }
     }
+
+    public function getCart(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $cart = Cart::with('products')->where('user_id', $user->id)->first();
+
+            if (!$cart) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Cart not found.',
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'cart' => $cart,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteCart()
+    {
+        try {
+            $user = Auth::user();
+
+            $cart = Cart::where('user_id', $user->id)->first();
+
+            if (!$cart) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Cart not found.',
+                ], 404);
+            }
+
+            $cart->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cart deleted successfully.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

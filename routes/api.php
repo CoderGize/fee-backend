@@ -48,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/products/designer', [ProductController::class, 'getDesignerProductsForUsers']);
         Route::post('cart/add', [CartController::class, 'addToCart']);
         Route::post('cart/update', [CartController::class, 'updateCart']);
+        Route::get('cart', [CartController::class, 'getCart']);
+        Route::delete('cart', [CartController::class, 'deleteCart']);
     });
 });
 
