@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Http\Controllers\Api\Order;
+
+use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
+class OrderController extends Controller
+{
+    public function createOrder(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'products' => 'required|array',
+                'products.*.product_id' => 'required|exists:products,id',
+                'products.*.quantity' => 'required|integer|min:1',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $user = Auth::user();
+
+
+            $order = new Order();
+            $order->user_id = $user->id;
+            $order->total_price = 0;
+            $order->status = 'pending';
+            $order->save();
+
+            $totalPrice = 0;
+
+
+            foreach ($request->products as $item) {
+                $product = Product::find($item['product_id']);
+                $quantity = $item['quantity'];
+                $price = $product->price;
+
+
+                $order->products()->attach($product->id, [
+                    'quantity' => $quantity,
+                    'price' => $price,
+                ]);
+
+
+                $totalPrice += $quantity * $price;
+            }
+
+
+            $order->total_price = $totalPrice;
+            $order->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order created successfully.',
+                'order' => $order->load('products'),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateOrder(Request $request, $id)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'products' => 'required|array',
+                'products.*.product_id' => 'required|exists:products,id',
+                'products.*.quantity' => 'required|integer|min:1',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $user = Auth::user();
+            $order = Order::findOrFail($id);
+
+            if ($order->user_id !== $user->id) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'You are not authorized to update this order.',
+                ], 403);
+            }
+
+            if ($order->status !== 'pending') {
+                return response()->json(['message' => 'Only orders with pending status can be updated.'], 400);
+            }
+
+            $order->products()->detach();
+            $totalPrice = 0;
+
+            foreach ($request->products as $item) {
+                $product = Product::find($item['product_id']);
+                $quantity = $item['quantity'];
+                $price = $product->price;
+
+                $order->products()->attach($product->id, [
+                    'quantity' => $quantity,
+                    'price' => $price,
+                ]);
+
+                $totalPrice += $quantity * $price;
+            }
+
+            $order->total_price = $totalPrice;
+            $order->status = 'pending';
+            $order->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order updated successfully.',
+                'order' => $order->load('products'),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+}
