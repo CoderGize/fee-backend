@@ -45,17 +45,23 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('user')->group(function (){
+        //product
         Route::get('products', [ProductController::class, 'index']);
         Route::get('/products/designer', [ProductController::class, 'getDesignerProductsForUsers']);
+
+        // cart
         Route::post('cart/add', [CartController::class, 'addToCart']);
         Route::post('cart/update', [CartController::class, 'updateCart']);
         Route::get('cart', [CartController::class, 'getCart']);
         Route::delete('cart', [CartController::class, 'deleteCart']);
 
 
-
+        //order
         Route::post('order/create', [OrderController::class, 'createOrder']);
         Route::post('order/update/{id}', [OrderController::class, 'updateOrder']);
+        Route::get('order', [OrderController::class, 'getUserOrders']);
+        Route::get('order/{id}', [OrderController::class, 'getOrder']);
+        Route::delete('order/delete/{id}', [OrderController::class, 'deleteOrder']);
     });
 });
 

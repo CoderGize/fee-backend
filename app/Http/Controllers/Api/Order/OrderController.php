@@ -127,5 +127,73 @@ class OrderController extends Controller
             ], 500);
         }
     }
+    public function getUserOrders(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $orders = Order::where('user_id',$user->id)->with('products')->get();
 
+            return response()->json([
+                'status' => 'success',
+                'orders' => $orders,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteOrder(Request $request, $id)
+    {
+        try {
+
+            $order = Order::findOrFail($id);
+
+
+            if ($order->user_id !== Auth::id()) {
+                return response()->json(['message' => 'Unauthorized. You do not have permission to delete this order.'], 403);
+            }
+
+
+            if ($order->status !== 'pending') {
+                return response()->json(['message' => 'Only orders with pending status can be deleted.'], 400);
+            }
+
+
+            $order->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order deleted successfully.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getOrder(Request $request, $id)
+    {
+        try {
+
+            $order = Order::where('id', $id)
+                ->where('user_id', 3)
+                ->with('products','payment','shipment')
+                ->firstOrFail();
+
+            return response()->json([
+                'status' => 'success',
+                'order' => $order,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
