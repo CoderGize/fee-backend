@@ -9,6 +9,7 @@ use App\Models\ProductImage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -203,6 +204,15 @@ class ProductController extends Controller
         {
             try {
                 $designerId = $request->designer_id;
+
+                $designer=Designer::where('id',$designerId)->first();
+
+                if(!$designer){
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'designer not found',
+                    ],404);
+                }
                 $perPage = $request->per_page ? $request->per_page : 10;
 
                 $products = Product::with('images', 'designer')
@@ -212,6 +222,35 @@ class ProductController extends Controller
                     'status' => 'success',
                     'data'=>$products
                 ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
+
+        public function delete($productId)
+        {
+            try {
+                $product = Product::findOrFail($productId);
+
+                if ($product->designer_id !== Auth::id()) {
+                    return response()->json(['message' => 'Unauthorized. You do not have permission to delete this product.'], 403);
+                }
+
+
+                foreach ($product->images as $image) {
+                    Storage::delete($image->image_path);
+                }
+
+                $product->images()->delete();
+
+
+                $product->delete();
+
+                return response()->json(['message' => 'Product deleted successfully.'], 200);
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => 'error',
