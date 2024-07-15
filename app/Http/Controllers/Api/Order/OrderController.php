@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -198,6 +199,74 @@ class OrderController extends Controller
             return response()->json([
                 'status' => 'success',
                 'order' => $order,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function confirmOrder($id)
+    {
+        try {
+            $order = Order::with('products','payment','shipment')->findOrFail($id);
+
+            if ($order->user_id !== Auth::id()) {
+                return response()->json(['message' => 'Unauthorized.'], 403);
+            }
+
+            if ($order->status !== 'pending') {
+                return response()->json(['message' => 'Order can only be confirmed if it is in pending status.'], 400);
+            }
+
+            $order->status = 'confirmed';
+            $order->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order confirmed successfully.',
+                'order' => $order,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function completeCheckout($id)
+    {
+        try {
+            $order = Order::with('payment','products')->findOrFail($id);
+
+            if ($order->user_id !== Auth::id()) {
+                return response()->json(['message' => 'Unauthorized.'], 403);
+            }
+
+            if ($order->status !== 'confirmed') {
+                return response()->json(['message' => 'Order can only be completed if it is in confirmed status.'], 400);
+            }
+
+            $order->status = 'completed';
+            $order->save();
+
+
+            $shipment = new Shipment();
+            $shipment->order_id = $order->id;
+            $shipment->tracking_number = 'TRK' . strtoupper(uniqid());
+            $shipment->carrier = 'DHL';
+            $shipment->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Checkout completed successfully and shipment created.',
+                'order' => $order,
+                'shipment' => $shipment,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

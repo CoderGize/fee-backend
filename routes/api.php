@@ -68,6 +68,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('order', [OrderController::class, 'getUserOrders']);
         Route::get('order/{id}', [OrderController::class, 'getOrder']);
         Route::delete('order/delete/{id}', [OrderController::class, 'deleteOrder']);
+
+
+        Route::post('orders/{id}/confirm', [OrderController::class, 'confirmOrder']);
+        Route::post('orders/{id}/complete-checkout', [OrderController::class, 'completeCheckout']);
     });
 });
 
