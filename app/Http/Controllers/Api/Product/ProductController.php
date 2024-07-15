@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Product;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Designer;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -80,6 +81,22 @@ class ProductController extends Controller
                 $product->sizes = $sizes;
             }
 
+            if ($request->tags) {
+                $tags = [];
+                foreach ($request->tags as $tag) {
+                    $tags[] = $tag;
+                }
+                $product->tags = $tags;
+            }
+
+            $categories = $request->input('categories');
+            if ($categories) {
+                foreach ($categories as $categoryName) {
+                    $category = Category::firstOrCreate(['name' => $categoryName]);
+                    $product->categories()->attach($category->id);
+                }
+            }
+
             $product->save();
             return response()->json([
                 'message' => 'Product created successfully.',
@@ -124,10 +141,39 @@ class ProductController extends Controller
             $product->style_number = $request->style_number;
             $product->price = $request->price;
             $product->sale_price = $request->sale_price;
-            $product->sizes = $request->sizes ? json_encode($request->sizes) : null;
-            $product->colors = $request->colors ? json_encode($request->colors) : null;
+            if ($request->colors) {
+                $colors = [];
+                foreach ($request->colors as $color) {
+                    $colors[] = $color;
+                }
+                $product->colors = $colors;
+            }
+
+            if ($request->sizes) {
+                $sizes = [];
+                foreach ($request->sizes as $size) {
+                    $sizes[] = $size;
+                }
+                $product->sizes = $sizes;
+            }
+            if ($request->tags) {
+                $tags = [];
+                foreach ($request->tags as $tag) {
+                    $tags[] = $tag;
+                }
+                $product->tags = $tags;
+            }
             $product->description = $request->description;
 
+
+            $categories = $request->input('categories');
+            if ($categories) {
+                $product->categories()->detach();
+                foreach ($categories as $categoryName) {
+                    $category = Category::firstOrCreate(['name' => $categoryName]);
+                    $product->categories()->attach($category->id);
+                }
+            }
 
             if ($request->hasFile('images')) {
 
@@ -161,22 +207,50 @@ class ProductController extends Controller
     }
 
 
-       public function index(Request $request)
-        {
-            try {
-                $perPage = $request->per_page ? $request->per_page : 10;
-                $products = Product::with('images', 'designer')->paginate($perPage);
-                return response()->json([
-                    'status' => 'success',
-                    'data'=>$products
-                ], 200);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => $e->getMessage(),
-                ], 500);
+    public function index(Request $request)
+    {
+        try {
+            $perPage = $request->per_page ? $request->per_page : 10;
+
+            $query = Product::with('images', 'designer', 'categories');
+
+
+            if ($request->has('categories')) {
+                $query->whereHas('categories', function ($q) use ($request) {
+                    $q->whereIn('categories.id', $request->categories);
+                });
             }
+
+
+            if ($request->has('price_min') && $request->has('price_max')) {
+                $query->whereBetween('price', [$request->price_min, $request->price_max]);
+            }
+
+
+            if ($request->has('brands')) {
+                $query->whereHas('designer', function ($q) use ($request) {
+                    $q->whereIn('designers.id', $request->brands);
+                });
+            }
+
+
+            if ($request->has('tags')) {
+                $query->whereJsonContains('tags', $request->tags);
+            }
+
+            $products = $query->paginate($perPage);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $products,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         }
+    }
 
         public function getDesignerProducts(Request $request)
         {
@@ -184,7 +258,7 @@ class ProductController extends Controller
                 $designerId = Auth::id();
                 $perPage = $request->per_page ? $request->per_page : 10;
 
-                $products = Product::with('images', 'designer')
+                $products = Product::with('images', 'designer','categories')
                     ->where('designer_id', $designerId)
                     ->paginate($perPage);
                 return response()->json([
@@ -215,7 +289,7 @@ class ProductController extends Controller
                 }
                 $perPage = $request->per_page ? $request->per_page : 10;
 
-                $products = Product::with('images', 'designer')
+                $products = Product::with('images', 'designer','categories')
                     ->where('designer_id', $designerId)
                     ->paginate($perPage);
                 return response()->json([

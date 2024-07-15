@@ -16,8 +16,15 @@ class Product extends Model
         'sale_price',
         'sizes',
         'colors',
+        'tags',
         'description',
         'designer_id',
+    ];
+
+    protected $casts = [
+        'sizes' => 'array',
+        'colors' => 'array',
+        'tags' => 'array',
     ];
 
     public function designer()
