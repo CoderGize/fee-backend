@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Order;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,16 +51,25 @@ class OrderController extends Controller
 
                 $totalPrice += $quantity * $price;
             }
-
-
-            $order->total_price = $totalPrice;
+            $discountAmount = ($order->discount / 100) * $totalPrice;
+            $order->total_price = $totalPrice - $discountAmount;
             $order->save();
+
+            // Create Payment
+            $payment = new Payment();
+            $payment->user_id = $user->id;
+            $payment->order_id = $order->id;
+            $payment->amount = $order->total_price;
+            $payment->status = 'pending';
+            $payment->payment_method = $request->payment_method;
+            $payment->save();
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Order created successfully.',
-                'order' => $order->load('products'),
+                'order' => $order->load('products', 'payment'),
             ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -181,7 +191,7 @@ class OrderController extends Controller
         try {
 
             $order = Order::where('id', $id)
-                ->where('user_id', 3)
+                ->where('user_id', Auth::id())
                 ->with('products','payment','shipment')
                 ->firstOrFail();
 
