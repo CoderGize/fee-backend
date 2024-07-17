@@ -31,4 +31,17 @@ class DesignerController extends Controller
             ], 500);
         }
     }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $designers = Designer::where('f_name', 'LIKE', "%{$query}%")
+                            ->orWhere('l_name', 'LIKE', "%{$query}%")
+                            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'designers' => $designers,
+        ]);
+    }
+
 }
