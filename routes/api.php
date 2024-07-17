@@ -54,6 +54,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('user')->group(function (){
+
+        Route::get('/designer', [DesignerController::class, 'search']);
         //product
         Route::get('products', [ProductController::class, 'index']);
         Route::get('/products/designer', [ProductController::class, 'getDesignerProductsForUsers']);

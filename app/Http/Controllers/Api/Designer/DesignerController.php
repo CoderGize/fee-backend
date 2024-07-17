@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Designer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Designer;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
