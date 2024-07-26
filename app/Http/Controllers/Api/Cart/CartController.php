@@ -154,4 +154,115 @@ class CartController extends Controller
             ], 500);
         }
     }
+
+    public function addSingleProduct(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'product_id' => 'required|exists:products,id',
+                'quantity' => 'required|integer|min:1',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $user = Auth::user();
+
+            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+            $product = Product::find($request->product_id);
+
+            $cart->products()->syncWithoutDetaching([
+                $product->id => ['quantity' => $request->quantity]
+            ]);
+
+            $cart = $cart->load('products');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product added to cart successfully.',
+                'cart' => $cart,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateSingleProduct(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'product_id' => 'required|exists:products,id',
+                'quantity' => 'required|integer|min:0',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $user = Auth::user();
+
+            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+            $product = Product::find($request->product_id);
+
+            if ($request->quantity == 0) {
+                $cart->products()->detach($product->id);
+            } else {
+                $cart->products()->syncWithoutDetaching([
+                    $product->id => ['quantity' => $request->quantity]
+                ]);
+            }
+
+            $cart = $cart->load('products');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product updated in cart successfully.',
+                'cart' => $cart,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function removeSingleProduct(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'product_id' => 'required|exists:products,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $user = Auth::user();
+
+            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+            $product = Product::find($request->product_id);
+
+            $cart->products()->detach($product->id);
+
+            $cart = $cart->load('products');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product removed from cart successfully.',
+                'cart' => $cart,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
