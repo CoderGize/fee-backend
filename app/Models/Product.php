@@ -14,7 +14,8 @@ class Product extends Model
         'style_number',
         'price',
         'sale_price',
-        'sizes',
+        'discount_percentage',
+        'discount_status',
         'colors',
         'tags',
         'description',
@@ -47,8 +48,23 @@ class Product extends Model
         return $this->hasMany(Cart::class);
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     public function orders()
     {
         return $this->belongsToMany(Order::class)->withPivot('quantity', 'price')->withTimestamps();
+    }
+
+
+    public function getDiscountedPriceAttribute()
+    {
+        if ($this->discount_status && $this->discount_percentage) {
+            return $this->price - ($this->price * ($this->discount_percentage / 100));
+        }
+
+        return $this->price;
     }
 }

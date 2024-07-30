@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthDesignerController;
 use App\Http\Controllers\Api\Auth\AuthUserController;
 use App\Http\Controllers\Api\Cart\CartController;
+use App\Http\Controllers\Api\Cart\WishlistController;
 use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Designer\DesignerController;
 use App\Http\Controllers\Api\Order\OrderController;
@@ -44,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/products/update/{id}', [ProductController::class, 'update']);
         Route::get('/products/designer', [ProductController::class, 'getDesignerProducts']);
         Route::delete('/products/{id}', [ProductController::class, 'delete']);
+        Route::put('/products/{productId}/discount', [ProductController::class, 'updateDiscount']);
 
         Route::get('/sold-products', [DesignerController::class, 'getSoldProducts']);
 
@@ -85,6 +87,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('cart/add/single', [CartController::class, 'addSingleProduct']);
         Route::post('cart/update/single', [CartController::class, 'updateSingleProduct']);
         Route::post('cart/remove/single', [CartController::class, 'removeSingleProduct']);
+
+        Route::post('wishlist/add/single', [WishlistController::class, 'addSingleProduct']);
+        Route::post('wishlist/update/single', [WishlistController::class, 'updateSingleProduct']);
+        Route::post('wishlist/remove/single', [WishlistController::class, 'removeSingleProduct']);
 
 
         //order

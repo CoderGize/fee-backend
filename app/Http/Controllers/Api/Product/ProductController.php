@@ -26,6 +26,8 @@ class ProductController extends Controller
                 'sizes' => 'nullable|array',
                 'colors' => 'nullable|array',
                 'description' => 'nullable|string',
+                'discount_percentage' => 'nullable|numeric|min:0|max:100',
+                'discount_status' => 'nullable|boolean',
             ]);
 
             if ($validator->fails()) {
@@ -45,6 +47,8 @@ class ProductController extends Controller
                 'sale_price' => $request->sale_price,
                 'sizes' => $request->sizes ? json_encode($request->sizes) : null,
                 'colors' => $request->colors ? json_encode($request->colors) : null,
+                'discount_percentage' => $request->discount_percentage,
+                'discount_status' => $request->discount_status ? true : false,
                 'description' => $request->description,
                 'designer_id' => $designer->id,
             ]);
@@ -130,6 +134,8 @@ class ProductController extends Controller
                 'colors' => 'nullable|array',
                 'description' => 'nullable|string',
                 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'discount_percentage' => 'nullable|numeric|min:0|max:100',
+                'discount_status' => 'nullable|boolean',
             ]);
 
             if ($validator->fails()) {
@@ -141,6 +147,8 @@ class ProductController extends Controller
             $product->style_number = $request->style_number;
             $product->price = $request->price;
             $product->sale_price = $request->sale_price;
+            $product->discount_percentage = $request->discount_percentage;
+            $product->discount_status = $request->discount_status ? true : false;
             if ($request->colors) {
                 $colors = [];
                 foreach ($request->colors as $color) {
@@ -350,4 +358,43 @@ class ProductController extends Controller
             }
         }
 
+        public function updateDiscount(Request $request, $productId)
+        {
+            try {
+                $product = Product::findOrFail($productId);
+
+                if ($product->designer_id !== Auth::id()) {
+                    return response()->json(['message' => 'Unauthorized. You do not have permission to update this product.'], 403);
+                }
+
+                $validator = Validator::make($request->all(), [
+                    'discount_percentage' => 'nullable|numeric|min:0|max:100',
+                    'discount_status' => 'nullable|boolean',
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json($validator->errors(), 422);
+                }
+
+                if ($request->has('discount_percentage')) {
+                    $product->discount_percentage = $request->discount_percentage;
+                }
+
+                if ($request->has('discount_status')) {
+                    $product->discount_status = $request->discount_status;
+                }
+
+                $product->save();
+
+                return response()->json([
+                    'message' => 'Product discount updated successfully.',
+                    'product' => $product,
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
 }
