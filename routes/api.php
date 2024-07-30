@@ -51,13 +51,22 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/create', [CategoryController::class, 'create']);
             Route::get('/', [CategoryController::class, 'index']);
         });
+
+        Route::post('update-profile', [AuthDesignerController::class, 'updateProfile']);
+        Route::post('change-password', [AuthDesignerController::class, 'changePassword']);
+        Route::post('change-username', [AuthDesignerController::class, 'changeUsername']);
     });
 
     Route::prefix('user')->group(function (){
 
+        Route::post('update-profile', [AuthUserController::class, 'updateProfile']);
+        Route::post('change-password', [AuthUserController::class, 'changePassword']);
+        Route::post('change-username', [AuthUserController::class, 'changeUsername']);
+
         Route::get('/designer', [DesignerController::class, 'search']);
         //product
         Route::get('products', [ProductController::class, 'index']);
+        Route::get('products/{id}', [ProductController::class, 'getProductById']);
         Route::get('/products/designer', [ProductController::class, 'getDesignerProductsForUsers']);
 
         // cart

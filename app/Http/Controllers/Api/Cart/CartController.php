@@ -106,7 +106,7 @@ class CartController extends Controller
         try {
             $user = Auth::user();
 
-            $cart = Cart::with('products')->where('user_id', $user->id)->first();
+            $cart = Cart::with('products.images','products.categories','products.designer')->where('user_id', $user->id)->first();
 
             if (!$cart) {
                 return response()->json([
@@ -171,7 +171,7 @@ class CartController extends Controller
 
             $cart = Cart::firstOrCreate(['user_id' => $user->id]);
 
-            $product = Product::find($request->product_id);
+            $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
 
             $cart->products()->syncWithoutDetaching([
                 $product->id => ['quantity' => $request->quantity]
@@ -183,6 +183,7 @@ class CartController extends Controller
                 'status' => 'success',
                 'message' => 'Product added to cart successfully.',
                 'cart' => $cart,
+                'products'=>$product
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -208,7 +209,7 @@ class CartController extends Controller
 
             $cart = Cart::firstOrCreate(['user_id' => $user->id]);
 
-            $product = Product::find($request->product_id);
+            $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
 
             if ($request->quantity == 0) {
                 $cart->products()->detach($product->id);
@@ -224,6 +225,7 @@ class CartController extends Controller
                 'status' => 'success',
                 'message' => 'Product updated in cart successfully.',
                 'cart' => $cart,
+                'product'=>$product
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -247,7 +249,7 @@ class CartController extends Controller
 
             $cart = Cart::firstOrCreate(['user_id' => $user->id]);
 
-            $product = Product::find($request->product_id);
+            $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
 
             $cart->products()->detach($product->id);
 

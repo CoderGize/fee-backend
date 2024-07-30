@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\SendOTP;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +19,7 @@ class AuthUserController extends Controller
             try {
                   $validator = Validator::make($request->all(), [
                     'f_name' => 'required|string|max:255',
-                    'l_name' => 'required|string|max:255',
+                    'l_name' => 'nullable|string|max:255',
                     'email' => 'required|string|email|max:255|unique:users',
                     'username' => 'required|string|max:255|unique:users',
                     'password' => 'required|string|min:8|confirmed',
@@ -217,6 +218,117 @@ class AuthUserController extends Controller
 
              return response()->json([
                  'message' => 'Password reset successfully.',
+             ], 200);
+
+         } catch (\Exception $e) {
+             return response()->json([
+                 'status' => 'error',
+                 'message' => $e->getMessage(),
+             ], 500);
+         }
+     }
+
+
+     public function updateProfile(Request $request)
+     {
+         try {
+             $validator = Validator::make($request->all(), [
+                 'f_name' => 'required|string|max:255',
+                 'l_name' => 'nullable|string|max:255',
+                 'address' => 'nullable|string',
+                 'city' => 'nullable|string',
+                 'phone_number' => 'nullable|string|max:20',
+             ]);
+
+             if ($validator->fails()) {
+                 return response()->json($validator->errors(), 422);
+             }
+
+             $id = Auth::id();
+
+             $user=User::where('id',$id)->first();
+
+             $user->f_name = $request->f_name;
+             $user->l_name = $request->l_name;
+             $user->address = $request->address;
+             $user->city = $request->city;
+             $user->phone_number = $request->phone_number;
+             $user->save();
+
+             return response()->json([
+                 'message' => 'Profile updated successfully.',
+                 'user' => $user,
+             ], 200);
+
+         } catch (\Exception $e) {
+             return response()->json([
+                 'status' => 'error',
+                 'message' => $e->getMessage(),
+             ], 500);
+         }
+     }
+
+     // Change Password
+     public function changePassword(Request $request)
+     {
+         try {
+             $validator = Validator::make($request->all(), [
+                 'old_password' => 'required|string',
+                 'password' => 'required|string|min:8|confirmed',
+             ]);
+
+             if ($validator->fails()) {
+                 return response()->json($validator->errors(), 422);
+             }
+
+             $id = Auth::id();
+
+             $user=User::where('id',$id)->first();
+
+             if (!Hash::check($request->old_password, $user->password)) {
+                 return response()->json([
+                     'status' => 'error',
+                     'message' => 'Invalid old password.',
+                 ], 401);
+             }
+
+             $user->password = Hash::make($request->password);
+             $user->save();
+
+             return response()->json([
+                 'message' => 'Password changed successfully.',
+             ], 200);
+
+         } catch (\Exception $e) {
+             return response()->json([
+                 'status' => 'error',
+                 'message' => $e->getMessage(),
+             ], 500);
+         }
+     }
+
+     // Change Username (Email)
+     public function changeUsername(Request $request)
+     {
+         try {
+             $validator = Validator::make($request->all(), [
+                 'username' => 'required|string|max:255|unique:users'
+             ]);
+
+             if ($validator->fails()) {
+                 return response()->json($validator->errors(), 422);
+             }
+
+             $id = Auth::id();
+
+             $user=User::where('id',$id)->first();
+
+             $user->username = $request->username;
+             $user->save();
+
+             return response()->json([
+                 'message' => 'Username changed successfully.',
+                 'user' => $user,
              ], 200);
 
          } catch (\Exception $e) {

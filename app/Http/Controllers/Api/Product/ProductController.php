@@ -333,4 +333,21 @@ class ProductController extends Controller
             }
         }
 
+
+        public function getProductById($productId)
+        {
+            try {
+                $product = Product::with('images', 'designer', 'categories')->findOrFail($productId);
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $product,
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
 }
