@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Mail\SendOTP;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AuthUserController extends Controller
@@ -253,6 +255,25 @@ class AuthUserController extends Controller
              $user->address = $request->address;
              $user->city = $request->city;
              $user->phone_number = $request->phone_number;
+
+             if ($request->hasFile('image')) {
+
+                if ($user->image) {
+                    Storage::delete(str_replace('/storage', 'public', $user->profile));
+                }
+
+                $ProfileName = "FEE";
+                $imageFile = $request->file('image');
+                $imageUniqueName = uniqid();
+                $imageExtension = $imageFile->getClientOriginalExtension();
+                $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
+                $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
+                $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
+
+                $user->image = $imageUrl;
+            }
+
+
              $user->save();
 
              return response()->json([
@@ -338,5 +359,60 @@ class AuthUserController extends Controller
              ], 500);
          }
      }
+     public function deleteImage()
+     {
+         try {
+             $id = Auth::id();
+             $user = User::where('id', $id)->first();
 
+             if (!$user->image) {
+                 return response()->json([
+                     'status' => 'error',
+                     'message' => 'No image found.',
+                 ], 404);
+             }
+
+             Storage::delete(str_replace('/storage', 'public', $user->image));
+             $user->image = null;
+             $user->save();
+
+             return response()->json([
+                 'message' => 'Image deleted successfully.',
+                 'user' => $user,
+             ], 200);
+
+         } catch (\Exception $e) {
+             return response()->json([
+                 'status' => 'error',
+                 'message' => $e->getMessage(),
+             ], 500);
+         }
+     }
+
+     public function getUserWithData()
+     {
+         try {
+             $id = Auth::id();
+             $user = User::where('id', $id)
+                 ->with('orders.products.images.designer.categories', 'cart.products.images.designer.categories')
+                 ->first();
+
+             if (!$user) {
+                 return response()->json([
+                     'status' => 'error',
+                     'message' => 'User not found.',
+                 ], 404);
+             }
+
+             return response()->json([
+                 'user' => $user,
+             ], 200);
+
+         } catch (\Exception $e) {
+             return response()->json([
+                 'status' => 'error',
+                 'message' => $e->getMessage(),
+             ], 500);
+         }
+     }
 }

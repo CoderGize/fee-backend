@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\SendOTP;
 use App\Models\Designer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AuthDesignerController extends Controller
@@ -250,6 +252,24 @@ class AuthDesignerController extends Controller
             $designer->address = $request->address;
             $designer->city = $request->city;
             $designer->phone_number = $request->phone_number;
+
+
+            if ($request->hasFile('image')) {
+
+                if ($designer->image) {
+                    Storage::delete(str_replace('/storage', 'public', $designer->profile));
+                }
+
+                $ProfileName = "FEE";
+                $imageFile = $request->file('image');
+                $imageUniqueName = uniqid();
+                $imageExtension = $imageFile->getClientOriginalExtension();
+                $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
+                $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
+                $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
+
+                $designer->image = $imageUrl;
+            }
             $designer->save();
 
             return response()->json([
@@ -325,6 +345,63 @@ class AuthDesignerController extends Controller
 
             return response()->json([
                 'message' => 'Username changed successfully.',
+                'designer' => $designer,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteImage()
+    {
+        try {
+            $id = Auth::id();
+            $designer = Designer::where('id', $id)->first();
+
+            if (!$designer->image) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No image found.',
+                ], 404);
+            }
+
+            Storage::delete(str_replace('/storage', 'public', $designer->image));
+            $designer->image = null;
+            $designer->save();
+
+            return response()->json([
+                'message' => 'Image deleted successfully.',
+                'designer' => $designer,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getUserWithData()
+    {
+        try {
+            $id = Auth::id();
+            $designer = Designer::where('id', $id)
+                ->with('products.images.designer.categories')
+                ->first();
+
+            if (!$designer) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'designer not found.',
+                ], 404);
+            }
+
+            return response()->json([
                 'designer' => $designer,
             ], 200);
 

@@ -20,7 +20,8 @@ class Designer extends Model implements AuthenticatableContract
         'l_name',
         'email',
         'password',
-         'username'
+         'username',
+         'image'
     ];
 
     /**

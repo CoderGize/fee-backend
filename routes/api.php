@@ -55,6 +55,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('update-profile', [AuthDesignerController::class, 'updateProfile']);
         Route::post('change-password', [AuthDesignerController::class, 'changePassword']);
         Route::post('change-username', [AuthDesignerController::class, 'changeUsername']);
+
+        Route::delete('delete-profile-image', [AuthDesignerController::class, 'deleteImage']);
+        Route::get('/get_user', [AuthDesignerController::class, 'getUserWithData']);
     });
 
     Route::prefix('user')->group(function (){
@@ -62,6 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('update-profile', [AuthUserController::class, 'updateProfile']);
         Route::post('change-password', [AuthUserController::class, 'changePassword']);
         Route::post('change-username', [AuthUserController::class, 'changeUsername']);
+        Route::delete('delete-profile-image', [AuthUserController::class, 'deleteImage']);
+        Route::get('/get_user', [AuthUserController::class, 'getUserWithData']);
 
         Route::get('/designer', [DesignerController::class, 'search']);
         //product
