@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\AuthUserController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Cart\WishlistController;
 use App\Http\Controllers\Api\Category\CategoryController;
+use App\Http\Controllers\Api\DebtCard\DebtCardController;
 use App\Http\Controllers\Api\Designer\DesignerController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Product\ProductController;
@@ -98,6 +99,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/categories', [CategoryController::class, 'index']);
         Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getSubcategories']);
+
+
+
+        Route::get('/debt-cards', [DebtCardController::class, 'index']);
+        Route::get('/debt-cards/{id}', [DebtCardController::class, 'show']);
+        Route::post('/debt-cards', [DebtCardController::class, 'store']);
+        Route::post('/debt-cards/{id}', [DebtCardController::class, 'update']);
+        Route::delete('/debt-cards/{id}', [DebtCardController::class, 'destroy']);
 
 
         //order
