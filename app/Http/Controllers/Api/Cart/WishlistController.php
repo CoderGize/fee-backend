@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Cart;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
@@ -79,9 +80,17 @@ class WishlistController extends Controller
 
             $user = Auth::user();
 
+            $cart = Cart::where('user_id', $user->id)->first();
+            if ($cart && $cart->products->contains($request->product_id)) {
+                $cart->products()->detach($request->product_id);
+            }
+
             $wishlist = Wishlist::firstOrCreate(['user_id' => $user->id]);
 
+
+
             $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
+
 
             $wishlist->products()->syncWithoutDetaching([
                 $product->id => ['quantity' => $request->quantity]

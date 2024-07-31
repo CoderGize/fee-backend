@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api\Category;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Subcategory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -26,6 +29,25 @@ class CategoryController extends Controller
                 'description' => $request->description,
             ]);
 
+            if ($request->hasFile('image')) {
+
+                if ($category->image) {
+                    Storage::delete(str_replace('/storage', 'public', $category->image));
+                }
+
+                $ProfileName = "FEE";
+                $imageFile = $request->file('image');
+                $imageUniqueName = uniqid();
+                $imageExtension = $imageFile->getClientOriginalExtension();
+                $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
+                $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
+                $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
+
+                $category->image = $imageUrl;
+            }
+
+            $category->save();
+
             return response()->json([
                 'message' => 'Category created successfully.',
                 'category' => $category,
@@ -41,10 +63,77 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $categories = Category::all();
+            $categories = Category::with('subcategories','products.images',)->get();
             return response()->json([
                 'status' => 'success',
                 'data' => $categories,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function createSubcategory(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255|unique:subcategories,name',
+                'description' => 'nullable|string',
+                'category_id' => 'required|exists:categories,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $subcategory = Subcategory::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'category_id' => $request->category_id,
+            ]);
+
+            if ($request->hasFile('image')) {
+
+                if ($subcategory->image) {
+                    Storage::delete(str_replace('/storage', 'public', $subcategory->image));
+                }
+
+                $ProfileName = "FEE";
+                $imageFile = $request->file('image');
+                $imageUniqueName = uniqid();
+                $imageExtension = $imageFile->getClientOriginalExtension();
+                $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
+                $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
+                $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
+
+                $subcategory->image = $imageUrl;
+            }
+
+            $subcategory->save();
+
+            return response()->json([
+                'message' => 'Subcategory created successfully.',
+                'subcategory' => $subcategory,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function getSubcategories($categoryId)
+    {
+        try {
+            $subcategories = Subcategory::where('category_id', $categoryId)->with('category.products.images')->get();
+            return response()->json([
+                'status' => 'success',
+                'data' => $subcategories,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

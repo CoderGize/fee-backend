@@ -40,6 +40,8 @@ Route::prefix('designer')->group(function () {
 
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/subcategories', [CategoryController::class, 'createSubcategory']);
     Route::prefix('designer')->group(function (){
         Route::post('/products', [ProductController::class, 'create']);
         Route::post('/products/update/{id}', [ProductController::class, 'update']);
@@ -91,6 +93,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('wishlist/add/single', [WishlistController::class, 'addSingleProduct']);
         Route::post('wishlist/update/single', [WishlistController::class, 'updateSingleProduct']);
         Route::post('wishlist/remove/single', [WishlistController::class, 'removeSingleProduct']);
+
+
+
+        Route::get('/categories', [CategoryController::class, 'index']);
+        Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getSubcategories']);
 
 
         //order

@@ -259,7 +259,7 @@ class AuthUserController extends Controller
              if ($request->hasFile('image')) {
 
                 if ($user->image) {
-                    Storage::delete(str_replace('/storage', 'public', $user->profile));
+                    Storage::delete(str_replace('/storage', 'public', $user->image));
                 }
 
                 $ProfileName = "FEE";

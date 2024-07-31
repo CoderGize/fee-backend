@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Designer;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Subcategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -100,11 +101,22 @@ class ProductController extends Controller
                     $product->categories()->attach($category->id);
                 }
             }
+            $subcategories = $request->input('subcategories');
+            if ($subcategories) {
+                foreach ($subcategories as $subcategoryData) {
+                    $categoryName = $subcategoryData['category'];
+                    $subcategoryName = $subcategoryData['name'];
 
+                    $category = Category::firstOrCreate(['name' => $categoryName]);
+                    $subcategory = Subcategory::firstOrCreate(['name' => $subcategoryName, 'category_id' => $category->id]);
+
+                    $product->subcategories()->attach($subcategory->id);
+                }
+            }
             $product->save();
             return response()->json([
                 'message' => 'Product created successfully.',
-                'product' => $product,
+                'product' => $product->load('categories', 'subcategories', 'images'),
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -183,6 +195,20 @@ class ProductController extends Controller
                 }
             }
 
+            $subcategories = $request->input('subcategories');
+            if ($subcategories) {
+                $product->subcategory()->detach();
+                foreach ($subcategories as $subcategoryData) {
+                    $categoryName = $subcategoryData['category'];
+                    $subcategoryName = $subcategoryData['name'];
+
+                    $category = Category::firstOrCreate(['name' => $categoryName]);
+                    $subcategory = Subcategory::firstOrCreate(['name' => $subcategoryName, 'category_id' => $category->id]);
+
+                    $product->subcategories()->attach($subcategory->id);
+                }
+            }
+
             if ($request->hasFile('images')) {
 
                 $product->images()->delete();
@@ -204,7 +230,7 @@ class ProductController extends Controller
 
             return response()->json([
                 'message' => 'Product updated successfully.',
-                'product' => $product,
+                'product' => $product->load('categories', 'subcategories', 'images'),
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

@@ -257,7 +257,7 @@ class AuthDesignerController extends Controller
             if ($request->hasFile('image')) {
 
                 if ($designer->image) {
-                    Storage::delete(str_replace('/storage', 'public', $designer->profile));
+                    Storage::delete(str_replace('/storage', 'public', $designer->image));
                 }
 
                 $ProfileName = "FEE";

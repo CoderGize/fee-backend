@@ -20,6 +20,7 @@ class Product extends Model
         'tags',
         'description',
         'designer_id',
+        'subcategory_id',
     ];
 
     protected $casts = [
@@ -36,6 +37,11 @@ class Product extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function subcategories()
+    {
+        return $this->belongsToMany(Subcategory::class);
     }
 
     public function images()
