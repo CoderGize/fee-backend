@@ -255,6 +255,10 @@ class AuthUserController extends Controller
              $user->address = $request->address;
              $user->city = $request->city;
              $user->phone_number = $request->phone_number;
+             $user->further_information=$request->further_information;
+             $user->governorate=$request->governorate;
+             $user->locality=$request->locality;
+             $user->region=$request->region;
 
              if ($request->hasFile('image')) {
 
