@@ -21,8 +21,13 @@ class CategoryController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $category = Category::create([
                 'name' => $request->name,
@@ -86,7 +91,12 @@ class CategoryController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
+                return response()->json(
+                    [
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ]
+           , 422);
             }
 
             $subcategory = Subcategory::create([

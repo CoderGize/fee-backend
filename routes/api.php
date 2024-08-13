@@ -29,6 +29,10 @@ Route::prefix('user')->group(function () {
     Route::post('verify-otp', [AuthUserController::class, 'verifyOtp']);
     Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
+    Route::get('products', [ProductController::class, 'index']);
+    Route::get('products/{id}', [ProductController::class, 'getProductById']);
+    Route::get('/designer/products', [ProductController::class, 'getDesignerProductsForUsers']);
+
 });
 
 Route::prefix('designer')->group(function () {
@@ -75,9 +79,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/designer', [DesignerController::class, 'search']);
         //product
-        Route::get('products', [ProductController::class, 'index']);
-        Route::get('products/{id}', [ProductController::class, 'getProductById']);
-        Route::get('/products/designer', [ProductController::class, 'getDesignerProductsForUsers']);
 
         // cart
         Route::post('cart/add', [CartController::class, 'addToCart']);
@@ -94,7 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('wishlist/add/single', [WishlistController::class, 'addSingleProduct']);
         Route::post('wishlist/update/single', [WishlistController::class, 'updateSingleProduct']);
         Route::post('wishlist/remove/single', [WishlistController::class, 'removeSingleProduct']);
-
+        Route::get('wishlists',[WishlistController::class,"getWishlist"]);
 
 
         Route::get('/categories', [CategoryController::class, 'index']);

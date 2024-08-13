@@ -31,7 +31,12 @@ class AuthUserController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return response()->json($validator->errors(), 422);
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
                 }
 
                 $user = User::create([
@@ -72,8 +77,13 @@ class AuthUserController extends Controller
             'password' => 'required|string',
              ]);
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $user = User::where(function ($query) use ($request) {
             $query->where('email', $request->login)
@@ -115,8 +125,13 @@ class AuthUserController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $user = User::where('email', $request->email)->where('otp', $request->otp)->first();
 
@@ -157,8 +172,13 @@ class AuthUserController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $user = User::where('email', $request->email)->first();
 
@@ -202,8 +222,13 @@ class AuthUserController extends Controller
              ]);
 
              if ($validator->fails()) {
-                 return response()->json($validator->errors(), 422);
-             }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
              $user = User::where('email', $request->email)->where('otp', $request->otp)->first();
 
@@ -243,8 +268,13 @@ class AuthUserController extends Controller
              ]);
 
              if ($validator->fails()) {
-                 return response()->json($validator->errors(), 422);
-             }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
              $id = Auth::id();
 
@@ -303,8 +333,13 @@ class AuthUserController extends Controller
              ]);
 
              if ($validator->fails()) {
-                 return response()->json($validator->errors(), 422);
-             }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
              $id = Auth::id();
 
@@ -341,8 +376,13 @@ class AuthUserController extends Controller
              ]);
 
              if ($validator->fails()) {
-                 return response()->json($validator->errors(), 422);
-             }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
              $id = Auth::id();
 

@@ -75,7 +75,12 @@ class WishlistController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
+                return response()->json(
+                    [
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ]
+           , 422);
             }
 
             $user = Auth::user();
@@ -121,7 +126,12 @@ class WishlistController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
+                return response()->json(
+                    [
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ]
+           , 422);
             }
 
             $user = Auth::user();
@@ -161,7 +171,12 @@ class WishlistController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
+                return response()->json(
+                    [
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ]
+           , 422);
             }
 
             $user = Auth::user();

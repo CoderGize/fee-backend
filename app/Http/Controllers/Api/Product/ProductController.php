@@ -307,6 +307,35 @@ class ProductController extends Controller
             }
         }
 
+        public function getDesignProducts(Request $request){
+
+            try {
+                $designerId = $request->designer_id;
+
+                $designer=Designer::where('id',$designerId)->first();
+
+                if(!$designer){
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'designer not found',
+                    ],404);
+                }
+                $perPage = $request->per_page ? $request->per_page : 10;
+
+                $products = Product::with('images', 'designer','categories')
+                    ->where('designer_id', $designerId)
+                    ->paginate($perPage);
+                return response()->json([
+                    'status' => 'success',
+                    'data'=>$products
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+           }
 
         public function getDesignerProductsForUsers(Request $request)
         {

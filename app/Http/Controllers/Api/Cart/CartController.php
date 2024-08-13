@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Cart;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -21,8 +22,13 @@ class CartController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $user = Auth::user();
 
@@ -67,9 +73,13 @@ class CartController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
-
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
             $user = Auth::user();
 
             $cart = Cart::firstOrCreate(['user_id' => $user->id]);
@@ -164,10 +174,20 @@ class CartController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $user = Auth::user();
+
+            $wishlist = Wishlist::where('user_id', $user->id)->first();
+            if ($wishlist && $wishlist->products->contains($request->product_id)) {
+                $wishlist->products()->detach($request->product_id);
+            }
 
             $cart = Cart::firstOrCreate(['user_id' => $user->id]);
 
@@ -202,8 +222,13 @@ class CartController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $user = Auth::user();
 

@@ -31,8 +31,13 @@ class AuthDesignerController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $designer = Designer::create([
                 'f_name' => $request->f_name,
@@ -72,7 +77,12 @@ class AuthDesignerController extends Controller
                 'password' => 'required|string',
                  ]);
                 if ($validator->fails()) {
-                    return response()->json($validator->errors(), 422);
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
                 }
 
             $designer = Designer::where('email', $request->email)->first();
@@ -112,8 +122,13 @@ class AuthDesignerController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $designer = Designer::where('email', $request->email)->where('otp', $request->otp)->first();
 
@@ -154,8 +169,13 @@ class AuthDesignerController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $designer = Designer::where('email', $request->email)->first();
 
@@ -198,8 +218,13 @@ class AuthDesignerController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $designer = Designer::where('email', $request->email)->where('otp', $request->otp)->first();
 
@@ -240,8 +265,13 @@ class AuthDesignerController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $id = Auth::id();
 
@@ -294,9 +324,14 @@ class AuthDesignerController extends Controller
                 'password' => 'required|string|min:8|confirmed',
             ]);
 
-            if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+           if ($validator->fails()) {
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $id = Auth::id();
 
@@ -333,8 +368,13 @@ class AuthDesignerController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+                    return response()->json(
+                        [
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]
+               , 422);
+                }
 
             $id = Auth::id();
 
