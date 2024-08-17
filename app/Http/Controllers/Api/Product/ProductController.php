@@ -269,8 +269,35 @@ class ProductController extends Controller
 
 
             if ($request->has('tags')) {
+
                 $query->whereJsonContains('tags', $request->tags);
             }
+
+            if($request->has('order_by')){
+
+                $query->orderBy('id', $request->order_by);
+            }
+
+            if ($request->has('sort_by')) {
+                switch ($request->sort_by) {
+                    case 'date_desc':
+                        $query->orderBy('created_at', 'desc');
+                        break;
+                    case 'date_asc':
+                        $query->orderBy('created_at', 'asc');
+                        break;
+                    case 'price_desc':
+                        $query->orderBy('price', 'desc');
+                        break;
+                    case 'price_asc':
+                        $query->orderBy('price', 'asc');
+                        break;
+                    default:
+                        $query->orderBy('id', 'asc'); // Default sorting by ID
+                        break;
+                }
+            }
+
 
             $products = $query->paginate($perPage);
 
@@ -307,35 +334,6 @@ class ProductController extends Controller
             }
         }
 
-        public function getDesignProducts(Request $request){
-
-            try {
-                $designerId = $request->designer_id;
-
-                $designer=Designer::where('id',$designerId)->first();
-
-                if(!$designer){
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'designer not found',
-                    ],404);
-                }
-                $perPage = $request->per_page ? $request->per_page : 10;
-
-                $products = Product::with('images', 'designer','categories')
-                    ->where('designer_id', $designerId)
-                    ->paginate($perPage);
-                return response()->json([
-                    'status' => 'success',
-                    'data'=>$products
-                ], 200);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => $e->getMessage(),
-                ], 500);
-            }
-           }
 
         public function getDesignerProductsForUsers(Request $request)
         {

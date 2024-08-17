@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/subcategories', [CategoryController::class, 'createSubcategory']);
     Route::prefix('designer')->group(function (){
+        Route::delete('logout', [AuthDesignerController::class, 'logout']);
         Route::post('/products', [ProductController::class, 'create']);
         Route::post('/products/update/{id}', [ProductController::class, 'update']);
         Route::get('/products/designer', [ProductController::class, 'getDesignerProducts']);
@@ -70,7 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('user')->group(function (){
-
+        Route::delete('logout', [AuthUserController::class, 'logout']);
         Route::post('update-profile', [AuthUserController::class, 'updateProfile']);
         Route::post('change-password', [AuthUserController::class, 'changePassword']);
         Route::post('change-username', [AuthUserController::class, 'changeUsername']);

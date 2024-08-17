@@ -21,7 +21,6 @@ class DebtCardController extends Controller
             'bank' => 'required|string|max:255',
             'account_number' => 'required|string|max:255',
             'expiry_date' => 'required|date',
-            'security_code' => 'required|string|max:255',
         ]);
 
 
@@ -38,7 +37,7 @@ class DebtCardController extends Controller
         return response()->json([
             'status' => 'success',
            'message' => 'Debt card added successfully',
-                'data'=>$debtCard
+            'data'=>$debtCard
         ], 200);
 
         } catch (\Exception $e) {
@@ -53,7 +52,7 @@ class DebtCardController extends Controller
             'bank' => 'string|max:255',
             'account_number' => 'string|max:255',
             'expiry_date' => 'date',
-            'security_code' => 'string|max:255',
+          
         ]);
 
         try {
@@ -108,7 +107,10 @@ class DebtCardController extends Controller
         try {
             $userId = Auth::id();
             $debtCard = DebtCard::where('user_id', $userId)->findOrFail($id);
-            return response()->json($debtCard, 200);
+            return response()->json([
+                'message'=>'success',
+                'data'=>$debtCard
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Debt card not found', 'message' => $e->getMessage()], 404);
         }
