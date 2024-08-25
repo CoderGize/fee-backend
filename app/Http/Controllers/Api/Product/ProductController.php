@@ -301,10 +301,17 @@ class ProductController extends Controller
 
             $products = $query->paginate($perPage);
 
-            return response()->json([
+            $response = [
                 'status' => 'success',
                 'data' => $products,
-            ], 200);
+            ];
+
+            if (Auth::check()) {
+                $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                $response['wishlist'] = $wishlistProductIds;
+            }
+
+            return response()->json($response, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -322,10 +329,17 @@ class ProductController extends Controller
                 $products = Product::with('images', 'designer','categories')
                     ->where('designer_id', $designerId)
                     ->paginate($perPage);
-                return response()->json([
+                $response = [
                     'status' => 'success',
-                    'data'=>$products
-                ], 200);
+                    'data' => $products,
+                ];
+
+                if (Auth::check()) {
+                    $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                    $response['wishlist'] = $wishlistProductIds;
+                }
+
+                return response()->json($response, 200);
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => 'error',
@@ -353,10 +367,17 @@ class ProductController extends Controller
                 $products = Product::with('images', 'designer','categories')
                     ->where('designer_id', $designerId)
                     ->paginate($perPage);
-                return response()->json([
+                $response = [
                     'status' => 'success',
-                    'data'=>$products
-                ], 200);
+                    'data' => $products,
+                ];
+
+                if (Auth::check()) {
+                    $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                    $response['wishlist'] = $wishlistProductIds;
+                }
+
+                return response()->json($response, 200);
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => 'error',

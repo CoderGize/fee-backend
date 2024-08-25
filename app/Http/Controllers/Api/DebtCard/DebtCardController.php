@@ -52,7 +52,7 @@ class DebtCardController extends Controller
             'bank' => 'string|max:255',
             'account_number' => 'string|max:255',
             'expiry_date' => 'date',
-          
+
         ]);
 
         try {
@@ -78,15 +78,16 @@ class DebtCardController extends Controller
     {
         try {
             $userId = Auth::id();
-            $debtCards = DebtCard::where('user_id', $userId)->get();
+            $debtCard = DebtCard::where('user_id', $userId)->orderBy('created_at', 'desc')->first(); // Order by creation date and fetch the latest one
             return response()->json([
-                'message'=>'successfully fetched',
-                'data'=>$debtCards
+                'message' => 'successfully fetched',
+                'data' => $debtCard
             ], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch debt cards', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to fetch debt card', 'message' => $e->getMessage()], 500);
         }
     }
+
 
     public function destroy($id)
     {

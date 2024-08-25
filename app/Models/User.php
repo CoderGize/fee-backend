@@ -28,7 +28,8 @@ class User extends Authenticatable
         'further_information',
         'governorate',
         'locality',
-        'region'
+        'region',
+        'birth_day'
     ];
 
     /**
