@@ -29,9 +29,11 @@ Route::prefix('user')->group(function () {
     Route::post('verify-otp', [AuthUserController::class, 'verifyOtp']);
     Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
-    Route::get('products', [ProductController::class, 'index']);
+    Route::get('/designer/new/products', [ProductController::class, 'getDesignerProductsForUsers_new']);
     Route::get('products/{id}', [ProductController::class, 'getProductById']);
-    Route::get('/designer/products', [ProductController::class, 'getDesignerProductsForUsers']);
+
+    Route::get('/designer', [DesignerController::class, 'search']);
+    Route::get('/new/products', [ProductController::class, 'new_user']);
 
 });
 
@@ -71,6 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('user')->group(function (){
+        Route::get('/designer/products', [ProductController::class, 'getDesignerProductsForUsers']);
+        Route::get('products', [ProductController::class, 'index']);
         Route::delete('logout', [AuthUserController::class, 'logout']);
         Route::post('update-profile', [AuthUserController::class, 'updateProfile']);
         Route::post('change-password', [AuthUserController::class, 'changePassword']);
@@ -78,7 +82,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('delete-profile-image', [AuthUserController::class, 'deleteImage']);
         Route::get('/get_user', [AuthUserController::class, 'getUserWithData']);
 
-        Route::get('/designer', [DesignerController::class, 'search']);
+
         //product
 
         // cart

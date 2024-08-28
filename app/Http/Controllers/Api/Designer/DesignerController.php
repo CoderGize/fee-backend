@@ -32,17 +32,49 @@ class DesignerController extends Controller
             ], 500);
         }
     }
-    public function search(Request $request)
+
+      public function search(Request $request)
     {
-        $query = $request->input('query');
-        $designers = Designer::where('f_name', 'LIKE', "%{$query}%")
-                            ->orWhere('l_name', 'LIKE', "%{$query}%")
-                            ->get();
+        try {
 
-        return response()->json([
-            'status' => 'success',
-            'designers' => $designers,
-        ]);
+            $query = $request->input('query', '');
+            $search = $request->input('search', '');
+
+
+            if (!empty($query)) {
+
+                $designers = Designer::whereRaw("LOWER(f_name) LIKE LOWER(?)", [$query . '%'])
+                    ->orderBy('f_name', 'asc')
+                    ->orderBy('l_name', 'asc')
+                    ->get();
+            }
+
+            elseif (!empty($search)) {
+                $designers = Designer::whereRaw("LOWER(f_name) LIKE LOWER(?)", ['%' . $search . '%'])
+                    ->orWhereRaw("LOWER(l_name) LIKE LOWER(?)", ['%' . $search . '%'])
+                    ->orderBy('f_name', 'asc')
+                    ->orderBy('l_name', 'asc')
+                    ->get();
+            }
+
+            else {
+                $designers = Designer::orderBy('f_name', 'asc')
+                    ->orderBy('l_name', 'asc')
+                    ->get();
+            }
+
+
+            return response()->json([
+                'status' => 'success',
+                'designers' => $designers->isEmpty() ? [] : $designers,
+            ]);
+
+        } catch (\Exception $e) {
+            // Handle exceptions
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
-
 }

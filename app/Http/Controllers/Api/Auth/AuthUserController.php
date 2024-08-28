@@ -289,7 +289,7 @@ class AuthUserController extends Controller
              $user->governorate=$request->governorate;
              $user->locality=$request->locality;
              $user->region=$request->region;
-
+             $user->birth_day=$request->birth_day;
              if ($request->hasFile('image')) {
 
                 if ($user->image) {
