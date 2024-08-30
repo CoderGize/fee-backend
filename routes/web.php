@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\admin\Authcontroller;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('admin.home');
+})->middleware('auth');
+
+// Login route
+Route::get('login', function () {
+    return view('admin.login');
+})->name('login.web');
+
+Route::post('/login', [Authcontroller::class, 'login'])->name('login');

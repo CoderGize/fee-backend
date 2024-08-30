@@ -29,7 +29,8 @@ class User extends Authenticatable
         'governorate',
         'locality',
         'region',
-        'birth_day'
+        'birth_day',
+        'is_admin'
     ];
 
     /**
