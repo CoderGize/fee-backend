@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Order;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MyFatoorahController;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
@@ -14,75 +15,70 @@ use Illuminate\Support\Facades\Validator;
 class OrderController extends Controller
 {
     public function createOrder(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'products' => 'required|array',
-                'products.*.product_id' => 'required|exists:products,id',
-                'products.*.quantity' => 'required|integer|min:1',
-            ]);
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'products' => 'required|array',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
+        ]);
 
-            if ($validator->fails()) {
-                    return response()->json(
-                        [
-                    'status' => 'error',
-                    'message' => $validator->errors(),
-                ]
-               , 422);
-                }
-
-            $user = Auth::user();
-
-
-            $order = new Order();
-            $order->user_id = $user->id;
-            $order->total_price = 0;
-            $order->status = 'pending';
-            $order->save();
-
-            $totalPrice = 0;
-
-
-            foreach ($request->products as $item) {
-                $product = Product::find($item['product_id']);
-                $quantity = $item['quantity'];
-                $price = $product->price;
-
-
-                $order->products()->attach($product->id, [
-                    'quantity' => $quantity,
-                    'price' => $price,
-                ]);
-
-
-                $totalPrice += $quantity * $price;
-            }
-            $discountAmount = ($order->discount / 100) * $totalPrice;
-            $order->total_price = $totalPrice - $discountAmount;
-            $order->save();
-
-            // Create Payment
-            $payment = new Payment();
-            $payment->user_id = $user->id;
-            $payment->order_id = $order->id;
-            $payment->amount = $order->total_price;
-            $payment->status = 'pending';
-            $payment->payment_method = $request->payment_method;
-            $payment->save();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Order created successfully.',
-                'order' => $order->load('products', 'payment'),
-            ], 200);
-
-        } catch (\Exception $e) {
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
+                'message' => $validator->errors(),
+            ], 422);
         }
+
+        $user = Auth::user();
+
+        // Create Order
+        $order = new Order();
+        $order->user_id = $user->id;
+        $order->total_price = 0;
+        $order->status = 'pending';
+        $order->save();
+
+        $totalPrice = 0;
+
+        foreach ($request->products as $item) {
+            $product = Product::find($item['product_id']);
+            $quantity = $item['quantity'];
+            $price = $product->price;
+
+            $order->products()->attach($product->id, [
+                'quantity' => $quantity,
+                'price' => $price,
+            ]);
+
+            $totalPrice += $quantity * $price;
+        }
+
+        $discountAmount = ($order->discount / 100) * $totalPrice;
+        $order->total_price = $totalPrice - $discountAmount;
+        $order->save();
+
+        // Create Payment
+        $payment = new Payment();
+        $payment->user_id = $user->id;
+        $payment->order_id = $order->id;
+        $payment->amount = $order->total_price;
+        $payment->status = 'pending';
+        $payment->payment_method = $request->payment_method;
+        $payment->save();
+
+        // Send order data to MyFatoorah for payment processing
+        $myFatoorahController = new MyFatoorahController();
+        return $myFatoorahController->index($order->id);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     public function updateOrder(Request $request, $id)
     {

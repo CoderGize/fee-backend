@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MyFatoorahController;
 use App\Http\Controllers\Web\admin\Authcontroller;
 use Illuminate\Support\Facades\Route;
 
@@ -24,3 +25,4 @@ Route::get('login', function () {
 })->name('login.web');
 
 Route::post('/login', [Authcontroller::class, 'login'])->name('login');
+Route::get('callback',[MyFatoorahController::class,'callback'])->name('myfatoorah.callback');
