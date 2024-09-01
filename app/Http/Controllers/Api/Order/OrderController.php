@@ -26,6 +26,7 @@ class OrderController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
+                'products'=>$request->products ,
                 'message' => $validator->errors(),
             ], 422);
         }
@@ -67,7 +68,7 @@ class OrderController extends Controller
         $payment->payment_method = $request->payment_method;
         $payment->save();
 
-        // Send order data to MyFatoorah for payment processing
+
         $myFatoorahController = new MyFatoorahController();
         return $myFatoorahController->index($order->id);
 

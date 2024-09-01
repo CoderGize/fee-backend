@@ -13,7 +13,7 @@ class CollocationController extends Controller
 
      public function index()
      {
-         $collections = Collection::all();
+         $collections = Collection::paginate(10);
          return view('admin.collections.index', compact('collections'));
      }
 
@@ -62,13 +62,14 @@ class CollocationController extends Controller
      }
 
 
-     public function edit(Collection $collection)
+     public function edit($id)
      {
+        $collection=Collection::findOrFail($id);
          return view('admin.collections.edit', compact('collection'));
      }
 
 
-     public function update(Request $request, Collection $collection)
+     public function update(Request $request, $id)
      {
          $request->validate([
              'name_en' => 'nullable|string|max:255',
@@ -77,7 +78,7 @@ class CollocationController extends Controller
              'description_ar' => 'nullable|string',
              'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
          ]);
-
+         $collection=Collection::findOrFail($id);
          $collection->name_en = $request->input('name_en');
          $collection->name_ar = $request->input('name_ar');
          $collection->description_en = $request->input('description_en');

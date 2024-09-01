@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MyFatoorahController;
 use App\Http\Controllers\Web\admin\Authcontroller;
+use App\Http\Controllers\Web\admin\CollocationController;
 use App\Http\Controllers\Web\admin\Designer\DesignerController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/designers/create', [DesignerController::class, 'create'])->name('admin.designer.create');
     Route::post('/admin/designers/store', [DesignerController::class,  'store'])->name('admin.designer.store');
     Route::get('admin/designers/copy/{id}', [DesignerController::class, 'copy'])->name('admin.designer.copy');
+    Route::prefix('admin/collections')->group(function () {
+        Route::get('/', [CollocationController::class, 'index'])->name('admin.collections.index');
+        Route::get('/create', [CollocationController::class, 'create'])->name('admin.collections.create');
+        Route::post('/create', [CollocationController::class, 'store'])->name('admin.collections.store');
+        Route::get('/{id}', [CollocationController::class, 'edit'])->name('admin.collections.edit');
+        Route::put('/{id}', [CollocationController::class, 'update'])->name('admin.collections.update');
+        Route::delete('/{id}', [CollocationController::class, 'destroy'])->name('admin.collections.destroy');
+    });
 
 });
 
