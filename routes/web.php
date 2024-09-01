@@ -15,9 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin.home');
-})->middleware('auth');
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/admin', function () {
+        return view('admin.home');
+    })->name('admin.home');
+});
+
 
 // Login route
 Route::get('login', function () {
