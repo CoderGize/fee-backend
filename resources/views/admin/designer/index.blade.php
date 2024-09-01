@@ -21,6 +21,18 @@
                             <a href="{{ route('admin.designer.create') }}" class="btn btn-primary">Add Designer</a>
                         </div>
 
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <script>
+                                setTimeout(function() {
+                                    $('.alert-success').fadeOut('slow');
+                                }, 5000);
+                            </script>
+                        @endif
+
                         <div class="card-body px-0 pt-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -35,9 +47,9 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody  >
                                         @forelse ($designers as $designer)
-                                            <tr>
+                                            <tr >
                                                 <td class="text-sm">{{ $designer->f_name }}</td>
                                                 <td class="text-sm">{{ $designer->l_name }}</td>
                                                 <td class="text-sm">{{ $designer->email }}</td>
@@ -57,7 +69,12 @@
                                                     <a href="{{ url('admin/designers/delete', $designer->id) }}" class="text-danger font-weight-bold text-xs" data-toggle="tooltip" title="Delete Designer" onclick="return confirm('Are you sure you want to delete this Designer?')">
                                                         Delete <i class="bi bi-trash"></i>
                                                     </a>
+                                                    <a href="#" class="text-primary font-weight-bold text-xs" data-toggle="tooltip" title="Copy Designer Info" onclick="copyDesignerInfo('{{ $designer->username }}', '{{ $designer->email }}', '{{ $designer->plain_password }}')">
+                                                        Copy Info <i class="bi bi-clipboard"></i>
+                                                    </a>
                                                 </td>
+
+
                                             </tr>
                                         @empty
                                             <tr>
@@ -77,6 +94,38 @@
     </main>
 
     @include('admin.script')
+
+    <script>
+    function copyDesignerInfo(username, email, plainPassword) {
+
+        var designerInfo = `Username: ${username}\nEmail: ${email}\nPassword: ${plainPassword}`;
+
+
+        var tempInput = document.createElement("textarea");
+        tempInput.style.position = "absolute";
+        tempInput.style.left = "-1000px";
+        tempInput.value = designerInfo;
+        document.body.appendChild(tempInput);
+
+
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+
+
+        document.execCommand("copy");
+
+
+        document.body.removeChild(tempInput);
+
+
+        alert("Copied to clipboard:\n" + designerInfo);
+
+
+    }
+
+
+</script>
+
 
 </body>
 

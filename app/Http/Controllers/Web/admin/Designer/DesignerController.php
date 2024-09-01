@@ -11,7 +11,7 @@ class DesignerController extends Controller
 {
     public function index()
     {
-        $designers = Designer::all();
+        $designers = Designer::paginate(10);
         return view('admin.designer.index', compact('designers'));
     }
 
@@ -22,7 +22,7 @@ class DesignerController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'f_name' => 'required|string|max:255',
             'l_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:designers',
@@ -31,19 +31,45 @@ class DesignerController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $designer = new Designer();
-        $designer->f_name = $request->f_name;
-        $designer->l_name = $request->l_name;
-        $designer->email = $request->email;
-        $designer->password = Hash::make($request->password);
-        $designer->username = $request->username;
+        try {
+            $designer = new Designer();
+            $designer->f_name = $validatedData['f_name'];
+            $designer->l_name = $validatedData['l_name'];
+            $designer->email = $validatedData['email'];
+            $designer->password = Hash::make($validatedData['password']);
+            $designer->plain_password = $validatedData['password'];
+            $designer->username = $validatedData['username'];
 
-        if ($request->hasFile('image')) {
-            $designer->image = $request->file('image')->store('designers', 'public');
+            if ($request->hasFile('image')) {
+                $designer->image = $request->file('image')->store('designers', 'public');
+            }
+
+            $designer->save();
+
+            return redirect()->route('admin.designer.index')->with('success', 'Designer created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to create designer. Please try again.');
         }
-
-        $designer->save();
-
-        return redirect()->route('admin.designer.index')->with('success', 'Designer created successfully.');
     }
+
+    public function copy($id)
+    {
+        try {
+            $designer = Designer::findOrFail($id);
+
+
+            $newDesigner = $designer->replicate();
+            $newDesigner->username = $designer->username . '_copy';
+            $newDesigner->email = 'copy_' . $designer->email;
+            $newDesigner->password = Hash::make('defaultpassword');
+
+
+            $newDesigner->save();
+
+            return redirect()->route('admin.designer.index')->with('success', 'Designer copied successfully. Please update the username and email.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to copy designer. Please try again.');
+        }
+    }
+
 }
