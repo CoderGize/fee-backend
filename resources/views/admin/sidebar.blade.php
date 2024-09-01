@@ -43,6 +43,17 @@
                     <span class="nav-link-text ms-1">Collections</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ '/admin/categories' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin/categories') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-tags text-warning text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Categories</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link rounded-3 {{ 'admin/show_user' == request()->path() ? 'main-color' : '' }}"
                     href="{{ url('/admin/show_user') }}">

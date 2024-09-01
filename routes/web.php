@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MyFatoorahController;
 use App\Http\Controllers\Web\admin\Authcontroller;
+use App\Http\Controllers\Web\Admin\CategoriesController;
 use App\Http\Controllers\Web\admin\CollocationController;
 use App\Http\Controllers\Web\admin\Designer\DesignerController;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [CollocationController::class, 'edit'])->name('admin.collections.edit');
         Route::put('/{id}', [CollocationController::class, 'update'])->name('admin.collections.update');
         Route::delete('/{id}', [CollocationController::class, 'destroy'])->name('admin.collections.destroy');
+    });
+
+    // Category routes
+    Route::prefix('admin/categories')->group(function () {
+        Route::get('/', [CategoriesController::class, 'index'])->name('admin.categories.index');
+        Route::get('/create', [CategoriesController::class, 'create'])->name('admin.categories.create');
+        Route::post('/create', [CategoriesController::class, 'store'])->name('admin.categories.store');
+        Route::get('/{id}', [CategoriesController::class, 'edit'])->name('admin.categories.edit');
+        Route::put('/{id}', [CategoriesController::class, 'update'])->name('admin.categories.update');
+        Route::delete('/{id}', [CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
     });
 
 });

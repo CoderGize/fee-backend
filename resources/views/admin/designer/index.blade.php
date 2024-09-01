@@ -18,7 +18,7 @@
                     <div class="card mb-4">
                         <div class="card-header pb-0">
                             <h6>All Designers</h6>
-                            <a href="{{ route('admin.designer.create') }}" class="btn btn-primary">Add Designer</a>
+                            <a href="{{ route('admin.designer.create') }}" class="btn btn-primary btn-sm float-end">Add Designer</a>
                         </div>
 
                         @if (session('success'))

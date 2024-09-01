@@ -108,8 +108,10 @@ class CollocationController extends Controller
      }
 
 
-     public function destroy(Collection $collection)
+     public function destroy(Collection $id)
      {
+
+         $collection=Collection::findOrFail($id);
          if ($collection->image) {
              Storage::delete('public/' . $collection->image);
          }

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     @include('admin.css')
 </head>
+
 <body class="g-sidenav-show bg-gray-100">
     @include('admin.sidebar')
 
@@ -14,8 +16,8 @@
                 <div class="col-12">
                     <div class="card mb-4">
                         <div class="card-header pb-0">
-                            <h6>Collections</h6>
-                            <a href="{{ route('admin.collections.create') }}" class="btn btn-primary btn-sm float-end">Create New Collection</a>
+                            <h6>Categories List</h6>
+                            <a href="{{ route('admin.categories.create') }}" class="btn btn-primary btn-sm float-end">Add New Category</a>
                         </div>
                         <div class="card-body px-0 pt-0 pb-2">
                         @if (session('success'))
@@ -32,7 +34,7 @@
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
-                                        <tr>
+                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name (EN)</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name (AR)</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description (EN)</th>
@@ -42,36 +44,32 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($collections as $collection)
+                                        @foreach($categories as $category)
                                             <tr>
-                                                <td class="text-sm">{{ $collection->name_en }}</td>
-                                                <td class="text-sm">{{ $collection->name_ar }}</td>
-                                                <td class="text-sm">{{ $collection->description_en }}</td>
-                                                <td class="text-sm">{{ $collection->description_ar }}</td>
+
+                                                <td class="text-sm">{{ $category->name }}</td>
+                                                <td class="text-sm">{{ $category->name_ar }}</td>
+                                                <td class="text-sm">{{ $category->description}}</td>
+                                                <td class="text-sm">{{ $category->description_ar }}</td>
                                                 <td class="text-sm">
-                                                    @if ($collection->image)
-                                                        <img src="{{ asset($collection->image) }}" alt="Collection Image" width="50">
+                                                    @if ($category->image)
+                                                        <img src="{{ asset($category->image) }}" alt="category Image" width="50">
                                                     @else
                                                         No Image
                                                     @endif
                                                 </td>
-                                                <td class="text-sm">
-                                                    <a href="{{ route('admin.collections.edit', $collection->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                                    <form action="{{ route('admin.collections.destroy', $collection->id) }}" method="POST" style="display:inline-block;">
+                                                <td class="px-3">
+                                                    <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this collection?')">Delete</button>
+                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this category?');">Delete</button>
                                                     </form>
                                                 </td>
                                             </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="6" class="text-center text-danger font-weight-bold">No Collections Found!</td>
-                                            </tr>
-                                        @endforelse
+                                        @endforeach
                                     </tbody>
                                 </table>
-                                {{ $collections->links() }} <!-- Add pagination links if needed -->
                             </div>
                         </div>
                     </div>
@@ -84,4 +82,5 @@
 
     @include('admin.script')
 </body>
+
 </html>
