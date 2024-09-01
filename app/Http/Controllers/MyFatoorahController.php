@@ -103,25 +103,29 @@ class MyFatoorahController extends Controller {
             if ($data->InvoiceStatus == 'Paid') {
                 $payment->status = 'paid';
                 $order->status = 'paid';
-                $msg = 'Payment successful! Your order has been placed.';
+                $msg = 'Payment successful! Your order has been placed. ';
                 $queryParams['status'] = 'success';
                 $queryParams['message'] = $msg;
+                $queryParams['order_id']=$order->id;
             } else if ($data->InvoiceStatus == 'Failed') {
                 $payment->status = 'failed';
                 $order->status = 'failed';
                 $msg = 'Payment failed. Please try again.';
                 $queryParams['status'] = 'failed';
                 $queryParams['message'] = $msg;
+                $queryParams['order_id']=$order->id;
             } else if ($data->InvoiceStatus == 'Expired') {
                 $payment->status = 'expired';
                 $order->status = 'expired';
                 $msg = 'Payment expired. Please try again.';
                 $queryParams['status'] = 'expired';
                 $queryParams['message'] = $msg;
+                $queryParams['order_id']=$order->id;
             } else {
                 $msg = 'Unknown payment status.';
                 $queryParams['status'] = 'error';
                 $queryParams['message'] = $msg . ' '. $paymentId;
+                $queryParams['order_id']=$order->id;
             }
 
 
@@ -129,14 +133,14 @@ class MyFatoorahController extends Controller {
             $order->save();
 
 
-            $redirectUrl = 'https://fee.codergize.com/result?' . http_build_query($queryParams);
+            $redirectUrl = 'https://fee-website.vercel.app/payment/response?' . http_build_query($queryParams);
 
 
             return redirect()->away($redirectUrl);
 
         } catch (\Exception $e) {
 
-            $redirectUrl = 'https://fee.codergize.com/result?status=error&message=' . urlencode($e->getMessage());
+            $redirectUrl = 'https://fee-website.vercel.app/payment/response?status=error&message=' . urlencode($e->getMessage());
             return redirect()->away($redirectUrl);
         }
     }
