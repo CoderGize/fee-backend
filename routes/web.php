@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\admin\Authcontroller;
 use App\Http\Controllers\Web\Admin\CategoriesController;
 use App\Http\Controllers\Web\admin\CollocationController;
 use App\Http\Controllers\Web\admin\Designer\DesignerController;
+use App\Http\Controllers\Web\Admin\SubcategoriesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/admin', function () {
+    Route::get('/', function () {
         return view('admin.home');
     })->name('admin.home');
 
@@ -45,6 +46,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [CategoriesController::class, 'edit'])->name('admin.categories.edit');
         Route::put('/{id}', [CategoriesController::class, 'update'])->name('admin.categories.update');
         Route::delete('/{id}', [CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
+    });
+
+    // Subcategory routes
+    Route::prefix('admin/subcategories')->group(function(){
+        Route::get('/', [SubcategoriesController::class, 'index'])->name('admin.subcategories.index');
+        Route::get('/create', [SubcategoriesController::class, 'create'])->name('admin.subcategories.create');
+        Route::post('/create', [SubcategoriesController::class, 'store'])->name('admin.subcategories.store');
+        Route::get('/{id}', [SubcategoriesController::class, 'edit'])->name('admin.subcategories.edit');
+        Route::put('/{id}', [SubcategoriesController::class, 'update'])->name('admin.subcategories.update');
+        Route::delete('/{id}', [SubcategoriesController::class, 'destroy'])->name('admin.subcategories.destroy');
     });
 
 });
