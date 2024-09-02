@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DebtCard\DebtCardController;
 use App\Http\Controllers\Api\Designer\DesignerController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Product\ProductController;
+use App\Http\Controllers\Api\Web\ContentApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -131,3 +132,24 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Web Content API
+|--------------------------------------------------------------------------
+*/
+Route::get('/get-about', [ContentApiController::class, 'getAbout']);
+Route::get('/get-become-designer', [ContentApiController::class, 'getBecomeDesigner']);
+Route::get('/get-become-designer-benefit', [ContentApiController::class, 'getBecomeDesignerBenefit']);
+Route::get('/get-blog', [ContentApiController::class, 'getBlog']);
+Route::get('/get-carousel', [ContentApiController::class, 'getCarousel']);
+Route::get('/get-contact', [ContentApiController::class, 'getContactWeb']);
+Route::get('/get-designer-story', [ContentApiController::class, 'getDesignerStory']);
+Route::get('/get-download', [ContentApiController::class, 'getDownload']);
+Route::get('/get-instagrid', [ContentApiController::class, 'getInstagrid']);
+Route::get('/get-landing', [ContentApiController::class, 'getLanding']);
+Route::get('/get-show', [ContentApiController::class, 'getShow']);
+Route::get('/get-showroom', [ContentApiController::class, 'getShowroom']);
+Route::get('/get-social', [ContentApiController::class, 'getSocial']);
+Route::get('/get-testimonial', [ContentApiController::class, 'getTestimonial']);
