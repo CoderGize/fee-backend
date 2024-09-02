@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\admin\Authcontroller;
 use App\Http\Controllers\Web\Admin\CategoriesController;
 use App\Http\Controllers\Web\admin\CollocationController;
 use App\Http\Controllers\Web\admin\Designer\DesignerController;
+use App\Http\Controllers\Web\Admin\ProductController;
 use App\Http\Controllers\Web\Admin\SubcategoriesController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [SubcategoriesController::class, 'update'])->name('admin.subcategories.update');
         Route::delete('/{id}', [SubcategoriesController::class, 'destroy'])->name('admin.subcategories.destroy');
     });
+
+   // Product routes
+   Route::prefix('admin/products')->group(function () {
+    Route::get('/', [ProductController::class, 'index'])->name('admin.products.index');
+    Route::get('/create', [ProductController::class, 'create'])->name('admin.products.create');
+    Route::post('/create', [ProductController::class, 'store'])->name('admin.products.store');
+    Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::get('/{id}/show', [ProductController::class, 'show'])->name('admin.products.show');
+    Route::put('/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+
+    // Route for fetching subcategories by selected categories
+    Route::get('/subcategories', [ProductController::class, 'getSubcategoriesByCategories'])->name('admin.products.getSubcategories');
+});
+
 
 });
 

@@ -26,15 +26,17 @@ class SubcategoriesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name_en' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'name_ar' => 'nullable|string|max:255',
-            'description_en' => 'nullable|string',
+            'description' => 'nullable|string',
             'description_ar' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image',
         ]);
 
-        $subcategory = new Subcategory($request->only('name_en', 'name_ar', 'description_en', 'description_ar', 'category_id'));
+        try{
+
+        $subcategory = new Subcategory($request->only('name', 'name_ar', 'description', 'description_ar', 'category_id'));
 
         if ($request->hasFile('image')) {
 
@@ -54,6 +56,10 @@ class SubcategoriesController extends Controller
         $subcategory->save();
 
         return redirect()->route('admin.subcategories.index')->with('success', 'Subcategory created successfully!');
+
+    }catch(\Exception $e){
+        return redirect()->route('admin.subcategories.create')->with('success',$e);
+    }
     }
 
     public function edit($id)

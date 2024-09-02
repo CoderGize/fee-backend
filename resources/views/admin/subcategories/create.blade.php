@@ -26,7 +26,7 @@
                                                 Name (EN)
                                                 <img src="{{ asset('images/flags/us.png') }}" alt="EN" width="20">
                                             </label>
-                                            <input type="text" name="name_en" class="form-control" id="name_en" required>
+                                            <input type="text" name="name" class="form-control" id="name" required>
                                         </div>
                                     </div>
                                     <div class="col-12 col-sm-6">
@@ -46,7 +46,7 @@
                                                 Description (EN)
                                                 <img src="{{ asset('images/flags/us.png') }}" alt="EN" width="20">
                                             </label>
-                                            <textarea name="description_en" class="form-control" id="description_en"></textarea>
+                                            <textarea name="description" class="form-control" id="description"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-12 col-sm-6">
@@ -65,7 +65,7 @@
                                             <label for="category_id" class="form-label">Category</label>
                                             <select name="category_id" id="category_id" class="form-control" required>
                                                 @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}">{{ $category->name_en }}</option>
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>

@@ -46,6 +46,11 @@ class Product extends Model
         return $this->belongsToMany(Subcategory::class);
     }
 
+    public function collections()
+    {
+        return $this->belongsToMany(Collection::class);
+    }
+
     public function images()
     {
         return $this->hasMany(ProductImage::class);
