@@ -5,8 +5,11 @@ use App\Http\Controllers\Web\admin\Authcontroller;
 use App\Http\Controllers\Web\Admin\CategoriesController;
 use App\Http\Controllers\Web\admin\CollocationController;
 use App\Http\Controllers\Web\admin\Designer\DesignerController;
+use App\Http\Controllers\Web\Admin\OrderController;
+use App\Http\Controllers\Web\admin\PaymentController;
 use App\Http\Controllers\Web\Admin\ProductController;
 use App\Http\Controllers\Web\Admin\SubcategoriesController;
+use App\Http\Controllers\Web\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,7 +28,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/', function () {
         return view('admin.home');
     })->name('admin.home');
-
+    Route::get('/admin/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
+    Route::put('/admin/payments/update-status/{id}', [PaymentController::class, 'updateStatus'])->name('admin.payments.updateStatus');
+    Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
+    Route::put('/admin/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/users/delete/{id}', [UserController::class, 'delete'])->name('admin.users.delete');
     Route::get('/admin/designers', [DesignerController::class, 'index'])->name('admin.designer.index');
     Route::get('/admin/designers/create', [DesignerController::class, 'create'])->name('admin.designer.create');
     Route::post('/admin/designers/store', [DesignerController::class,  'store'])->name('admin.designer.store');
@@ -71,6 +79,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Route for fetching subcategories by selected categories
     Route::get('/subcategories', [ProductController::class, 'getSubcategoriesByCategories'])->name('admin.products.getSubcategories');
+
 });
 
 

@@ -75,8 +75,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link rounded-3 {{ 'admin/show_user' == request()->path() ? 'main-color' : '' }}"
-                    href="{{ url('/admin/show_user') }}">
+                <a class="nav-link rounded-3 {{ '/admin/users' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin/users') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-users text-warning text-sm opacity-10"></i>
@@ -84,7 +84,26 @@
                     <span class="nav-link-text ms-1">Users</span>
                 </a>
             </li>
-
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ '/admin/orders' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin/orders') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-shopping-cart text-warning text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Orders</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ '/admin/payments' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin/payments') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-money-bill text-warning text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Payments</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link rounded-3 {{ 'admin/show_partner' == request()->path() ? 'main-color' : '' }}"
                     href="{{ url('/admin/show_partner') }}">
