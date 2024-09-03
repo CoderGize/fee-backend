@@ -58,11 +58,11 @@
                                                         @csrf
                                                         @method('PUT')
                                                         <select name="status" class="form-select" onchange="this.form.submit()">
-                                                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                                            <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>Paid</option>
-                                                            <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
-                                                            <option value="failed" {{ $order->status == 'failed' ? 'selected' : '' }}>Failed</option>
-                                                            <option value="expired" {{ $order->status == 'expired' ? 'selected' : '' }}>Expired</option>
+                                                            <option value="pending" {{ $payment->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                                            <option value="paid" {{ $payment->status == 'paid' ? 'selected' : '' }}>Paid</option>
+                                                            <option value="delivered" {{ $payment->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                                            <option value="failed" {{ $payment->status == 'failed' ? 'selected' : '' }}>Failed</option>
+                                                            <option value="expired" {{ $payment->status == 'expired' ? 'selected' : '' }}>Expired</option>
                                                         </select>
                                                     </form>
                                                 </td>
