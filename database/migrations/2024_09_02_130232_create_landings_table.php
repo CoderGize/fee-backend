@@ -16,6 +16,10 @@ return new class extends Migration
         Schema::create('landings', function (Blueprint $table) {
             $table->id();
             $table->string('img');
+            $table->string('title_en');
+            $table->string('subtitle_en')->nullable();
+            $table->string('title_ar');
+            $table->string('subtitle_ar')->nullable();
             $table->timestamps();
         });
     }

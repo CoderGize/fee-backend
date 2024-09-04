@@ -18,7 +18,7 @@
         <ul class="navbar-nav">
 
             <div class="btn-group text-center d-flex mx-auto" role="group" aria-label="Basic example">
-                <a type="button" href="{{ url('/admin/web') }}"
+                <a type="button" href="{{ url('/admin/web/show_landing') }}"
                     class="btn {{ request()->is('admin/web*') ? 'btn-primary' : 'btn-outline-primary' }}">
                     Web Content
                 </a>
@@ -150,6 +150,28 @@
                         <i class="bi bi-telephone fs-6 text-sm opacity-10" style="color:rgb(84, 47, 194)"></i>
                     </div>
                     <span class="nav-link-text ms-1">Contact Page</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ 'admin/web/show_newsletter' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin/web/show_newsletter') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-envelope fs-6 text-sm opacity-10 " style="color: rgb(0, 0, 0)"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Subscribers</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ 'admin/web/show_designletter' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin/web/show_designletter') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-paint-bucket fs-6 text-sm opacity-10 " style="color: rgb(225, 137, 137)"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Designers Advert</span>
                 </a>
             </li>
 

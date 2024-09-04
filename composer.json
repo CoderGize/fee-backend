@@ -11,6 +11,7 @@
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
+        "maatwebsite/excel": "^3.1",
         "myfatoorah/laravel-package": "2.1",
         "sirv/sirv-rest-api-php": "^1.0"
     },

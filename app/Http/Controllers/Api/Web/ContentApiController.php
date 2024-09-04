@@ -86,7 +86,7 @@ class ContentApiController extends Controller
 
     public function getLanding()
     {
-        $landing = Landing::find(1);
+        $landing = Landing::latest()->get();
 
         return response()->json($landing);
     }

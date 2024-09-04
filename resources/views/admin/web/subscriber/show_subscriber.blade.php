@@ -18,14 +18,14 @@
                 <div class="col-12">
                     <div class="card mb-4">
                         <div class="card-header pb-0">
-                            <h6>Landing Section</h6>
+                            <h6>All Subscribers</h6>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-12">
                                 <div class="d-flex justify-content-center">
 
-                                    @include('admin.web.landing.add_landing')
+                                    @include('admin.web.subscriber.export_subscriber')
 
                                 </div>
                             </div>
@@ -39,63 +39,23 @@
                                         <tr class="text-center">
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Image or Video
-                                                <span class="text-danger fw-light fs-xs">
-                                                    *1440x1025*
-                                                </span>
+                                               Email
                                             </th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                <img src="/img/en.png" width="15px" alt="">
-                                                Title
-                                            </th>
-                                            <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                <img src="/img/en.png" width="15px" alt="">
-                                                Subtitle
-                                            </th>
-                                            <th class="text-secondary opacity-7"></th>
                                             <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($landing as $data)
-                                        @php
-                                            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
-                                            $videoExtensions = ['mp4', 'webm', 'ogg'];
-
-                                            $isImage = Str::endsWith($data->img, $imageExtensions);
-                                            $isVideo = Str::endsWith($data->img, $videoExtensions);
-                                        @endphp
+                                        @forelse ($subscriber as $data)
                                             <tr class="text-center">
-                                                <td>
-                                                    @if($isImage)
-                                                        <img src="{{ $data->img }}" class="w-25" alt="" style="max-width: 100%; height: auto;">
-                                                    @elseif($isVideo)
-                                                        <video controls class="w-25" src="{{ $data->img }}"></video>
-                                                    @else
-                                                        <p>Unsupported media type.</p>
-                                                    @endif
-                                                </td>
 
                                                 <td>
                                                     <p class="text-xs text-truncate font-weight-bold mb-0">
-                                                        {{ $data->title_en }}
+                                                        {{ $data->email }}
                                                     </p>
-                                                </td>
-
-                                                <td>
-                                                    <p class="text-xs text-truncate font-weight-bold mb-0">
-                                                        {{ $data->title_ar }}
-                                                    </p>
-                                                </td>
-
-                                                <td>
-                                                    @include('admin.web.landing.update_landing')
                                                 </td>
 
                                                 <td class="align-middle">
-                                                    <a href="{{ url('admin/web/delete_landing', $data->id) }}"
+                                                    <a href="{{ url('admin/web/delete_newsletter', $data->id) }}"
                                                         class="text-danger font-weight-bold text-xs"
                                                         data-toggle="tooltip" data-original-title="Edit skill"
                                                         onclick="return confirm('Are you sure you want to delete this skill?')">
@@ -115,7 +75,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-                                {{ $landing->render('admin.web.pagination') }}
+                                {{ $subscriber->render('admin.web.pagination') }}
                             </div>
                         </div>
 

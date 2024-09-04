@@ -16,6 +16,8 @@ use App\Http\Controllers\Web\Content\BlogWebController;
 use App\Http\Controllers\Web\Content\ContactWebController;
 use App\Http\Controllers\Web\Content\BecomeDesignerController;
 use App\Http\Controllers\Web\Content\ShowWebController;
+use App\Http\Controllers\Web\Content\DesignLetterWebController;
+use App\Http\Controllers\Web\Content\NewsLetterWebController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +50,9 @@ Route::prefix('/admin/web')->group(function ()
 {
     //{{ Landing }}
     Route::get('/show_landing', [LandingWebController::class, 'show_landing']);
-    Route::post('/update_landing', [LandingWebController::class, 'update_landing']);
+    Route::post('/add_landing', [LandingWebController::class, 'add_landing']);
+    Route::post('/update_landing/{id}', [LandingWebController::class, 'update_landing']);
+    Route::get('/delete_landing/{id}', [LandingWebController::class, 'delete_landing']);
 
     //{{ Carousel }}
     Route::get('/show_carousel', [CarouselWebController::class, 'show_carousel']);
@@ -100,6 +104,16 @@ Route::prefix('/admin/web')->group(function ()
     Route::post('/update_become_designer', [BecomeDesignerController::class, 'update_become_designer']);
     Route::post('/add_become_designer', [BecomeDesignerController::class, 'add_become_designer']);
     Route::get('/delete_become_designer/{id}', [BecomeDesignerController::class, 'delete_become_designer']);
+
+    // {{ NewsLetter }}
+    Route::get('/show_newsletter', [NewsLetterWebController::class, 'show_newsletter']);
+    Route::get('/delete_newsletter/{id}', [NewsLetterWebController::class, 'delete_newsletter']);
+    Route::post('/export-subscriber', [NewsLetterWebController::class, 'export']);
+
+    // {{ Designers Advert  }}
+    Route::get('/show_designletter', [DesignLetterWebController::class, 'show_designletter']);
+    Route::get('/delete_designletter/{id}', [DesignLetterWebController::class, 'delete_designletter']);
+    Route::post('/export-designletter', [DesignLetterWebController::class, 'export']);
 
     // {{ Social }}
     Route::get('/show_social',[SocialWebController::class,'show_social']);

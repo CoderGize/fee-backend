@@ -12,6 +12,17 @@
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
         <ul class="navbar-nav">
 
+            <div class="btn-group text-center d-flex mx-auto mt-1" role="group" aria-label="Basic example">
+                <a type="button" href="{{ url('/admin/web/show_landing') }}"
+                    class="btn {{ request()->is('admin/web*') ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Web Content
+                </a>
+                <a type="button" href="{{ url('/admin') }}"
+                    class="btn {{ !request()->is('admin/web*') ? 'btn-primary' : 'btn-outline-primary' }}">
+                    POS
+                </a>
+            </div>
+
             <li class="nav-item">
                 <a class="nav-link rounded-3 {{ 'admin' == request()->path() ? 'main-color' : '' }}"
                     href="{{ url('/admin') }}">
