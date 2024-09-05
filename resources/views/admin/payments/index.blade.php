@@ -68,7 +68,7 @@
                                                 </td>
                                                 <td class="text-sm">{{ ucfirst($payment->payment_method) }}</td>
                                                 <td class="text-sm">
-                                                    <!-- You can add additional actions here -->
+
                                                 </td>
                                             </tr>
                                         @endforeach
