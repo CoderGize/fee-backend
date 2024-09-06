@@ -7,9 +7,28 @@ use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use GuzzleHttp\Client;
 
 class CategoriesController extends Controller
 {
+    protected $client;
+    protected $token;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+
+        $response = $this->client->post('https://api.sirv.com/v2/token', [
+            'json' => [
+                'clientId' => env('SIRV_CLIENT_ID'),
+                'clientSecret' => env('SIRV_CLIENT_SECRET'),
+            ],
+        ]);
+
+        $this->token = json_decode($response->getBody()->getContents())->token;
+    }
+
     public function index()
     {
         $categories = Category::all();
@@ -39,24 +58,28 @@ class CategoriesController extends Controller
         $category->description = $request->input('description_en');
         $category->description_ar = $request->input('description_ar');
 
-        if ($request->hasFile('image')) {
+        $image = $request->file('img');
 
+        if ($image)
+        {
+            $hashed_image = Str::random(20) . '.' . $image->getClientOriginalExtension();
+            $filename = '/fee/category/' . $hashed_image;
+            $imageContent = file_get_contents($image->getPathname());
 
+            $response = $this->client->request('POST', "https://api.sirv.com/v2/files/upload?filename=" . urlencode($filename), [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type' => 'application/octet-stream',
+                ],
+                'body' => $imageContent,
+            ]);
 
-            $ProfileName = "FEE";
-            $imageFile = $request->file('image');
-            $imageUniqueName = uniqid();
-            $imageExtension = $imageFile->getClientOriginalExtension();
-            $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
-            $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
-            $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
-
-            $category->image = $imageUrl;
+            $category->image = 'https://hooray-lb.sirv.com/fee/category/' . $hashed_image;
         }
 
         $category->save();
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('admin.categories.index')->with('message', 'Category created successfully.');
         }catch(\Exception $e){
             return redirect()->route('admin.categories.index')->with('error', $e);
 
@@ -87,26 +110,28 @@ class CategoriesController extends Controller
         $category->description = $request->input('description_en');
         $category->description_ar = $request->input('description_ar');
 
-        if ($request->hasFile('image')) {
+        $image = $request->file('img');
 
-            if ($category->image) {
-                Storage::delete(str_replace('/storage', 'public', $category->image));
-            }
+        if ($image)
+        {
+            $hashed_image = Str::random(20) . '.' . $image->getClientOriginalExtension();
+            $filename = '/fee/category/' . $hashed_image;
+            $imageContent = file_get_contents($image->getPathname());
 
-            $ProfileName = "FEE";
-            $imageFile = $request->file('image');
-            $imageUniqueName = uniqid();
-            $imageExtension = $imageFile->getClientOriginalExtension();
-            $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
-            $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
-            $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
+            $response = $this->client->request('POST', "https://api.sirv.com/v2/files/upload?filename=" . urlencode($filename), [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type' => 'application/octet-stream',
+                ],
+                'body' => $imageContent,
+            ]);
 
-            $category->image = $imageUrl;
+            $category->image = 'https://hooray-lb.sirv.com/fee/category/' . $hashed_image;
         }
 
         $category->save();
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('admin.categories.index')->with('message', 'Category updated successfully.');
 
         }catch(\Exception $e){
             return redirect()->route('admin.categories.index')->with('error', $e);
@@ -121,6 +146,6 @@ class CategoriesController extends Controller
         }
         $category->delete();
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('admin.categories.index')->with('message', 'Category deleted successfully.');
     }
 }

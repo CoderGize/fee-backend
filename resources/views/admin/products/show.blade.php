@@ -80,12 +80,19 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="card">
+                        <div class="card-header pb-0">
+                            <a href="{{ route('admin.products.index') }}" class="btn btn-dark">
+                                <i class="bi bi-arrow-left"></i>
+                                Back
+                            </a>
+                            <h6>View Product</h6>
+                        </div>
                         <div class="card-body">
                             <h3>{{ $product->name }}</h3>
                             <hr>
 
                             <div class="product-images mb-3">
-                                <img id="mainImage" src="{{ $product->images->isNotEmpty() ? Storage::url($product->images->first()->image_path) : asset('path/to/default-image.jpg') }}" alt="{{ $product->name }}" class="product-image">
+                                <img id="mainImage" src="{{ $product->images->isNotEmpty() ? $product->images->first()->image_path : asset('path/to/default-image.jpg') }}" alt="{{ $product->name }}" class="product-image">
                             </div>
 
                             <div class="slider-controls">
@@ -96,7 +103,7 @@
                             <div class="product-thumbnails">
                                 @if($product->images->isNotEmpty())
                                     @foreach($product->images as $image)
-                                        <img src="{{ Storage::url($image->image_path) }}" alt="{{ $product->name }}" onclick="changeImage(this)">
+                                        <img src="{{ $image->image_path }}" alt="{{ $product->name }}" onclick="changeImage(this)">
                                     @endforeach
                                 @else
                                     <span>No images available</span>

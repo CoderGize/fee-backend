@@ -27,6 +27,6 @@ class PaymentController extends Controller
             'status' => $request->input('status'),
         ]);
 
-        return redirect()->back()->with('success', 'Payment status updated successfully.');
+        return redirect()->back()->with('message', 'Payment status updated successfully.');
     }
 }

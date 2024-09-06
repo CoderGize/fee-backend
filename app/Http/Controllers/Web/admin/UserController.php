@@ -25,7 +25,7 @@ class UserController extends Controller
 
         if ($designer) {
             $designer->delete();
-            return redirect()->back()->with('success', 'Designer deleted successfully.');
+            return redirect()->back()->with('message', 'Designer deleted successfully.');
         }
 
         return redirect()->back()->with('error', 'Designer not found or is an admin.');

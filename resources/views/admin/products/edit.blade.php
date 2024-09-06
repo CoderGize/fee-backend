@@ -16,6 +16,10 @@
                 <div class="col-12">
                     <div class="card mb-4">
                         <div class="card-header pb-0">
+                            <a href="{{ route('admin.products.index') }}" class="btn btn-dark">
+                                <i class="bi bi-arrow-left"></i>
+                                Back
+                            </a>
                             <h6>Edit Product</h6>
                         </div>
                         @if ($errors->any())
@@ -34,13 +38,19 @@
                                 <div class="row mt-4">
                                     <div class="col-12 col-sm-6">
                                         <div class="mb-3">
-                                            <label for="name" class="form-label">Product Name EN</label>
+                                            <label for="name" class="form-label">
+                                                <img src="/img/en.png" width="15px" alt="">
+                                                Product Name
+                                            </label>
                                             <input type="text" name="name" class="form-control" id="name" value="{{ $product->name }}" required>
                                         </div>
                                     </div>
                                     <div class="col-12 col-sm-6">
                                         <div class="mb-3">
-                                            <label for="name_ar" class="form-label">Product Name AR</label>
+                                            <label for="name_ar" class="form-label">
+                                                <img src="/img/ar.png" width="15px" alt="">
+                                                Product Name
+                                            </label>
                                             <input type="text" name="name_ar" class="form-control" id="name_ar" value="{{ $product->name_ar }}" required>
                                         </div>
                                     </div>
@@ -127,21 +137,26 @@
 
                                 </div>
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 col-sm-6">
                                         <div class="mb-3">
-                                            <label for="description_en" class="form-label">Description EN</label>
+                                            <label for="description_en" class="form-label">
+                                                <img src="/img/en.png" width="15px" alt="">
+                                                Description
+                                            </label>
                                             <textarea name="description" class="form-control" id="description">{{ $product->description }}</textarea>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 col-sm-6">
                                         <div class="mb-3">
-                                            <label for="description_ar" class="form-label">Description AR</label>
+                                            <label for="description_ar" class="form-label">
+                                                <img src="/img/ar.png" width="15px" alt="">
+                                                Description
+                                            </label>
                                             <textarea name="description_ar" class="form-control" id="description_ar">{{ $product->description_ar }}</textarea>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-12 col-sm-6">
                                         <div class="mb-3">
@@ -201,15 +216,18 @@
                                             <small class="form-text text-muted">You can select multiple images to upload.</small>
                                             <div id="image-previews" class="mt-3">
                                                 @foreach ($product->images as $image)
-                                                    <img src="{{ Storage::url($image->image_path) }}" alt="Product Image" style="height:100px; width:100px;" class="img-thumbnail">
+                                                    <img src="{{ $image->image_path }}" alt="Product Image" style="height:100px; width:100px;" class="img-thumbnail">
                                                 @endforeach
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-primary">Update Product</button>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" class="btn btn-dark">
+                                            <i class="bi bi-pencil"></i>
+                                            Update Product
+                                        </button>
                                     </div>
                                 </div>
                             </form>

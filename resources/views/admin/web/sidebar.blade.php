@@ -5,7 +5,7 @@
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
         <a class="" href="{{ url('/admin') }}">
-            <img src="/logo/codergize.png" width="250px" class="d-block mx-auto p-3" alt="main_logo">
+            <img src="/fee-logo/2.png" width="150px" class="d-block mx-auto p-3" alt="main_logo">
         </a>
     </div>
 
@@ -209,15 +209,14 @@
             Call
         </a>
 
-        {{-- <a href="{{ route('logout') }}" target="_blank" class="btn btn-danger btn-sm w-100 mb-3"
+        <a href="{{ route('logout') }}" target="_blank" class="btn btn-danger btn-sm w-100 mb-3"
             onclick="event.preventDefault(); if(confirm('Are you sure you want to logout?')) document.getElementById('logout-form').submit();">
             <i class="bi bi-box-arrow-left fs-6 me-1"></i>
             Logout
-        </a> --}}
-
-        {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+        </a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
             @csrf
-        </form> --}}
+        </form>
     </div>
 
 </aside>

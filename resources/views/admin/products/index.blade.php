@@ -33,63 +33,79 @@
         @include('admin.navbar') {{-- Include your admin navbar --}}
 
         <div class="container-fluid py-4">
-            {{-- Success Message --}}
-                      @if (session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <script>
-                                setTimeout(function() {
-                                    $('.alert-success').fadeOut('slow');
-                                }, 5000);
-                            </script>
-                        @endif
-
-            {{-- Error Message --}}
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            {{-- Header and Create Button --}}
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3>Products</h3>
-                <a href="{{ route('admin.products.create') }}" class="btn btn-primary">Create New Product</a>
-            </div>
 
             {{-- Products Table --}}
             <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Product List</h5>
+                <div class="card-header pb-0">
+                    <h6>All Products</h6>
                 </div>
-                <div class="card-body">
+
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center">
+
+                            <a href="{{url('/admin/products/create')}}" class="btn btn-dark mt-4">
+                                <i class="me-2 fs-6 bi bi-plus-lg"></i>
+                                Add a Product
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
                     {{-- Table Responsive --}}
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped align-middle">
-                            <thead class="table-dark">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0 text-center">
+                            <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Image</th>
-                                    <th>Discount Status</th>
-                                    <th>Discount</th>
-                                    <th>Name EN</th>
-                                    <th>Name AR</th>
-                                    <th>Style Number</th>
-                                    <th>Price</th>
-                                    <th>Sale Price</th>
-                                    <th>Tags</th>
-                                    <th>Sizes</th>
-                                    <th>Colors</th>
-                                    <th>Designer</th>
-                                    <th>Description EN</th>
-                                    <th>Description AR</th>
-                                    <th>Collection</th>
-                                    <th>Categories</th>
-                                    <th>Subcategories</th>
-                                    <th>Actions</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        #
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Image
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Discount Status
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Discount
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Name EN
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Style Number
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Price
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Sale Price
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Tags
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Sizes
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Colors
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Designer
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Collection
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Categories
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Subcategories
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -101,16 +117,15 @@
                                         {{-- Product Image --}}
                                         <td>
                                             @if($product->images->count() > 0)
-                                                <img src="{{ Storage::url($product->images->first()->image_path) }}" alt="{{ $product->name }}" class="product-image">
+                                                <img src="{{ $product->images->first()->image_path }}" alt="{{ $product->name }}" class="product-image">
                                             @else
-                                                <span>No Image</span>
+                                                <span class="text-danger">No Image</span>
                                             @endif
                                         </td>
                                         <td>{{ $product->discount_status }}</td>
                                         <td>{{ $product->discount_percentage }} %</td>
 
                                         <td>{{ $product->name }}</td>
-                                        <td>{{ $product->name_ar }}</td>
 
                                         <td>{{ $product->style_number }}</td>
 
@@ -179,9 +194,6 @@
 
                                         <td>{{ $product->designer->f_name  ?? 'N/A' }}</td>
 
-                                        <td>{{ \Illuminate\Support\Str::limit($product->description, 70) }}</td>
-                                        <td>{{ \Illuminate\Support\Str::limit($product->description_ar, 70) }}</td>
-
                                         <td>
                                             @if($product->collections->count() > 0)
                                                 @foreach($product->collections as $collection)
@@ -212,31 +224,31 @@
                                             @endif
                                         </td>
 
-                                        {{-- Actions --}}
-                                        <td class="action-buttons">
-                                            {{-- Edit Button --}}
-                                            <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-warning">
+
+                                        <td>
+                                            <a href="{{ route('admin.products.show', $product->id) }}" class="text-primary">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+
+                                        </td>
+
+                                        <td>
+                                            <a href="{{ route('admin.products.edit', $product->id) }}" class="text-success">
                                                 <i class="bi bi-pencil-square"></i> Edit
                                             </a>
 
-                                            <a href="{{ route('admin.products.show', $product->id) }}" class="btn btn-sm btn-primary">
-                                            <i class="bi bi-eye"></i> View
-                                            </a>
+                                        </td>
 
-                                            {{-- Delete Button --}}
-                                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </button>
-                                            </form>
+                                        <td>
+                                            <a href="{{ route('admin.products.destroy', $product->id) }}" class="text-danger">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
                                     {{-- No Products Found --}}
                                     <tr>
-                                        <td colspan="12" class="text-center">No products found.</td>
+                                        <td colspan="18" class="text-center text-danger font-weight-bold">No Collections Found!</td>
                                     </tr>
                                 @endforelse
                             </tbody>

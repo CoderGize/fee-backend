@@ -17,58 +17,80 @@
                     <div class="card mb-4">
                         <div class="card-header pb-0">
                             <h6>Subcategories List</h6>
-                            <a href="{{ route('admin.subcategories.create') }}" class="btn btn-primary btn-sm float-end">Add New Subcategory</a>
+
                         </div>
-                        <div class="card-body px-0 pt-0 pb-2">
-                            @if (session('success'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    {{ session('success') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-center">
+
+                                    @include('admin.subcategories.create')
+
                                 </div>
-                                <script>
-                                    setTimeout(function() {
-                                        $('.alert-success').fadeOut('slow');
-                                    }, 5000);
-                                </script>
-                            @endif
+                            </div>
+                        </div>
+
+                        <div class="card-body px-0 pt-0 pb-2">
+
                             <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
+                                <table class="table align-items-center text-center mb-0">
                                     <thead>
                                          <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name (EN)</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name (AR)</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description (EN)</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description (AR)</th>
+                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                <img src="/img/en.png" width="15px" alt="">
+                                                Name
+                                            </th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                <img src="/img/ar.png" width="15px" alt="">
+                                                Name
+                                            </th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                <img src="/img/en.png" width="15px" alt="">
+                                                Description
+                                            </th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                <img src="/img/ar.png" width="15px" alt="">
+                                                Description
+                                            </th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($subcategories as $subcategory)
+                                        @forelse($subcategories as $data)
                                             <tr>
-                                                <td class="text-sm">{{ $subcategory->name }}</td>
-                                                <td class="text-sm">{{ $subcategory->name_ar }}</td>
-                                                <td class="text-sm">{{ $subcategory->description }}</td>
-                                                <td class="text-sm">{{ $subcategory->description_ar }}</td>
-                                                <td class="text-sm">{{ $subcategory->category->name }}</td>
                                                 <td class="text-sm">
-                                                    @if ($subcategory->image)
-                                                        <img src="{{ asset($subcategory->image) }}" alt="Subcategory Image" width="50">
+                                                    @if ($data->image)
+                                                        <img src="{{ $data->image }}" alt="Subcategory Image" width="50">
                                                     @else
+                                                       <p class="text-danger">
                                                         No Image
+                                                       </p>
                                                     @endif
                                                 </td>
-                                                <td class="px-3">
-                                                    <a href="{{ route('admin.subcategories.edit', $subcategory->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                                    <form action="{{ route('admin.subcategories.destroy', $subcategory->id) }}" method="POST" style="display:inline-block;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this subcategory?');">Delete</button>
-                                                    </form>
+                                                <td class="text-sm">{{ $data->name }}</td>
+                                                <td class="text-sm">{{ $data->name_ar }}</td>
+                                                <td class="text-sm">{{ $data->description }}</td>
+                                                <td class="text-sm">{{ $data->description_ar }}</td>
+                                                <td class="text-sm">{{ $data->category->name }}</td>
+
+                                                <td>
+                                                    @include('admin.subcategories.edit')
+                                                </td>
+
+                                                <td class="text-sm ">
+                                                    <a href="{{ route('admin.subcategories.destroy', $data->id) }}" class="text-danger font-weight-bold text-xs text-center m-auto" data-toggle="tooltip" title="Delete Designer" onclick="return confirm('Are you sure you want to delete this Subcategory?')">
+                                                        Delete <i class="bi bi-trash"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        @empty
+                                            <tr>
+                                                <td colspan="6" class="text-center text-danger font-weight-bold">No Subcategory Found!</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>

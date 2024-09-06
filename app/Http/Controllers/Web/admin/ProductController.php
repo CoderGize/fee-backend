@@ -14,16 +14,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use GuzzleHttp\Client;
 
 class ProductController extends Controller
 {
 
+    protected $client;
+    protected $token;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+
+        $response = $this->client->post('https://api.sirv.com/v2/token', [
+            'json' => [
+                'clientId' => env('SIRV_CLIENT_ID'),
+                'clientSecret' => env('SIRV_CLIENT_SECRET'),
+            ],
+        ]);
+
+        $this->token = json_decode($response->getBody()->getContents())->token;
+    }
 
     public function show($id){
         $product= Product::where('id',$id)->with('designer','categories','images','subcategories')->first();
         return view('admin.products.show',compact('product'));
 
     }
+
     public function index(){
         $products = Product::with('designer','categories','images','subcategories')->paginate(10);
         return view('admin.products.index',compact('products'));
@@ -41,6 +60,7 @@ class ProductController extends Controller
 
         return view('admin.products.create',compact('designers','categories','collection'));
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -87,20 +107,48 @@ class ProductController extends Controller
             'designer_id' => $designer->id,
         ]);
 
+        // $imagesData = [];
+        // if ($request->hasFile('images')) {
+        //     foreach ($request->file('images') as $image) {
+        //         $imageName = "product_" . Carbon::now()->format('YmdHis') . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+        //         $imagePath = $image->storeAs('public/upload/files/image/', $imageName);
+
+        //         $imagesData[] = [
+        //             'image_path' => $imagePath,
+        //         ];
+        //     }
+        // }
+
+        // $product->images()->createMany($imagesData);
+
         $imagesData = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $imageName = "product_" . Carbon::now()->format('YmdHis') . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('public/upload/files/image/', $imageName);
+                // Generate a unique hashed image name
+                $hashed_image = Str::random(20) . '.' . $image->getClientOriginalExtension();
+                $filename = '/fee/product/' . $hashed_image;
 
+                // Get image content
+                $imageContent = file_get_contents($image->getPathname());
+
+                $response = $this->client->request('POST', "https://api.sirv.com/v2/files/upload?filename=" . urlencode($filename), [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->token,
+                        'Content-Type' => 'application/octet-stream',
+                    ],
+                    'body' => $imageContent,
+                ]);
+
+
+                // Store the URL of the uploaded image in $imagesData
                 $imagesData[] = [
-                    'image_path' => $imagePath,
+                    'image_path' => 'https://hooray-lb.sirv.com/fee/product/' . $hashed_image,
                 ];
             }
         }
 
+        // Assuming $product is the model that has a relationship with images, store all uploaded image URLs
         $product->images()->createMany($imagesData);
-
 
 
         if ($request->colors) {
@@ -145,7 +193,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
+        return redirect()->route('admin.products.index')->with('message', 'Product created successfully!');
 
     } catch (\Exception $e) {
         Log::error($e->getMessage());
@@ -261,34 +309,47 @@ class ProductController extends Controller
             }
         }
 
+        $imagesData = [];
 
         if ($request->hasFile('images')) {
-
-            $product->images()->delete();
-
-
-            $imagesData = [];
             foreach ($request->file('images') as $image) {
-                $imageName = "product_" . Carbon::now()->format('YmdHis') . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('public/upload/files/image/', $imageName);
+                // Generate a unique hashed image name
+                $hashed_image = Str::random(20) . '.' . $image->getClientOriginalExtension();
+                $filename = '/fee/product/' . $hashed_image;
 
+                // Get image content
+                $imageContent = file_get_contents($image->getPathname());
+
+                // Upload the image via Guzzle
+                $response = $this->client->request('POST', "https://api.sirv.com/v2/files/upload?filename=" . urlencode($filename), [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->token,
+                        'Content-Type' => 'application/octet-stream',
+                    ],
+                    'body' => $imageContent,
+                ]);
+
+                // Store the URL of the uploaded image in $imagesData
                 $imagesData[] = [
-                    'image_path' => $imagePath,
+                    'image_path' => 'https://hooray-lb.sirv.com/fee/product/' . $hashed_image,
                 ];
             }
-            $product->images()->createMany($imagesData);
         }
+
+        // Assuming the product has a relationship with images
+        $product->images()->createMany($imagesData);
+
 
         $product->save();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
+        return redirect()->route('admin.products.index')->with('message', 'Product updated successfully!');
     }
 
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        $product->images()->delete();
+        $product = Product::find($id);
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
+        return redirect()->route('admin.products.index')->with('message', 'Product deleted successfully!');
     }
 }

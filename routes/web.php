@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\admin\PaymentController;
 use App\Http\Controllers\Web\Admin\ProductController;
 use App\Http\Controllers\Web\Admin\SubcategoriesController;
 use App\Http\Controllers\Web\Admin\UserController;
+use App\Http\Controllers\Web\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Web\Content\LandingWebController;
@@ -27,6 +28,8 @@ use App\Http\Controllers\Web\Content\ShowWebController;
 use App\Http\Controllers\Web\Content\DesignLetterWebController;
 use App\Http\Controllers\Web\Content\NewsLetterWebController;
 
+use App\Http\Controllers\Web\Public\DesignerPublicController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,11 +41,18 @@ use App\Http\Controllers\Web\Content\NewsLetterWebController;
 |
 */
 
+Route::get('/designer-registration/{hashed_id}', [DesignerPublicController::class, 'verify']);
+Route::post('/submit-designer/{hashed_id}', [DesignerPublicController::class, 'submit']);
+Route::get('/done', [DesignerPublicController::class, 'done'])->name('done');
+
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/', function () {
-        return view('admin.home');
-    })->name('admin.home');
+    // Route::get('/', function () {
+    //     return true;
+    // })->name('admin.home');
+
+    Route::get('/admin', [DashboardController::class, 'dash'])->name('admin.home');
+
     Route::get('/admin/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
     Route::put('/admin/payments/update-status/{id}', [PaymentController::class, 'updateStatus'])->name('admin.payments.updateStatus');
     Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
@@ -51,15 +61,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/users/delete/{id}', [UserController::class, 'delete'])->name('admin.users.delete');
     Route::get('/admin/designers', [DesignerController::class, 'index'])->name('admin.designer.index');
     Route::get('/admin/designers/create', [DesignerController::class, 'create'])->name('admin.designer.create');
+    Route::get('/admin/designers/delete/{id}', [DesignerController::class, 'delete'])->name('admin.designer.delete');
     Route::post('/admin/designers/store', [DesignerController::class,  'store'])->name('admin.designer.store');
     Route::get('admin/designers/copy/{id}', [DesignerController::class, 'copy'])->name('admin.designer.copy');
+
     Route::prefix('admin/collections')->group(function () {
         Route::get('/', [CollocationController::class, 'index'])->name('admin.collections.index');
         Route::get('/create', [CollocationController::class, 'create'])->name('admin.collections.create');
         Route::post('/create', [CollocationController::class, 'store'])->name('admin.collections.store');
         Route::get('/{id}', [CollocationController::class, 'edit'])->name('admin.collections.edit');
-        Route::put('/{id}', [CollocationController::class, 'update'])->name('admin.collections.update');
-        Route::delete('/{id}', [CollocationController::class, 'destroy'])->name('admin.collections.destroy');
+        Route::post('/{id}', [CollocationController::class, 'update'])->name('admin.collections.update');
+        Route::get('/{id}', [CollocationController::class, 'destroy'])->name('admin.collections.destroy');
     });
 
     // Category routes
@@ -68,8 +80,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/create', [CategoriesController::class, 'create'])->name('admin.categories.create');
         Route::post('/create', [CategoriesController::class, 'store'])->name('admin.categories.store');
         Route::get('/{id}', [CategoriesController::class, 'edit'])->name('admin.categories.edit');
-        Route::put('/{id}', [CategoriesController::class, 'update'])->name('admin.categories.update');
-        Route::delete('/{id}', [CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
+        Route::post('/{id}', [CategoriesController::class, 'update'])->name('admin.categories.update');
+        Route::get('/{id}', [CategoriesController::class, 'destroy'])->name('admin.categories.destroy');
     });
 
     // Subcategory routes
@@ -78,28 +90,37 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/create', [SubcategoriesController::class, 'create'])->name('admin.subcategories.create');
         Route::post('/create', [SubcategoriesController::class, 'store'])->name('admin.subcategories.store');
         Route::get('/{id}', [SubcategoriesController::class, 'edit'])->name('admin.subcategories.edit');
-        Route::put('/{id}', [SubcategoriesController::class, 'update'])->name('admin.subcategories.update');
-        Route::delete('/{id}', [SubcategoriesController::class, 'destroy'])->name('admin.subcategories.destroy');
+        Route::post('/{id}', [SubcategoriesController::class, 'update'])->name('admin.subcategories.update');
+        Route::get('/{id}', [SubcategoriesController::class, 'destroy'])->name('admin.subcategories.destroy');
     });
 
    // Product routes
    Route::prefix('admin/products')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('admin.products.index');
-    Route::get('/create', [ProductController::class, 'create'])->name('admin.products.create');
-    Route::post('/create', [ProductController::class, 'store'])->name('admin.products.store');
-    Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::get('/{id}/show', [ProductController::class, 'show'])->name('admin.products.show');
-    Route::put('/{id}', [ProductController::class, 'update'])->name('admin.products.update');
-    Route::delete('/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+        Route::get('/', [ProductController::class, 'index'])->name('admin.products.index');
+        Route::get('/create', [ProductController::class, 'create'])->name('admin.products.create');
+        Route::post('/create', [ProductController::class, 'store'])->name('admin.products.store');
+        Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+        Route::get('/{id}/show', [ProductController::class, 'show'])->name('admin.products.show');
+        Route::put('/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+        Route::get('/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 
-    // Route for fetching subcategories by selected categories
-    Route::get('/subcategories', [ProductController::class, 'getSubcategoriesByCategories'])->name('admin.products.getSubcategories');
+        // Route for fetching subcategories by selected categories
+        Route::get('/subcategories', [ProductController::class, 'getSubcategoriesByCategories'])->name('admin.products.getSubcategories');
+    });
+
 
 });
 
-
+Route::get('/', function () {
+    if (Auth::user())
+    {
+        return redirect('/admin');
+    }
+    else
+    {
+        return redirect('/login');
+    }
 });
-
 
 // Login route
 Route::get('login', function () {
@@ -107,6 +128,7 @@ Route::get('login', function () {
 })->name('login.web');
 
 Route::post('/login', [Authcontroller::class, 'login'])->name('login');
+Route::post('/logout', [Authcontroller::class, 'logout'])->name('logout');
 Route::get('callback',[MyFatoorahController::class,'callback'])->name('myfatoorah.callback');
 
 Route::prefix('/admin/web')->group(function ()

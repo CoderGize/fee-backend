@@ -16,58 +16,57 @@ use Illuminate\Support\Facades\Validator;
 class AuthUserController extends Controller
 {
 
-        public function register(Request $request)
-        {
-            try {
-                  $validator = Validator::make($request->all(), [
-                    'f_name' => 'required|string|max:255',
-                    'l_name' => 'nullable|string|max:255',
-                    'email' => 'required|string|email|max:255|unique:users',
-                    'username' => 'required|string|max:255|unique:users',
-                    'password' => 'required|string|min:8|confirmed',
-                    'address' => 'nullable|string',
-                    'city' => 'nullable|string|max:255',
-                    'phone_number' => 'nullable|string|max:20',
-                ]);
+    public function register(Request $request)
+    {
+        try {
+                $validator = Validator::make($request->all(), [
+                'f_name' => 'required|string|max:255',
+                'l_name' => 'nullable|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'username' => 'required|string|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+                'address' => 'nullable|string',
+                'city' => 'nullable|string|max:255',
+                'phone_number' => 'nullable|string|max:20',
+            ]);
 
-                if ($validator->fails()) {
-                    return response()->json(
-                        [
-                    'status' => 'error',
-                    'message' => $validator->errors(),
-                ]
-               , 422);
-                }
-
-                $user = User::create([
-                    'f_name' => $request->f_name,
-                    'l_name' => $request->l_name,
-                    'email' => filter_var($request->email, FILTER_VALIDATE_EMAIL) ? $request->email : null,
-                    'username' => filter_var($request->username, FILTER_VALIDATE_EMAIL) ? null : $request->username,
-                    'password' => Hash::make($request->password),
-                    'address' => $request->address,
-                    'city' => $request->city,
-                    'phone_number' => $request->phone_number,
-                    'verified' => 0,
-                ]);
-
-
-                $token = $user->createToken('auth_token')->plainTextToken;
-
-                return response()->json([
-                    'access_token' => $token,
-                    'token_type' => 'Bearer',
-                    'user' => $user,
-                ], 200);
-
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => $e->getMessage(),
-                ], 500);
+            if ($validator->fails()) {
+                return response()->json(
+                    [
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ]
+            , 422);
             }
-        }
 
+            $user = User::create([
+                'f_name' => $request->f_name,
+                'l_name' => $request->l_name,
+                'email' => filter_var($request->email, FILTER_VALIDATE_EMAIL) ? $request->email : null,
+                'username' => filter_var($request->username, FILTER_VALIDATE_EMAIL) ? null : $request->username,
+                'password' => Hash::make($request->password),
+                'address' => $request->address,
+                'city' => $request->city,
+                'phone_number' => $request->phone_number,
+                'verified' => 0,
+            ]);
+
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     public function login(Request $request)
     {

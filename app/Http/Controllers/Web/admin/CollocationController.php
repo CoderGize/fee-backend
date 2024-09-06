@@ -7,9 +7,27 @@ use App\Models\Collection;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use GuzzleHttp\Client;
 
 class CollocationController extends Controller
 {
+    protected $client;
+    protected $token;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+
+        $response = $this->client->post('https://api.sirv.com/v2/token', [
+            'json' => [
+                'clientId' => env('SIRV_CLIENT_ID'),
+                'clientSecret' => env('SIRV_CLIENT_SECRET'),
+            ],
+        ]);
+
+        $this->token = json_decode($response->getBody()->getContents())->token;
+    }
 
      public function index()
      {
@@ -40,25 +58,29 @@ class CollocationController extends Controller
          $collection->description_en = $request->input('description_en');
          $collection->description_ar = $request->input('description_ar');
 
-         if ($request->hasFile('image')) {
+         $image = $request->file('img');
 
+        if ($image)
+        {
+            $hashed_image = Str::random(20) . '.' . $image->getClientOriginalExtension();
+            $filename = '/fee/collection/' . $hashed_image;
+            $imageContent = file_get_contents($image->getPathname());
 
+            $response = $this->client->request('POST', "https://api.sirv.com/v2/files/upload?filename=" . urlencode($filename), [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type' => 'application/octet-stream',
+                ],
+                'body' => $imageContent,
+            ]);
 
-            $ProfileName = "FEE";
-            $imageFile = $request->file('image');
-            $imageUniqueName = uniqid();
-            $imageExtension = $imageFile->getClientOriginalExtension();
-            $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
-            $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
-            $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
-
-            $collection->image = $imageUrl;
+            $collection->image = 'https://hooray-lb.sirv.com/fee/collection/' . $hashed_image;
         }
 
 
          $collection->save();
 
-         return redirect()->route('admin.collections.index')->with('success', 'Collection created successfully.');
+         return redirect()->route('admin.collections.index')->with('message', 'Collection created successfully.');
      }
 
 
@@ -84,40 +106,45 @@ class CollocationController extends Controller
          $collection->description_en = $request->input('description_en');
          $collection->description_ar = $request->input('description_ar');
 
-         if ($request->hasFile('image')) {
+         $image = $request->file('img');
 
-            if ($collection->image) {
-                Storage::delete(str_replace('/storage', 'public', $collection->image));
-            }
+         if ($image)
+         {
+             $hashed_image = Str::random(20) . '.' . $image->getClientOriginalExtension();
+             $filename = '/fee/collection/' . $hashed_image;
+             $imageContent = file_get_contents($image->getPathname());
 
-            $ProfileName = "FEE";
-            $imageFile = $request->file('image');
-            $imageUniqueName = uniqid();
-            $imageExtension = $imageFile->getClientOriginalExtension();
-            $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
-            $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
-            $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
+             $response = $this->client->request('POST', "https://api.sirv.com/v2/files/upload?filename=" . urlencode($filename), [
+                 'headers' => [
+                     'Authorization' => 'Bearer ' . $this->token,
+                     'Content-Type' => 'application/octet-stream',
+                 ],
+                 'body' => $imageContent,
+             ]);
 
-            $collection->image = $imageUrl;
-        }
+             $collection->image = 'https://hooray-lb.sirv.com/fee/collection/' . $hashed_image;
+         }
 
 
          $collection->save();
 
-         return redirect()->route('admin.collections.index')->with('success', 'Collection updated successfully.');
+         return redirect()->route('admin.collections.index')->with('message', 'Collection updated successfully.');
      }
 
 
-     public function destroy(Collection $id)
+     public function destroy($id)
      {
+        try
+        {
+            $collection=Collection::findOrFail($id);
 
-         $collection=Collection::findOrFail($id);
-         if ($collection->image) {
-             Storage::delete('public/' . $collection->image);
-         }
+            $collection->delete();
 
-         $collection->delete();
-
-         return redirect()->route('admin.collections.index')->with('success', 'Collection deleted successfully.');
+            return redirect()->back()->with('message', 'Collection deleted successfully.');
+        }
+        catch (\Exception $e)
+        {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
      }
 }

@@ -15,54 +15,70 @@
                     <div class="card mb-4">
                         <div class="card-header pb-0">
                             <h6>Collections</h6>
-                            <a href="{{ route('admin.collections.create') }}" class="btn btn-primary btn-sm float-end">Create New Collection</a>
                         </div>
-                        <div class="card-body px-0 pt-0 pb-2">
-                        @if (session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-center">
+
+                                    @include('admin.collections.create')
+
+                                </div>
                             </div>
-                            <script>
-                                setTimeout(function() {
-                                    $('.alert-success').fadeOut('slow');
-                                }, 5000);
-                            </script>
-                        @endif
+                        </div>
+
+
+                        <div class="card-body px-0 pt-0 pb-2">
                             <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
+                                <table class="table align-items-center mb-0 text-center">
                                     <thead>
                                         <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name (EN)</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name (AR)</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description (EN)</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description (AR)</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                <img src="/img/en.png" width="15px" alt="">
+                                                Name
+                                            </th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                <img src="/img/ar.png" width="15px" alt="">
+                                                Name (AR)
+                                            </th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                <img src="/img/en.png" width="15px" alt="">
+                                                Description (EN)
+                                            </th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                <img src="/img/ar.png" width="15px" alt="">
+                                                Description (AR)
+                                            </th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($collections as $collection)
+                                        @forelse ($collections as $data)
                                             <tr>
-                                                <td class="text-sm">{{ $collection->name_en }}</td>
-                                                <td class="text-sm">{{ $collection->name_ar }}</td>
-                                                <td class="text-sm">{{ $collection->description_en }}</td>
-                                                <td class="text-sm">{{ $collection->description_ar }}</td>
                                                 <td class="text-sm">
-                                                    @if ($collection->image)
-                                                        <img src="{{ asset($collection->image) }}" alt="Collection Image" width="50">
+                                                    @if ($data->image)
+                                                        <img src="{{ $data->image }}" alt="Collection Image" width="50">
                                                     @else
-                                                        No Image
+                                                        <p class="text-danger">No Image</p>
                                                     @endif
                                                 </td>
+                                                <td class="text-sm">{{ $data->name_en }}</td>
+                                                <td class="text-sm">{{ $data->name_ar }}</td>
+                                                <td class="text-sm">{{ $data->description_en }}</td>
+                                                <td class="text-sm">{{ $data->description_ar }}</td>
+
                                                 <td class="text-sm">
-                                                    <a href="{{ route('admin.collections.edit', $collection->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                                    <form action="{{ route('admin.collections.destroy', $collection->id) }}" method="POST" style="display:inline-block;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this collection?')">Delete</button>
-                                                    </form>
+                                                    @include('admin.collections.edit')
                                                 </td>
+
+                                                <td class="text-sm ">
+                                                    <a href="{{ route('admin.collections.destroy', $data->id) }}" class="text-danger font-weight-bold text-xs text-center m-auto" data-toggle="tooltip" title="Delete Designer" onclick="return confirm('Are you sure you want to delete this Designer?')">
+                                                        Delete <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </td>
+
                                             </tr>
                                         @empty
                                             <tr>

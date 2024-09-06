@@ -1,88 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
+<button type="button" class="btn btn-dark mt-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <i class="me-2 fs-6 bi bi-plus-lg"></i>
+    Add a Category
+</button>
 
-<head>
-    @include('admin.css')
-</head>
-
-<body class="g-sidenav-show bg-gray-100">
-
-    @include('admin.sidebar')
-    <main class="main-content position-relative border-radius-lg">
-        <!-- Navbar -->
-        @include('admin.navbar')
-        <!-- End Navbar -->
-        <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card mb-4">
-                        <div class="card-header pb-0">
-                            <h6>Create New Category</h6>
-                        </div>
-                        <div class="card-body px-auto pt-0 pb-2">
-                        <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="row mt-4">
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="name_en" class="form-label">
-                                                Name (EN)
-                                                <img src="{{ asset('images/flags/us.png') }}" alt="EN" width="20">
-                                            </label>
-                                            <input type="text" name="name_en" class="form-control" id="name_en" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="name_ar" class="form-label">
-                                                Name (AR)
-                                                <img src="{{ asset('images/flags/ar.png') }}" alt="AR" width="20">
-                                            </label>
-                                            <input type="text" name="name_ar" class="form-control" id="name_ar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="description_en" class="form-label">
-                                                Description (EN)
-                                                <img src="{{ asset('images/flags/us.png') }}" alt="EN" width="20">
-                                            </label>
-                                            <textarea name="description_en" class="form-control" id="description_en"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="description_ar" class="form-label">
-                                                Description (AR)
-                                                <img src="{{ asset('images/flags/ar.png') }}" alt="AR" width="20">
-                                            </label>
-                                            <textarea name="description_ar" class="form-control" id="description_ar"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="image" class="form-label">Image</label>
-                                            <input type="file" name="image" class="form-control" id="image">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-center">
-                                    <button type="submit" class="btn mt-3 btn-primary">Create Category</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Add New Category
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            @include('admin.footer')
+            <form action="{{ url('/admin/categories/create') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            Image
+                        </label>
+                        <input type="file" name="img" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/en.png" width="15px" alt="">
+                            Name
+                        </label>
+                        <input type="text" name="name_en" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/ar.png" width="15px" alt="">
+                            Name
+                        </label>
+                        <input type="text" name="name_ar" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/en.png" width="15px" alt="">
+                            Description
+                        </label>
+                        <textarea type="text" name="description_en" class="form-control"cols="30" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/ar.png" width="15px" alt="">
+                            Description
+                        </label>
+                        <textarea type="text" name="description_ar" class="form-control"cols="30" rows="3" required></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-dark">Add
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+
+                </div>
+            </form>
         </div>
-    </main>
-
-    @include('admin.script')
-</body>
-
-</html>
+    </div>
+</div>

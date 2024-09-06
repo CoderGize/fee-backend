@@ -27,6 +27,6 @@ class OrderController extends Controller
             'status' => $request->input('status'),
         ]);
 
-        return redirect()->back()->with('success', 'Order status updated successfully.');
+        return redirect()->back()->with('message', 'Order status updated successfully.');
     }
 }

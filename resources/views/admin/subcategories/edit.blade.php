@@ -1,107 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
+<a href="" class="text-success font-weight-bold text-xs" data-bs-toggle="modal"
+    data-bs-target="#exampleModaledit{{ $data->id }}">
+    Edit
+    <i class=" bi bi-pencil"></i>
+</a>
 
-<head>
-    @include('admin.css')
-</head>
-
-<body class="g-sidenav-show bg-gray-100">
-    @include('admin.sidebar')
-
-    <main class="main-content position-relative border-radius-lg">
-        @include('admin.navbar')
-
-        <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card mb-4">
-                        <div class="card-header pb-0">
-                            <h6>Edit Subcategory</h6>
-                        </div>
-                        <div class="card-body px-auto pt-0 pb-2">
-                            <form action="{{ route('admin.subcategories.update', $subcategory->id) }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                @method('PUT')
-                                <div class="row mt-4">
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="name_en" class="form-label">
-                                                Name (EN)
-                                                <img src="{{ asset('images/flags/us.png') }}" alt="EN" width="20">
-                                            </label>
-                                            <input type="text" name="name_en" class="form-control" id="name_en" value="{{ old('name', $subcategory->name) }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="name_ar" class="form-label">
-                                                Name (AR)
-                                                <img src="{{ asset('images/flags/ar.png') }}" alt="AR" width="20">
-                                            </label>
-                                            <input type="text" name="name_ar" class="form-control" id="name_ar" value="{{ old('name_ar', $subcategory->name_ar) }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="description_en" class="form-label">
-                                                Description (EN)
-                                                <img src="{{ asset('images/flags/us.png') }}" alt="EN" width="20">
-                                            </label>
-                                            <textarea name="description_en" class="form-control" id="description_en">{{ old('description', $subcategory->description) }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="description_ar" class="form-label">
-                                                Description (AR)
-                                                <img src="{{ asset('images/flags/ar.png') }}" alt="AR" width="20">
-                                            </label>
-                                            <textarea name="description_ar" class="form-control" id="description_ar">{{ old('description_ar', $subcategory->description_ar) }}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="category_id" class="form-label">
-                                                Category
-                                            </label>
-                                            <select name="category_id" class="form-control" id="category_id" required>
-                                                @foreach($categories as $category)
-                                                    <option value="{{ $category->id }}" {{ $subcategory->category_id == $category->id ? 'selected' : '' }}>
-                                                        {{ $category->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="image" class="form-label">Image</label>
-                                            <input type="file" name="image" class="form-control" id="image">
-                                            @if ($subcategory->image)
-                                                <div class="mt-3">
-                                                    <img src="{{ asset($subcategory->image) }}" alt="Current Image" width="100">
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-center">
-                                    <button type="submit" class="btn mt-3 btn-warning">Update Subcategory</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+<div class="modal fade" id="exampleModaledit{{ $data->id }}" tabindex="-1"
+    aria-labelledby="exampleModaledit{{ $data->id }}Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModaledit{{ $data->id }}Label">
+                    Edit Subcategory
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            @include('admin.footer')
+            <form action="{{ route('admin.subcategories.update', $data->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            Image
+                        </label>
+                        <input type="file" name="image" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">
+                            Category
+                        </label>
+                        <select name="category_id" class="form-control" id="category_id" required>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ $data->category_id == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/en.png" width="15px" alt="">
+                            Name
+                        </label>
+                        <input type="text" name="name" class="form-control" value="{{ $data->name }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/ar.png" width="15px" alt="">
+                            Name
+                        </label>
+                        <input type="text" name="name_ar" class="form-control" value="{{ $data->name_ar }}"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/en.png" width="15px" alt="">
+                            Description
+                        </label>
+                        <input type="text" name="description" class="form-control" value="{{ $data->description }}"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/ar.png" width="15px" alt="">
+                            Description
+                        </label>
+                        <input type="text" name="description_ar" class="form-control" value="{{ $data->description_ar }}"
+                            required>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-dark">Add
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+
+                </div>
+            </form>
         </div>
-    </main>
-
-    @include('admin.script')
-</body>
-
-</html>
+    </div>
+</div>
