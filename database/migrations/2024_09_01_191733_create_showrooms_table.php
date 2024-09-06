@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('showrooms', function (Blueprint $table) {
             $table->id();
+            $table->string('product_id');
             $table->string('title_en');
             $table->string('title_ar');
             $table->string('img');

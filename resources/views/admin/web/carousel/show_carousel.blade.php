@@ -68,7 +68,7 @@
                                                 <img src="/img/ar.png" width="15px" alt="">
                                                 Title
                                             </th>
-                                            <th class="text-secondary opacity-7"></th>
+                                            {{-- <th class="text-secondary opacity-7"></th> --}}
                                             <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
@@ -91,9 +91,9 @@
                                                     </p>
                                                 </td>
 
-                                                <td>
+                                                {{-- <td>
                                                     @include('admin.web.carousel.update_carousel')
-                                                </td>
+                                                </td> --}}
 
                                                 <td class="align-middle">
                                                     <a href="{{ url('admin/web/delete_carousel', $data->id) }}"

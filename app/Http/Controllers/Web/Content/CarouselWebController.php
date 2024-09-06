@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 use App\Models\Carousel;
 use App\Models\Show;
+use App\Models\Product;
 
 class CarouselWebController extends Controller
 {
@@ -34,7 +35,8 @@ class CarouselWebController extends Controller
 
         $show = Show::find(1);
 
-        return view('admin.web.carousel.show_carousel', compact('carousel', 'show'));
+        $product = Product::all();
+        return view('admin.web.carousel.show_carousel', compact('carousel', 'show', 'product'));
     }
 
     public function add_carousel(Request $request)
@@ -42,6 +44,8 @@ class CarouselWebController extends Controller
         try
         {
             $carousel = new Carousel;
+
+            $product = Product::find($request->product_1_id);
 
             $image = $request->file('img');
 
@@ -62,8 +66,9 @@ class CarouselWebController extends Controller
                 $carousel->img = 'https://hooray-lb.sirv.com/fee/carousel/' . $hashed_image;
             }
 
-            $carousel->title_en = $request->title_en;
-            $carousel->title_ar = $request->title_ar;
+            $carousel->product_id = $product->id;
+            $carousel->title_en = $product->name;
+            $carousel->title_ar = $product->name_ar;
 
             $carousel->save();
 
@@ -81,6 +86,8 @@ class CarouselWebController extends Controller
         {
             $carousel = Carousel::find($id);
 
+            $product = Product::find($request->product_1_id);
+
             $image = $request->file('img');
 
             if ($image)
@@ -100,8 +107,9 @@ class CarouselWebController extends Controller
                 $carousel->img = 'https://hooray-lb.sirv.com/fee/carousel/' . $hashed_image;
             }
 
-            $carousel->title_en = $request->title_en;
-            $carousel->title_ar = $request->title_ar;
+            $carousel->product_id = $product->id;
+            $carousel->title_en = $product->name;
+            $carousel->title_ar = $product->name_ar;
 
             $carousel->save();
 

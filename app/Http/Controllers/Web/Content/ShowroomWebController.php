@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 use App\Models\Showroom;
 use App\Models\Show;
+use App\Models\Product;
 
 class ShowroomWebController extends Controller
 {
@@ -36,10 +37,13 @@ class ShowroomWebController extends Controller
 
         $show = Show::find(1);
 
+        $product = Product::all();
+
         return view('admin.web.showroom.show_showroom', compact(
             'showroom',
             'showroom_count',
-            'show'
+            'show',
+            'product'
         ));
     }
 
@@ -48,6 +52,8 @@ class ShowroomWebController extends Controller
         try
         {
             $showroom = new Showroom;
+
+            $product = Product::find($request->product_1_id);
 
             $image = $request->file('img');
 
@@ -68,8 +74,9 @@ class ShowroomWebController extends Controller
                 $showroom->img = 'https://hooray-lb.sirv.com/fee/showroom/' . $hashed_image;
             }
 
-            $showroom->title_en = $request->title_en;
-            $showroom->title_ar = $request->title_ar;
+            $showroom->product_id = $product->id;
+            $showroom->title_en = $product->name;
+            $showroom->title_ar = $product->name_ar;
 
             $showroom->save();
 
