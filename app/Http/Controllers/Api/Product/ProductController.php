@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Collection;
 use App\Models\Designer;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -323,7 +324,7 @@ class ProductController extends Controller
             try {
                 $perPage = $request->per_page ? $request->per_page : 10;
 
-                $query = Product::with('images', 'designer', 'categories');
+                $query = Product::with('images', 'designer', 'categories', 'collections');
 
 
                 if ($request->has('categories')) {
@@ -670,4 +671,92 @@ class ProductController extends Controller
                 ], 500);
             }
         }
+
+        public function collections(Request $request)
+        {
+            try {
+                $perPage = $request->per_page ? $request->per_page : 10;
+
+
+                $query = Collection::with(['products.images', 'products.designer', 'products.categories']);
+
+
+                if ($request->has('categories')) {
+                    $query->whereHas('categories', function ($q) use ($request) {
+                        $q->whereIn('categories.id', $request->categories);
+                    });
+                }
+
+
+                $collections = $query->paginate($perPage);
+
+
+                foreach ($collections as $collection) {
+                    $productsQuery = $collection->products();
+
+
+                    if ($request->has('categories')) {
+                        $productsQuery->whereHas('categories', function ($q) use ($request) {
+                            $q->whereIn('categories.id', $request->categories);
+                        });
+                    }
+
+
+                    if ($request->has('price_min') && $request->has('price_max')) {
+                        $productsQuery->whereBetween('price', [$request->price_min, $request->price_max]);
+                    }
+
+
+                    if ($request->has('brands')) {
+                        $productsQuery->whereHas('designer', function ($q) use ($request) {
+                            $q->whereIn('designers.id', $request->brands);
+                        });
+                    }
+
+                    if ($request->has('tags')) {
+                        $productsQuery->whereJsonContains('tags', $request->tags);
+                    }
+
+
+                    if ($request->has('sort_by')) {
+                        switch ($request->sort_by) {
+                            case 'date_desc':
+                                $productsQuery->orderBy('created_at', 'desc');
+                                break;
+                            case 'date_asc':
+                                $productsQuery->orderBy('created_at', 'asc');
+                                break;
+                            case 'price_desc':
+                                $productsQuery->orderBy('price', 'desc');
+                                break;
+                            case 'price_asc':
+                                $productsQuery->orderBy('price', 'asc');
+                                break;
+                            default:
+                                $productsQuery->orderBy('id', 'asc');
+                                break;
+                        }
+                    }
+
+
+                    $collection->filtered_products = $productsQuery->get();
+                }
+
+
+                $response = [
+                    'status' => 'success',
+                    'data' => $collections,
+                ];
+
+                return response()->json($response, 200);
+
+            } catch (\Exception $e) {
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
 }

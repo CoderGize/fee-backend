@@ -77,6 +77,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('user')->group(function (){
         Route::get('/designer/products', [ProductController::class, 'getDesignerProductsForUsers']);
+        Route::get('collections', [ProductController::class, 'collections']);
         Route::get('products', [ProductController::class, 'index']);
         Route::delete('logout', [AuthUserController::class, 'logout']);
         Route::post('update-profile', [AuthUserController::class, 'updateProfile']);
