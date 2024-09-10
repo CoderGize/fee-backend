@@ -34,7 +34,7 @@ class DesignLetterWebController extends Controller
                     'message' => 'This email is already Subscribed',
                 ];
 
-                return response()->json($response);
+                return response()->json($response,401);
             }
             else
             {
@@ -45,7 +45,7 @@ class DesignLetterWebController extends Controller
                     'message' => 'Successfully Subscribed',
                 ];
 
-                return response()->json($response);
+                return response()->json($response,200);
             }
         }
         catch  (\Exception $e)
@@ -55,7 +55,7 @@ class DesignLetterWebController extends Controller
                 'message' => $e->getMessage(),
             ];
 
-            return response()->json($response);
+            return response()->json($response,500);
         }
     }
 

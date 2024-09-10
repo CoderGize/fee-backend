@@ -45,7 +45,7 @@ class NewsLetterWebController extends Controller
                     'message' => 'Successfully Subscribed',
                 ];
 
-                return response()->json($response);
+                return response()->json($response,200);
             }
         }
         catch  (\Exception $e)
@@ -55,7 +55,7 @@ class NewsLetterWebController extends Controller
                 'message' => $e->getMessage(),
             ];
 
-            return response()->json($response);
+            return response()->json($response,500);
         }
     }
 
