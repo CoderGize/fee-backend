@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Shipment;
+use App\Models\Wishlist;
 use MyFatoorah\Library\PaymentMyfatoorahApiV2;
 
 class MyFatoorahController extends Controller {
@@ -94,6 +96,9 @@ class MyFatoorahController extends Controller {
             $order = Order::with('user')->findOrFail($data->CustomerReference);
             $shipment=Shipment::where('order_id',$order->order)->first();
 
+            $cart=Cart::where('user_id',$order->user_id)->first();
+            $wishlist=Wishlist::where("user_id",$order->user_id)->first();
+
 
             if (!$payment && $order) {
                 throw new \Exception("Payment and order not found ");
@@ -106,6 +111,8 @@ class MyFatoorahController extends Controller {
                 $payment->status = 'paid';
                 $order->status = 'paid';
                 $shipment->paid_status = 'paid';
+                $cart->delete();
+                $wishlist->delete();
                 $msg = 'Payment successful! Your order has been placed. ';
                 $queryParams['status'] = 'success';
                 $queryParams['message'] = $msg;
