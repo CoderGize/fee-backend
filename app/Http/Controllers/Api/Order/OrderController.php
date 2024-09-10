@@ -69,6 +69,7 @@ class OrderController extends Controller
         $order->total_price = $totalPrice - $discountAmount;
         $order->save();
 
+
         // Create Payment
         $payment = new Payment();
         $payment->user_id = $user->id;
@@ -83,7 +84,7 @@ class OrderController extends Controller
         $shipment = new Shipment();
         $shipment->order_id = $order->id;
         $shipment->tracking_number = $tracking_number;
-        $shipment->carrier = $request->shipment['carrier'];
+        $shipment->carrier = "Default";
         $shipment->name = $request->shipment['name'];
         $shipment->street_address = $request->shipment['street_address'];
         $shipment->city = $request->shipment['city'];
