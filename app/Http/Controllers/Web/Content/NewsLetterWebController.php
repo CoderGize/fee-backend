@@ -34,7 +34,7 @@ class NewsLetterWebController extends Controller
                     'message' => 'This email is already Subscribed',
                 ];
 
-                return response()->json($response);
+                return response()->json($response,401);
             }
             else
             {

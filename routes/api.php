@@ -37,6 +37,9 @@ Route::prefix('user')->group(function () {
 
     Route::get('/designer', [DesignerController::class, 'search']);
     Route::get('/new/products', [ProductController::class, 'new_user']);
+    Route::get('collections', [ProductController::class, 'collections']);
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getSubcategories']);
 
 });
 
@@ -77,7 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('user')->group(function (){
         Route::get('/designer/products', [ProductController::class, 'getDesignerProductsForUsers']);
-        Route::get('collections', [ProductController::class, 'collections']);
+
         Route::get('products', [ProductController::class, 'index']);
         Route::delete('logout', [AuthUserController::class, 'logout']);
         Route::post('update-profile', [AuthUserController::class, 'updateProfile']);
@@ -107,8 +110,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('wishlists',[WishlistController::class,"getWishlist"]);
 
 
-        Route::get('/categories', [CategoryController::class, 'index']);
-        Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getSubcategories']);
+
 
 
 
