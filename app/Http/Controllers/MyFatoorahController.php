@@ -97,7 +97,7 @@ class MyFatoorahController extends Controller {
             $shipment=Shipment::where('order_id',$order->order)->first();
 
             $cart=Cart::where('user_id',$order->user_id)->first();
-            $wishlist=Wishlist::where("user_id",$order->user_id)->first();
+
 
 
             if (!$payment && $order) {
@@ -112,7 +112,7 @@ class MyFatoorahController extends Controller {
                 $order->status = 'paid';
                 $shipment->paid_status = 'paid';
                 $cart->delete();
-                $wishlist->delete();
+
                 $msg = 'Payment successful! Your order has been placed. ';
                 $queryParams['status'] = 'success';
                 $queryParams['message'] = $msg;
