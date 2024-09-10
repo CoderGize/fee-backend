@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Shipment;
 use MyFatoorah\Library\PaymentMyfatoorahApiV2;
 
 class MyFatoorahController extends Controller {
@@ -91,6 +92,7 @@ class MyFatoorahController extends Controller {
 
             $payment = Payment::where('order_id', $data->CustomerReference)->first();
             $order = Order::with('user')->findOrFail($data->CustomerReference);
+            $shipment=Shipment::where('order_id',$order->order)->first();
 
 
             if (!$payment && $order) {
@@ -103,6 +105,7 @@ class MyFatoorahController extends Controller {
             if ($data->InvoiceStatus == 'Paid') {
                 $payment->status = 'paid';
                 $order->status = 'paid';
+                $shipment->paid_status = 'paid';
                 $msg = 'Payment successful! Your order has been placed. ';
                 $queryParams['status'] = 'success';
                 $queryParams['message'] = $msg;
@@ -110,6 +113,7 @@ class MyFatoorahController extends Controller {
             } else if ($data->InvoiceStatus == 'Failed') {
                 $payment->status = 'failed';
                 $order->status = 'failed';
+                $shipment->paid_status = 'failed';
                 $msg = 'Payment failed. Please try again.';
                 $queryParams['status'] = 'failed';
                 $queryParams['message'] = $msg;
@@ -117,6 +121,7 @@ class MyFatoorahController extends Controller {
             } else if ($data->InvoiceStatus == 'Expired') {
                 $payment->status = 'expired';
                 $order->status = 'expired';
+                $shipment->paid_status = 'expired';
                 $msg = 'Payment expired. Please try again.';
                 $queryParams['status'] = 'expired';
                 $queryParams['message'] = $msg;
@@ -131,6 +136,7 @@ class MyFatoorahController extends Controller {
 
             $payment->save();
             $order->save();
+            $shipment->save();
 
 
             $redirectUrl = 'https://fee-website.vercel.app/payment/response?' . http_build_query($queryParams);
