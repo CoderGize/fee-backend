@@ -13,6 +13,13 @@ class Shipment extends Model
         'order_id',
         'tracking_number',
         'carrier',
+        'name',
+        'street_address',
+        'street_address_line_2',
+        'city',
+        'state_or_province',
+        'paid_status',
+        'delivery_status',
     ];
 
     public function order()
