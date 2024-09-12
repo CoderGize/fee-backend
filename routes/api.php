@@ -41,6 +41,8 @@ Route::prefix('user')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getSubcategories']);
 
+    Route::get('/validate-promo-code', [OrderController::class, 'validatePromoCode']);
+
 });
 
 Route::prefix('designer')->group(function () {

@@ -127,7 +127,61 @@ class OrderController extends Controller
         }
     }
 
+    public function validatePromoCode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'promo_code' => 'required|string',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ], 422);
+        }
+
+
+        $coupon = Coupon::where('promo_code', $request->promo_code)->first();
+
+        if (!$coupon) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Promo code does not exist.',
+            ], 404);
+        }
+
+
+        if ($coupon->usage_limit <= 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Promo code has reached its usage limit.',
+            ], 400);
+        }
+
+        if (!$coupon->active_status) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Promo code is not active.',
+            ], 400);
+        }
+
+        if ($coupon->expires_at && $coupon->expires_at->isPast()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Promo code has expired.',
+            ], 400);
+        }
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Promo code is valid.',
+            'discount_type' => $coupon->discount_type,
+            'discount_value' => $coupon->discount_value,
+            'min_order_amount' => $coupon->min_order_amount,
+            'expires_at' => $coupon->expires_at ? $coupon->expires_at->format('Y-m-d H:i:s') : null,
+        ], 200);
+    }
 
     public function updateOrder(Request $request, $id)
     {
