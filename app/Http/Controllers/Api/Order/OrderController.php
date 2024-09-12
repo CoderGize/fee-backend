@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MyFatoorahController;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
@@ -15,95 +16,117 @@ use Illuminate\Support\Facades\Validator;
 class OrderController extends Controller
 {
     public function createOrder(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'products' => 'required|array',
-            'products.*.product_id' => 'required|exists:products,id',
-            'products.*.quantity' => 'required|integer|min:1',
-            'shipment' => 'nullable|array',
-            'shipment.tracking_number' => 'nullable|string',
-            'shipment.carrier' => 'nullable|string',
-            'shipment.name' => 'nullable|string',
-            'shipment.street_address' => 'nullable|string',
-            'shipment.city' => 'nullable|string',
-            'shipment.state_or_province' => 'nullable|string',
-            'shipment.paid_status' => 'nullable|string',
-            'shipment.delivery_status' => 'nullable|string',
-        ]);
-
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'products'=>$request->products ,
-                'message' => $validator->errors(),
-            ], 422);
-        }
-
-        $user = Auth::user();
-
-        // Create Order
-        $order = new Order();
-        $order->user_id = $user->id;
-        $order->total_price = 0;
-        $order->status = 'pending';
-        $order->save();
-
-        $totalPrice = 0;
-
-        foreach ($request->products as $item) {
-            $product = Product::find($item['product_id']);
-            $quantity = $item['quantity'];
-            $price = $product->price;
-
-            $order->products()->attach($product->id, [
-                'quantity' => $quantity,
-                'price' => $price,
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'products' => 'required|array',
+                'products.*.product_id' => 'required|exists:products,id',
+                'products.*.quantity' => 'required|integer|min:1',
+                'shipment' => 'nullable|array',
+                'shipment.tracking_number' => 'nullable|string',
+                'shipment.carrier' => 'nullable|string',
+                'shipment.name' => 'nullable|string',
+                'shipment.street_address' => 'nullable|string',
+                'shipment.city' => 'nullable|string',
+                'shipment.state_or_province' => 'nullable|string',
+                'promo_code' => 'nullable|string'
             ]);
 
-            $totalPrice += $quantity * $price;
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'products' => $request->products,
+                    'message' => $validator->errors(),
+                ], 422);
+            }
+
+            $user = Auth::user();
+
+            // Create Order
+            $order = new Order();
+            $order->user_id = $user->id;
+            $order->total_price = 0;
+            $order->status = 'pending';
+            $order->save();
+
+            $totalPrice = 0;
+
+
+            foreach ($request->products as $item) {
+                $product = Product::find($item['product_id']);
+                $quantity = $item['quantity'];
+                $price = $product->price;
+
+                $order->products()->attach($product->id, [
+                    'quantity' => $quantity,
+                    'price' => $price,
+                ]);
+
+                $totalPrice += $quantity * $price;
+            }
+
+            $discountAmount = 0;
+
+
+            if ($request->has('promo_code') && $request->promo_code) {
+                $coupon = Coupon::where('promo_code', $request->promo_code)->active()->first();
+
+                if ($coupon && $coupon->isValid()) {
+                    if ($totalPrice >= $coupon->min_order_amount) {
+                        if ($coupon->discount_type == 'percentage') {
+                            $discountAmount = ($coupon->discount_value / 100) * $totalPrice;
+                        } else if ($coupon->discount_type == 'fixed') {
+                            $discountAmount = $coupon->discount_value;
+                        }
+                        $coupon->usage_limit -= 1;
+                        $coupon->count += 1;
+                        $coupon->save();
+                    }
+                } else {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Invalid or expired promo code.',
+                    ], 400);
+                }
+            }
+
+
+            $order->total_price = $totalPrice - $discountAmount;
+            $order->discount = $discountAmount;
+            $order->save();
+
+
+            $payment = new Payment();
+            $payment->user_id = $user->id;
+            $payment->order_id = $order->id;
+            $payment->amount = $order->total_price;
+            $payment->status = 'pending';
+            $payment->payment_method = $request->payment_method;
+            $payment->save();
+
+
+            $tracking_number = "FEE_tracking_number" . $order->id;
+            $shipment = new Shipment();
+            $shipment->order_id = $order->id;
+            $shipment->tracking_number = $tracking_number;
+            $shipment->carrier = "Default";
+            $shipment->name = $request->shipment['name'];
+            $shipment->street_address = $request->shipment['street_address'];
+            $shipment->city = $request->shipment['city'];
+            $shipment->state_or_province = $request->shipment['state_or_province'];
+            $shipment->save();
+
+            $myFatoorahController = new MyFatoorahController();
+            return $myFatoorahController->index($order->id);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        $discountAmount = ($order->discount / 100) * $totalPrice;
-        $order->total_price = $totalPrice - $discountAmount;
-        $order->save();
-
-
-        // Create Payment
-        $payment = new Payment();
-        $payment->user_id = $user->id;
-        $payment->order_id = $order->id;
-        $payment->amount = $order->total_price;
-        $payment->status = 'pending';
-        $payment->payment_method = $request->payment_method;
-        $payment->save();
-
-        $tracking_number="FEE_tracking_number".$order->id;
-
-        $shipment = new Shipment();
-        $shipment->order_id = $order->id;
-        $shipment->tracking_number = $tracking_number;
-        $shipment->carrier = "Default";
-        $shipment->name = $request->shipment['name'];
-        $shipment->street_address = $request->shipment['street_address'];
-        $shipment->city = $request->shipment['city'];
-        $shipment->state_or_province = $request->shipment['state_or_province'];
-        $shipment->paid_status = $request->shipment['paid_status'];
-        $shipment->delivery_status = $request->shipment['delivery_status'];
-        $shipment->save();
-
-
-        $myFatoorahController = new MyFatoorahController();
-        return $myFatoorahController->index($order->id);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage(),
-        ], 500);
     }
-}
+
 
 
     public function updateOrder(Request $request, $id)

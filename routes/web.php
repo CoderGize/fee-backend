@@ -4,6 +4,7 @@ use App\Http\Controllers\MyFatoorahController;
 use App\Http\Controllers\Web\admin\Authcontroller;
 use App\Http\Controllers\Web\Admin\CategoriesController;
 use App\Http\Controllers\Web\admin\CollocationController;
+use App\Http\Controllers\Web\admin\CouponController;
 use App\Http\Controllers\Web\admin\Designer\DesignerController;
 use App\Http\Controllers\Web\Admin\OrderController;
 use App\Http\Controllers\Web\admin\PaymentController;
@@ -52,6 +53,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // })->name('admin.home');
 
     Route::get('/admin', [DashboardController::class, 'dash'])->name('admin.home');
+    Route::get('/admin/coupons',[CouponController::class,'index'])->name('admin.coupons.index');
+    Route::get('/admin/coupons/create',[CouponController::class,'create'])->name('admin.coupon.create');
+    Route::post('/admin/coupons/store',[CouponController::class,'store'])->name('admin.coupon.store');
+    Route::get('/admin/coupons/edit/{id}',[CouponController::class,'edit'])->name('admin.coupon.edit');
+    Route::post('/admin/coupons/update/{id}',[CouponController::class,'update'])->name('admin.coupon.update');
+    Route::get('/admin/coupons/delete/{id}',[CouponController::class,'delete'])->name('admin.coupon.delete');
 
     Route::get('/admin/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
     Route::put('/admin/payments/update-status/{id}', [PaymentController::class, 'updateStatus'])->name('admin.payments.updateStatus');
