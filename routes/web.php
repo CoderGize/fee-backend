@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/coupons/store',[CouponController::class,'store'])->name('admin.coupon.store');
     Route::get('/admin/coupons/edit/{id}',[CouponController::class,'edit'])->name('admin.coupon.edit');
     Route::post('/admin/coupons/update/{id}',[CouponController::class,'update'])->name('admin.coupon.update');
-    Route::get('/admin/coupons/delete/{id}',[CouponController::class,'delete'])->name('admin.coupon.delete');
+    Route::get('/admin/coupons/delete/{id}',[CouponController::class,'destroy'])->name('admin.coupon.delete');
 
     Route::get('/admin/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
     Route::put('/admin/payments/update-status/{id}', [PaymentController::class, 'updateStatus'])->name('admin.payments.updateStatus');
