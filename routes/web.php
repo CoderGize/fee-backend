@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\MyFatoorahController;
 use App\Http\Controllers\Web\admin\Authcontroller;
-use App\Http\Controllers\Web\Admin\CategoriesController;
+use App\Http\Controllers\Web\admin\CategoriesController;
 use App\Http\Controllers\Web\admin\CollocationController;
 use App\Http\Controllers\Web\admin\CouponController;
 use App\Http\Controllers\Web\admin\Designer\DesignerController;
