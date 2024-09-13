@@ -6,12 +6,12 @@ use App\Http\Controllers\Web\admin\CategoriesController;
 use App\Http\Controllers\Web\admin\CollocationController;
 use App\Http\Controllers\Web\admin\CouponController;
 use App\Http\Controllers\Web\admin\Designer\DesignerController;
-use App\Http\Controllers\Web\Admin\OrderController;
+use App\Http\Controllers\Web\admin\OrderController;
 use App\Http\Controllers\Web\admin\PaymentController;
-use App\Http\Controllers\Web\Admin\ProductController;
-use App\Http\Controllers\Web\Admin\SubcategoriesController;
-use App\Http\Controllers\Web\Admin\UserController;
-use App\Http\Controllers\Web\Admin\DashboardController;
+use App\Http\Controllers\Web\admin\ProductController;
+use App\Http\Controllers\Web\admin\SubcategoriesController;
+use App\Http\Controllers\Web\admin\UserController;
+use App\Http\Controllers\Web\admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Web\Content\LandingWebController;
