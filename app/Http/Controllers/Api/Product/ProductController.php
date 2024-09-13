@@ -687,6 +687,10 @@ class ProductController extends Controller
                     });
                 }
 
+                if ($request->has('collection')) {
+                    $query->where('name_en', 'like', '%' . $request->collection . '%');
+                }
+
 
                 $collections = $query->paginate($perPage);
 
