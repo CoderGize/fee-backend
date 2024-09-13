@@ -37,8 +37,8 @@ Route::prefix('user')->group(function () {
 
     Route::get('/designer', [DesignerController::class, 'search']);
     Route::get('/new/products', [ProductController::class, 'new_user']);
-    Route::post('/collections/new', [ProductController::class, 'collections_new']);
-    Route::post('/categories/new', [CategoryController::class, 'index_new']);
+    Route::get('/collections', [ProductController::class, 'collections_new']);
+    Route::get('/categories', [CategoryController::class, 'index_new']);
     Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getSubcategories']);
 
     Route::post('/validate-promo-code', [OrderController::class, 'validatePromoCode']);
@@ -91,7 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('delete-profile-image', [AuthUserController::class, 'deleteImage']);
         Route::get('/get_user', [AuthUserController::class, 'getUserWithData']);
 
-        Route::post('/categories', [CategoryController::class, 'index']);
+        Route::get('/categories', [CategoryController::class, 'index']);
 
 
         //product
