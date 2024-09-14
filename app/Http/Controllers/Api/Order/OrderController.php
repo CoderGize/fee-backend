@@ -40,6 +40,7 @@ class OrderController extends Controller
             $order->user_id = $user->id;
             $order->total_price = 0;
             $order->status = 'pending';
+
             $order->save();
 
             $totalPrice = 0;
@@ -47,9 +48,17 @@ class OrderController extends Controller
 
             foreach ($request->products as $item) {
                 $product = Product::find($item['product_id']);
+
+                if ($product->quantity >= 5) {
+
+                    if($product->quantity === 0){
+                        return response()->json(['message' => 'Product out of stock.'], 400);
+                    }
+
+                }
                 $quantity = $item['quantity'];
                 $price = $product->price;
-
+                $order->quantity =$quantity;
                 $order->products()->attach($product->id, [
                     'quantity' => $quantity,
                     'price' => $price,

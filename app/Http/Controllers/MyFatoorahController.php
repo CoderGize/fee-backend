@@ -119,6 +119,16 @@ class MyFatoorahController extends Controller {
                     $cart->delete();
                 }
 
+                foreach ($order->products as $product) {
+                    $orderedQuantity = $product->pivot->quantity;
+                    if ($product->quantity >= $orderedQuantity) {
+                        $product->quantity -= $orderedQuantity;
+                        $product->save();
+                    } else {
+                        return response()->json(['message' => 'Product out of stock.'], 400);
+                    }
+                }
+
 
                 $msg = 'Payment successful! Your order has been placed. ';
                 $queryParams['status'] = 'success';
