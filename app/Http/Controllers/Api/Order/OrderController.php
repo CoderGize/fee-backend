@@ -22,13 +22,6 @@ class OrderController extends Controller
                 'products' => 'required|array',
                 'products.*.product_id' => 'required|exists:products,id',
                 'products.*.quantity' => 'required|integer|min:1',
-                'shipment' => 'nullable|array',
-                'shipment.tracking_number' => 'nullable|string',
-                'shipment.carrier' => 'nullable|string',
-                'shipment.name' => 'nullable|string',
-                'shipment.street_address' => 'nullable|string',
-                'shipment.city' => 'nullable|string',
-                'shipment.state_or_province' => 'nullable|string',
                 'promo_code' => 'nullable|string'
             ]);
 
@@ -104,17 +97,19 @@ class OrderController extends Controller
             $payment->payment_method = $request->payment_method;
             $payment->save();
 
+            $shipment = null;
+            if ($request->name || $request->street_address || $request->city || $request->state_or_province) {
+                $shipment = new Shipment();
+                $shipment->order_id = $order->id;
+                $shipment->tracking_number = "FEE_tracking_number" . $order->id;
+                $shipment->carrier = $request->carrier ?? 'Default'; // Use a default carrier if none is provided
+                $shipment->name = $request->name ?? '';
+                $shipment->street_address = $request->street_address ?? '';
+                $shipment->city = $request->city ?? '';
+                $shipment->state_or_province = $request->state_or_province ?? '';
+                $shipment->save();
+            }
 
-            $tracking_number = "FEE_tracking_number" . $order->id;
-            $shipment = new Shipment();
-            $shipment->order_id = $order->id;
-            $shipment->tracking_number = $tracking_number;
-            $shipment->carrier = "Default";
-            $shipment->name = $request->shipment['name'];
-            $shipment->street_address = $request->shipment['street_address'];
-            $shipment->city = $request->shipment['city'];
-            $shipment->state_or_province = $request->shipment['state_or_province'];
-            $shipment->save();
 
             $myFatoorahController = new MyFatoorahController();
             return $myFatoorahController->index($order->id);
