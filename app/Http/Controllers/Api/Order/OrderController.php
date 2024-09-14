@@ -59,6 +59,7 @@ class OrderController extends Controller
                 $quantity = $item['quantity'];
                 $price = $product->price;
                 $order->quantity =$quantity;
+                $order->payment_method=$request->payment_method;
                 $order->products()->attach($product->id, [
                     'quantity' => $quantity,
                     'price' => $price,
@@ -98,13 +99,7 @@ class OrderController extends Controller
             $order->save();
 
 
-            $payment = new Payment();
-            $payment->user_id = $user->id;
-            $payment->order_id = $order->id;
-            $payment->amount = $order->total_price;
-            $payment->status = 'pending';
-            $payment->payment_method = $request->payment_method;
-            $payment->save();
+
 
             $shipment = null;
             if ($request->name || $request->street_address || $request->city || $request->state_or_province) {
@@ -118,10 +113,24 @@ class OrderController extends Controller
                 $shipment->state_or_province = $request->state_or_province ?? '';
                 $shipment->save();
             }
+           if($request->payment_method==="credit_card"){
+
+                $payment = new Payment();
+                $payment->user_id = $user->id;
+                $payment->order_id = $order->id;
+                $payment->amount = $order->total_price;
+                $payment->status = 'pending';
+                $payment->payment_method = $request->payment_method;
+                $payment->save();
+                $myFatoorahController = new MyFatoorahController();
+                return $myFatoorahController->index($order->id);
+
+           } else{
+
+           }
 
 
-            $myFatoorahController = new MyFatoorahController();
-            return $myFatoorahController->index($order->id);
+
 
         } catch (\Exception $e) {
             return response()->json([

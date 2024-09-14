@@ -110,6 +110,7 @@ class MyFatoorahController extends Controller {
             if ($data->InvoiceStatus == 'Paid') {
                 $payment->status = 'paid';
                 $order->status = 'paid';
+                $order->on_cash=0;
 
                 if($shipment){
                     $shipment->paid_status = 'paid';
