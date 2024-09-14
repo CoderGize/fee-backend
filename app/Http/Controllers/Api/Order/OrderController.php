@@ -127,6 +127,16 @@ class OrderController extends Controller
 
            } else{
 
+            $order->on_cash=1;
+            $order->save();
+            return response()->json(
+                [
+                    'status'=>'success',
+                    'message'=>'on cash payment order processed',
+                    'data'=>$order
+                ],200
+            );
+
            }
 
 
