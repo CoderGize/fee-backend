@@ -40,6 +40,9 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order ID</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Price</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Method</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ON Cash</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Products</th>
                                             <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th> -->
@@ -51,6 +54,9 @@
                                                 <td class="text-sm">{{ $order->id }}</td>
                                                 <td class="text-sm">{{ $order->user->f_name }} {{ $order->user->l_name }}</td>
                                                 <td class="text-sm">{{ $order->total_price }}</td>
+                                                <td class="text-sm">{{ $order->quantity }}</td>
+                                                <td class="text-sm">{{ $order->payment_method }}</td>
+                                                <td class="text-sm">{{ $order->on_cash ? "YES" : "NO" }}</td>
                                                 <td class="text-sm">
                                                     <form action="{{ url('admin/orders/update-status', $order->id) }}" method="POST">
                                                         @csrf
