@@ -73,7 +73,7 @@ class CategoryController extends Controller
             $perPage = $request->per_page ? $request->per_page : 10;
 
 
-            $categories = Category::with(['subcategories', 'products.images', 'products.collections', 'products.designer'])->paginate($perPage);
+            $categories = Category::with(['subcategories'])->paginate($perPage);
 
 
 

@@ -209,7 +209,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="images" class="form-label">Product Images</label>
                                             <input type="file" name="images[]" class="form-control" id="images" multiple onchange="previewImages()">
@@ -219,6 +219,12 @@
                                                     <img src="{{ $image->image_path }}" alt="Product Image" style="height:100px; width:100px;" class="img-thumbnail">
                                                 @endforeach
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="quantity" class="form-label">Quantity</label>
+                                            <input type="number" name="quantity" class="form-control" id="quantity" step="0.01" value="{{ $product->quantity }}">
                                         </div>
                                     </div>
                                 </div>

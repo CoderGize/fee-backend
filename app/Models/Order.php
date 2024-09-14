@@ -14,6 +14,9 @@ class Order extends Model
         'total_price',
         'discount',
         'status',
+        'quantity',
+        'payment_method',
+        'on_cash',
     ];
 
     public function user()

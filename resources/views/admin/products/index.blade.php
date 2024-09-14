@@ -83,6 +83,9 @@
                                         Sale Price
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Quantity
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Tags
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -139,6 +142,7 @@
                                                 <span class="text-muted">N/A</span>
                                             @endif
                                         </td>
+                                        <td>{{ $product->quantity }}</td>
                                         <td>
 
                                         @if($product->tags)

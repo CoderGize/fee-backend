@@ -23,6 +23,8 @@ class Product extends Model
         'description_ar',
         'designer_id',
         'subcategory_id',
+        'quantity',
+        'sizes',
     ];
 
     protected $casts = [

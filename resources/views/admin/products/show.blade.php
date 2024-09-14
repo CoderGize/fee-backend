@@ -131,6 +131,10 @@
                                 <span>{{ $product->style_number }}</span>
                             </div>
                             <div class="detail-item">
+                                <span class="detail-label">Quantity:</span>
+                                <span>{{ $product->quantity }}</span>
+                            </div>
+                            <div class="detail-item">
                                 <span class="detail-label">Designer:</span>
                                 <span>{{ $product->designer->f_name ?? 'N/A' }}</span>
                             </div>

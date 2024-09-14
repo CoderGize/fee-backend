@@ -188,12 +188,18 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="images" class="form-label">Product Images</label>
                                             <input type="file" name="images[]" class="form-control" id="images" multiple onchange="previewImages()">
                                             <small class="form-text text-muted">You can select multiple images to upload.</small>
                                             <div id="image-previews" class="mt-3"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="quantity" class="form-label">Quantity</label>
+                                            <input type="number" name="quantity" class="form-control" id="quantity" step="0.01">
                                         </div>
                                     </div>
                                 </div>

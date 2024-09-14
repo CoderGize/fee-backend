@@ -75,7 +75,8 @@ class ProductController extends Controller
             'description_ar' => 'nullable|string',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'discount_status' => 'nullable|boolean',
-            'designer_id'=>""
+            'designer_id'=>"",
+            'quantity'=>'required|numeric'
         ]);
 
         try {
@@ -105,6 +106,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'description_ar' => $request->description_ar,
             'designer_id' => $designer->id,
+            'quantity' => $request->quantity
         ]);
 
         // $imagesData = [];
@@ -242,6 +244,7 @@ class ProductController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'discount_status' => 'nullable|boolean',
+            'quantity' => 'nullable|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -255,6 +258,7 @@ class ProductController extends Controller
         $product->sale_price = $request->sale_price;
         $product->discount_percentage = $request->discount_percentage;
         $product->discount_status = $request->discount_status ? true : false;
+        $product->quantity = $request->quantity;
         if ($request->colors) {
             $colors = [];
             foreach ($request->colors as $color) {
