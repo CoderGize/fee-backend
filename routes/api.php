@@ -35,10 +35,12 @@ Route::prefix('user')->group(function () {
     Route::get('/designer/new/products', [ProductController::class, 'getDesignerProductsForUsers_new']);
     Route::get('products/{id}', [ProductController::class, 'getProductById']);
 
+
+
     Route::get('/designer', [DesignerController::class, 'search']);
     Route::get('/new/products', [ProductController::class, 'new_user']);
     Route::get('/collections', [ProductController::class, 'collections_new']);
-    Route::get('/categories', [CategoryController::class, 'index_new']);
+    Route::get('/categories/new', [CategoryController::class, 'index_new']);
     Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getSubcategories']);
 
     Route::post('/validate-promo-code', [OrderController::class, 'validatePromoCode']);
@@ -51,6 +53,7 @@ Route::prefix('designer')->group(function () {
     Route::post('verify-otp', [AuthDesignerController::class, 'verifyOtp']);
     Route::post('forgot-password', [AuthDesignerController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthDesignerController::class, 'resetPassword']);
+
 });
 
 
@@ -78,6 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::delete('delete-profile-image', [AuthDesignerController::class, 'deleteImage']);
         Route::get('/get_user', [AuthDesignerController::class, 'getUserWithData']);
+        Route::get('/index', [DesignerController::class, 'index']);
     });
 
     Route::prefix('user')->group(function (){

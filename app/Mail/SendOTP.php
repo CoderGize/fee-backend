@@ -36,7 +36,7 @@ class SendOTP extends Mailable
     public function envelope()
     {
         return new Envelope(
-            from: new Address('natnaeln4d@gmail','Natnael'),
+            from: new Address('FEE@gmail','FEE'),
             subject: 'Verification OTP from Fee',
         );
     }
@@ -49,7 +49,7 @@ class SendOTP extends Mailable
     public function content()
     {
         return new Content(
-            view: 'email.send',
+            view: 'emails.send',
             with: [
                 'data' => $this->data
             ]

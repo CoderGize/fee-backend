@@ -85,7 +85,10 @@ class AuthDesignerController extends Controller
                , 422);
                 }
 
-            $designer = Designer::where('email', $request->email)->first();
+            $designer = Designer::where(function ($query) use ($request) {
+                $query->where('email', $request->login)
+                      ->orWhere('username', $request->login);
+                  })->first();
 
             if (!$designer || !Hash::check($request->password, $designer->password)) {
                 return response()->json([
