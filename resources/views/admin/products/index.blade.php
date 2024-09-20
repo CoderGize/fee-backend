@@ -97,6 +97,14 @@
                                             <option value="desc" {{ request()->sort == 'desc' ? 'selected' : '' }}>Order By DESC</option>
                                         </select>
                                     </div>
+                                    <div class="col-md-3 mb-3">
+                                        <select name="per_page" class="form-control form-control-lg">
+                                            <option value="10" {{ request()->per_page == 10 ? 'selected' : '' }}>Show 10</option>
+                                            <option value="25" {{ request()->per_page == 25 ? 'selected' : '' }}>Show 25</option>
+                                            <option value="50" {{ request()->per_page == 50 ? 'selected' : '' }}>Show 50</option>
+                                            <option value="100" {{ request()->per_page == 100 ? 'selected' : '' }}>Show 100</option>
+                                        </select>
+                                    </div>
 
                                     <div class="col-md-3 mt-3">
                                         <button type="submit" class="btn btn-primary btn-lg">Search</button>
