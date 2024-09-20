@@ -173,7 +173,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h6>Sales Line Chart</h6>
-                            <!-- Form to select start and end dates -->
+
                             <form method="GET" action="{{ route('admin.home') }}">
                                 <div class="row col-lg-6">
                                     <div class="col">
