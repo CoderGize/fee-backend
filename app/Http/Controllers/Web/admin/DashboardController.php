@@ -21,13 +21,13 @@ class DashboardController extends Controller
         $totalOrders = Order::count();
 
 
-        $totalRevenue = Order::sum('total_price');
+        $totalRevenue = Order::where('status','paid')->sum('total_price');
 
 
         $totalProducts = Product::count();
 
 
-        $totalSoldProducts = Order::sum('quantity');
+        $totalSoldProducts = Order::where('status','paid')->sum('quantity');
         $salesRate = ($totalProducts > 0) ? ($totalSoldProducts / $totalProducts) * 100 : 0;
 
 
@@ -51,7 +51,7 @@ class DashboardController extends Controller
          $endDate = $request->input('end_date', Carbon::now());
 
 
-         $salesData = Order::select(
+         $salesData = Order::where('status','paid')->select(
                  DB::raw('DATE(created_at) as date'),
                  DB::raw('SUM(total_price) as total_sales')
              )
