@@ -74,7 +74,7 @@ class OrderController extends Controller
             if ($request->has('promo_code') && $request->promo_code) {
                 $coupon = Coupon::where('promo_code', $request->promo_code)->active()->first();
 
-                if ($coupon && $coupon->isValid()) {
+                if ($coupon && $coupon->usage_limit > 0) {
                     if ($totalPrice >= $coupon->min_order_amount) {
                         if ($coupon->discount_type == 'percentage') {
                             $discountAmount = ($coupon->discount_value / 100) * $totalPrice;

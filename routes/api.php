@@ -82,6 +82,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('delete-profile-image', [AuthDesignerController::class, 'deleteImage']);
         Route::get('/get_user', [AuthDesignerController::class, 'getUserWithData']);
         Route::get('/index', [DesignerController::class, 'index']);
+        Route::get( '/orders', [DesignerController::class, 'orders']);
     });
 
     Route::prefix('user')->group(function (){

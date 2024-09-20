@@ -20,8 +20,10 @@ class DesignerController extends Controller
             $designerId = Auth::id();
 
 
-            $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : Carbon::now()->subDays(7);
-            $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : Carbon::now();
+
+            $last = $request->input('last', 7);
+            $endDate = Carbon::now();
+            $startDate = Carbon::now()->subDays($last);
 
 
             $totalOrders = Order::whereHas('products', function ($query) use ($designerId) {
