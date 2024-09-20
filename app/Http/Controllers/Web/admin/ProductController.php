@@ -43,9 +43,50 @@ class ProductController extends Controller
 
     }
 
-    public function index(){
-        $products = Product::with('designer','categories','images','subcategories')->paginate(10);
-        return view('admin.products.index',compact('products'));
+    public function index(Request $request){
+        $query = Product::with('designer', 'categories', 'images', 'subcategories');
+
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->search . '%')
+                  ->orWhere('style_number', 'LIKE', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->has('designer') && $request->designer != '') {
+            $query->whereHas('designer', function($q) use ($request) {
+                $q->where('f_name', 'LIKE', '%' . $request->designer . '%');
+            });
+        }
+
+
+        if ($request->has('category') && $request->category != '') {
+            $query->whereHas('categories', function($q) use ($request) {
+                $q->where('name', $request->category);
+            });
+        }
+
+
+        if ($request->has('min_price') && $request->min_price != '' && $request->has('max_price') && $request->max_price != '') {
+            $query->whereBetween('price', [(float)$request->min_price, (float)$request->max_price]);
+        }
+
+
+        if ($request->has('tags') && is_array($request->tags)) {
+            $query->whereJsonContains('tags', $request->tags);
+        }
+
+        if ($request->has('sort')){
+
+            $query->orderBy('id',$request->sort);
+        }
+
+        $per_page=$request->has('per_page') ? $request->per_page : 10;
+        $products = $query->paginate($per_page);
+        $categories = Category::all();
+
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create(){

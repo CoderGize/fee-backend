@@ -52,7 +52,64 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body px-0 pt-0 pb-2">
+
+                <div class="row mb-4">
+                    <div class="col-12 text-center">
+                        <button id="toggleFilters" class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
+                            Show Filters
+                        </button>
+                    </div>
+                </div>
+
+                <div class="collapse" id="filterForm" style="display: none;">
+                    <div class="row mb-4 px-auto pt-auto">
+                        <div class="col-12">
+                            <form action="{{ url('/admin/products') }}" method="GET">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <input type="text" name="search" class="form-control form-control-lg" placeholder="Search by name or style number" value="{{ request()->search }}">
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <input type="text" name="designer" class="form-control form-control-lg" placeholder="Filter by designer" value="{{ request()->designer }}">
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <select name="category" class="form-control form-control-lg">
+                                            <option value="">All Categories</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{ $category->name }}" {{ request()->category == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <input type="number" name="min_price" class="form-control form-control-lg" placeholder="Min Price" value="{{ request()->min_price }}">
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <input type="number" name="max_price" class="form-control form-control-lg" placeholder="Max Price" value="{{ request()->max_price }}">
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <select name="sort" class="form-control form-control-lg">
+                                            <option value="asc" {{ request()->sort == 'asc' ? 'selected' : '' }}>Order By ASC</option>
+                                            <option value="desc" {{ request()->sort == 'desc' ? 'selected' : '' }}>Order By DESC</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 mt-3">
+                                        <button type="submit" class="btn btn-primary btn-lg">Search</button>
+                                        <a href="{{ url('/admin/products') }}" class="btn btn-secondary btn-lg">Clear</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card-body px-2 pt-2 pb-2">
                     {{-- Table Responsive --}}
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0 text-center">
@@ -269,7 +326,28 @@
 
         @include('admin.footer') {{-- Include your admin footer --}}
     </main>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterButton = document.getElementById('toggleFilters');
+        const filterForm = document.getElementById('filterForm');
 
+        // Initial state
+        let isVisible = false;
+
+        filterButton.addEventListener('click', function () {
+            isVisible = !isVisible;
+
+            if (isVisible) {
+                filterForm.style.display = 'block';
+                filterButton.textContent = 'Hide Filters';
+            } else {
+                filterForm.style.display = 'none';
+                filterButton.textContent = 'Show Filters';
+            }
+        });
+    });
+</script>
     @include('admin.script') {{-- Include your admin scripts --}}
+
 </body>
 </html>
