@@ -8,10 +8,24 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
 
-        $designers = User::where('is_admin', false)->paginate(10);
+
+        $query = User::where('is_admin', false);
+
+
+        if ($search) {
+            $query->where('f_name', 'like', '%' . $search . '%')
+                ->orWhere('l_name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%')
+                ->orWhere('username', 'like', '%' . $search . '%');
+        }
+
+
+        $designers = $query->paginate($perPage);
 
 
         return view('admin.user.index', compact('designers'));

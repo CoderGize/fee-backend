@@ -42,8 +42,31 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mt-1 px-4">
+                            <div class="col-12 d-flex justify-content-end align-items-center">
+                                <form method="GET" action="{{ route('admin.designer.index') }}" class="d-flex">
+                                    <div class="form-group mb-0 me-2">
+                                        <input type="text" name="search" class="form-control" placeholder="Search designers..."
+                                            value="{{ request()->search }}">
+                                    </div>
 
-                        <div class="card-body px-0 pt-0 pb-2">
+                                    <div class="form-group mb-0 me-2">
+                                        <select name="per_page" class="form-control">
+                                            <option value="10" {{ request()->per_page == 10 ? 'selected' : '' }}>10 per page</option>
+                                            <option value="25" {{ request()->per_page == 25 ? 'selected' : '' }}>25 per page</option>
+                                            <option value="50" {{ request()->per_page == 50 ? 'selected' : '' }}>50 per page</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">Apply</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                        <div class="card-body px-4 pt-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center text-center mb-0">
                                     <thead>

@@ -31,9 +31,25 @@ class DesignerController extends Controller
         $this->token = json_decode($response->getBody()->getContents())->token;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $designers = Designer::paginate(10);
+
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
+
+
+        $query = Designer::query();
+
+
+        if ($search) {
+            $query->where('f_name', 'like', '%' . $search . '%')
+                ->orWhere('l_name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%')
+                ->orWhere('username', 'like', '%' . $search . '%');
+        }
+
+
+        $designers = $query->paginate($perPage);
 
         return view('admin.designer.index', compact('designers'));
     }

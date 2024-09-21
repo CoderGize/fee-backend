@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="collapse" id="filterForm" style="display: none;">
-                    <div class="row mb-4 px-auto pt-auto">
+                    <div class="row mb-4 px-4 pt-auto">
                         <div class="col-12">
                             <form action="{{ url('/admin/products') }}" method="GET">
                                 <div class="row">
