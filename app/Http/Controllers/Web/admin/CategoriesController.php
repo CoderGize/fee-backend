@@ -29,9 +29,23 @@ class CategoriesController extends Controller
         $this->token = json_decode($response->getBody()->getContents())->token;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
+
+        $query = Category::query();
+
+
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('description', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%')
+                ->orWhere('username', 'like', '%' . $search . '%');
+        }
+
+
+        $categories = $query->paginate($perPage);
         return view('admin.categories.index', compact('categories'));
     }
 

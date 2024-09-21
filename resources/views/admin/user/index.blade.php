@@ -36,7 +36,7 @@
                             <div class="col-12 d-flex justify-content-end align-items-center">
                                 <form method="GET" action="{{ route('admin.users') }}" class="d-flex">
                                     <div class="form-group mb-0 me-2">
-                                        <input type="text" name="search" class="form-control" placeholder="Search designers..."
+                                        <input type="text" name="search" class="form-control" placeholder="Search users..."
                                             value="{{ request()->search }}">
                                     </div>
 

@@ -117,7 +117,7 @@
                 </div>
 
 
-                <div class="card-body px-2 pt-2 pb-2">
+                <div class="card-body px-4 pt-2 pb-2">
                     {{-- Table Responsive --}}
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0 text-center">
