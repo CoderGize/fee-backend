@@ -31,12 +31,27 @@ class SubcategoriesController extends Controller
         $this->token = json_decode($response->getBody()->getContents())->token;
     }
 
-    public function index()
-    {
-        $subcategories = Subcategory::with('category')->get();
-        $categories = Category::all();
-        return view('admin.subcategories.index', compact('subcategories', 'categories'));
-    }
+        public function index(Request $request)
+        {
+            $search = $request->input('search');
+            $perPage = $request->input('per_page', 10);
+
+            $query = Subcategory::with('category');
+
+
+            if ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%')
+                    ->orWhere('name_ar', 'like', '%' . $search . '%')
+                    ->orWhere('description_ar', 'like', '%' . $search . '%');
+            }
+
+
+            $subcategories = $query->paginate($perPage);
+
+            $categories = Category::all();
+            return view('admin.subcategories.index', compact('subcategories', 'categories'));
+        }
 
     public function create()
     {
