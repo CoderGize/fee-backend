@@ -40,8 +40,8 @@ class CategoriesController extends Controller
         if ($search) {
             $query->where('name', 'like', '%' . $search . '%')
                 ->orWhere('description', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%')
-                ->orWhere('username', 'like', '%' . $search . '%');
+                ->orWhere('name_ar', 'like', '%' . $search . '%')
+                ->orWhere('description_ar', 'like', '%' . $search . '%');
         }
 
 
