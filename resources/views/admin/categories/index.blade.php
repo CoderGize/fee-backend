@@ -25,6 +25,7 @@
 
                                     @include('admin.categories.create')
 
+
                                 </div>
                             </div>
                         </div>
