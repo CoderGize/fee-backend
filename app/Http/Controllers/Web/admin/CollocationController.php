@@ -29,9 +29,24 @@ class CollocationController extends Controller
         $this->token = json_decode($response->getBody()->getContents())->token;
     }
 
-     public function index()
+     public function index(Request $request)
      {
-         $collections = Collection::paginate(10);
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
+
+        $query = Collection::query();
+
+
+        if ($search) {
+            $query->where('name_en', 'like', '%' . $search . '%')
+                ->orWhere('description_en', 'like', '%' . $search . '%')
+                ->orWhere('name_ar', 'like', '%' . $search . '%')
+                ->orWhere('description_ar', 'like', '%' . $search . '%');
+        }
+
+
+         $collections = $query->paginate($perPage);
+
          return view('admin.collections.index', compact('collections'));
      }
 
