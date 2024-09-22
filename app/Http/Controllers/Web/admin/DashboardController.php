@@ -47,18 +47,17 @@ class DashboardController extends Controller
             });
 
 
-         $startDate = $request->input('start_date', Carbon::now()->subDays(7));
-         $endDate = $request->input('end_date', Carbon::now());
+        $startDate = $request->has('start_date') ? $request->start_date : Carbon::now()->subDays(30);
+        $endDate = $request->has('end_date') ? $request->end_date : Carbon::now();
 
-
-         $salesData = Order::where('status','paid')->select(
-                 DB::raw('DATE(created_at) as date'),
-                 DB::raw('SUM(total_price) as total_sales')
-             )
-             ->whereBetween('created_at', [$startDate, $endDate])
-             ->groupBy('date')
-             ->orderBy('date', 'asc')
-             ->get();
+        $salesData = Order::where('status', 'paid')->select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('SUM(total_price) as total_sales')
+            )
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
 
          return view('admin.home', compact(
              'totalOrders', 'totalRevenue', 'totalProducts', 'salesRate', 'topCustomers',
