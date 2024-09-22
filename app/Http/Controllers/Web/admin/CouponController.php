@@ -9,8 +9,30 @@ use Illuminate\Http\Request;
 class CouponController extends Controller
 {
 
-    public function index(){
-        $coupons=Coupon::paginate(10);
+    public function index(Request $request)
+    {
+       $search = $request->input('search');
+       $perPage = $request->input('per_page', 10);
+       $status = $request->input('status');
+
+       $query = Coupon::query();
+
+
+       if ($search) {
+           $query->where('name', 'like', '%' . $search . '%')
+               ->orWhere('promo_code', 'like', '%' . $search . '%');
+
+       }
+       if ($status === 'expired') {
+            $query->where('expires_at', '<', now());
+        } elseif ($status === 'not_expired') {
+            $query->where(function ($q) {
+                $q->where('expires_at', '>=', now())
+                ->orWhereNull('expires_at'); // Include coupons with no expiration date
+            });
+        }
+
+        $coupons = $query->paginate($perPage);
 
         return view('admin.coupons.index',compact('coupons'));
     }
