@@ -492,6 +492,8 @@ class ProductController extends Controller
                 $perPage = $request->per_page ? $request->per_page : 10;
                 $designerId = $request->designer_id;
 
+                $designer=Designer::where('id',$designerId)->first();
+
                 $query = Product::with('images', 'designer', 'categories')
                     ->where('designer_id', $designerId);
 
@@ -544,6 +546,7 @@ class ProductController extends Controller
                 $response = [
                     'status' => 'success',
                     'data' => $products,
+                    'designer'=>$designer
                 ];
 
                 return response()->json($response, 200);
@@ -571,12 +574,58 @@ class ProductController extends Controller
                 }
                 $perPage = $request->per_page ? $request->per_page : 10;
 
-                $products = Product::with('images', 'designer','categories')
-                    ->where('designer_id', $designerId)
-                    ->paginate($perPage);
+                $query = Product::with('images', 'designer', 'categories')
+                    ->where('designer_id', $designerId);
+
+                if ($request->has('categories')) {
+                    $query->whereHas('categories', function ($q) use ($request) {
+                        $q->whereIn('categories.id', $request->categories);
+                    });
+                }
+
+                if ($request->has('price_min') && $request->has('price_max')) {
+                    $query->whereBetween('price', [$request->price_min, $request->price_max]);
+                }
+
+                if ($request->has('brands')) {
+                    $query->whereHas('designer', function ($q) use ($request) {
+                        $q->whereIn('designers.id', $request->brands);
+                    });
+                }
+
+                if ($request->has('tags')) {
+                    $query->whereJsonContains('tags', $request->tags);
+                }
+
+                if ($request->has('order_by')) {
+                    $query->orderBy('id', $request->order_by);
+                }
+
+                if ($request->has('sort_by')) {
+                    switch ($request->sort_by) {
+                        case 'date_desc':
+                            $query->orderBy('created_at', 'desc');
+                            break;
+                        case 'date_asc':
+                            $query->orderBy('created_at', 'asc');
+                            break;
+                        case 'price_desc':
+                            $query->orderBy('price', 'desc');
+                            break;
+                        case 'price_asc':
+                            $query->orderBy('price', 'asc');
+                            break;
+                        default:
+                            $query->orderBy('id', 'asc'); // Default sorting by ID
+                            break;
+                    }
+                }
+
+                $products = $query->paginate($perPage);
                 $response = [
                     'status' => 'success',
                     'data' => $products,
+                    'designer'=>$designer
                 ];
 
                 if (Auth::check()) {
