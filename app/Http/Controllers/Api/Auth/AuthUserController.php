@@ -254,7 +254,45 @@ class AuthUserController extends Controller
          }
      }
 
+     public function updateImage(Request $request)
+     {
+         try {
 
+             $id = Auth::id();
+
+             $user=User::where('id',$id)->first();
+             if ($request->hasFile('image')) {
+
+                if ($user->image) {
+                    Storage::delete(str_replace('/storage', 'public', $user->image));
+                }
+
+                $ProfileName = "FEE";
+                $imageFile = $request->file('image');
+                $imageUniqueName = uniqid();
+                $imageExtension = $imageFile->getClientOriginalExtension();
+                $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
+                $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
+                $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
+
+                $user->image = $imageUrl;
+            }
+
+
+             $user->save();
+
+             return response()->json([
+                 'message' => 'Profile Image updated successfully.',
+                 'user' => $user,
+             ], 200);
+
+         } catch (\Exception $e) {
+             return response()->json([
+                 'status' => 'error',
+                 'message' => $e->getMessage(),
+             ], 500);
+         }
+     }
      public function updateProfile(Request $request)
      {
          try {

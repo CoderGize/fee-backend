@@ -29,7 +29,7 @@
 
                         <div class="row mt-1 px-4">
                             <div class="col-12 d-flex justify-content-end align-items-center">
-                                <form method="GET" action="{{ route('admin.categories.index') }}" class="d-flex">
+                                <form method="GET" action="{{ route('admin.collections.index') }}" class="d-flex">
                                     <div class="form-group mb-0 me-2">
                                         <input type="text" name="search" class="form-control" placeholder="Search collections..."
                                             value="{{ request()->search }}">

@@ -28,7 +28,7 @@ class CouponController extends Controller
         } elseif ($status === 'not_expired') {
             $query->where(function ($q) {
                 $q->where('expires_at', '>=', now())
-                ->orWhereNull('expires_at'); // Include coupons with no expiration date
+                ->orWhereNull('expires_at'); 
             });
         }
 

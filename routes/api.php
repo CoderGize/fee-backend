@@ -76,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::post('update-profile', [AuthDesignerController::class, 'updateProfile']);
+        Route::post('update-image', [AuthDesignerController::class, 'updateImage']);
         Route::post('change-password', [AuthDesignerController::class, 'changePassword']);
         Route::post('change-username', [AuthDesignerController::class, 'changeUsername']);
 
@@ -91,6 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('products', [ProductController::class, 'index']);
         Route::delete('logout', [AuthUserController::class, 'logout']);
         Route::post('update-profile', [AuthUserController::class, 'updateProfile']);
+        Route::post('update-image', [AuthUserController::class, 'updateImage']);
         Route::post('change-password', [AuthUserController::class, 'changePassword']);
         Route::post('change-username', [AuthUserController::class, 'changeUsername']);
         Route::delete('delete-profile-image', [AuthUserController::class, 'deleteImage']);

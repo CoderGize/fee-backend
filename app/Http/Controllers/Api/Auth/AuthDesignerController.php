@@ -254,6 +254,48 @@ class AuthDesignerController extends Controller
         }
     }
 
+    public function updateImage(Request $request)
+    {
+        try {
+
+
+            $id = Auth::id();
+
+            $designer=Designer::where('id',$id)->first();
+
+
+
+            if ($request->hasFile('image')) {
+
+                if ($designer->image) {
+                    Storage::delete(str_replace('/storage', 'public', $designer->image));
+                }
+
+                $ProfileName = "FEE";
+                $imageFile = $request->file('image');
+                $imageUniqueName = uniqid();
+                $imageExtension = $imageFile->getClientOriginalExtension();
+                $imageFilename = $ProfileName . Carbon::now()->format('Ymd') . '_' . $imageUniqueName . '.' . $imageExtension;
+                $imagePath = $imageFile->storeAs('public/upload/files/image/', $imageFilename);
+                $imageUrl = Storage::url('upload/files/image/' . $imageFilename);
+
+                $designer->image = $imageUrl;
+            }
+            $designer->save();
+
+            return response()->json([
+                'message' => 'Profile updated successfully.',
+                'designer' => $designer,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     // Update Profile
     public function updateProfile(Request $request)
