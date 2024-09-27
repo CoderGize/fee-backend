@@ -58,6 +58,7 @@ class AuthUserController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
                 'user' => $user,
+                'role'=>'user'
             ], 200);
 
         } catch (\Exception $e) {
@@ -104,6 +105,7 @@ class AuthUserController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
                 'user' => $user,
+                'role'=>'user'
             ], 200);
 
         } catch (\Exception $e) {
@@ -284,6 +286,7 @@ class AuthUserController extends Controller
              return response()->json([
                  'message' => 'Profile Image updated successfully.',
                  'user' => $user,
+                  'role'=>'user'
              ], 200);
 
          } catch (\Exception $e) {
@@ -487,6 +490,7 @@ class AuthUserController extends Controller
 
              return response()->json([
                  'user' => $user,
+                 'role'=>'user'
              ], 200);
 
          } catch (\Exception $e) {

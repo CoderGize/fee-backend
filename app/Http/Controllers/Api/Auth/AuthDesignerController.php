@@ -57,6 +57,7 @@ class AuthDesignerController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
                 'designer' => $designer,
+                'role'=>'designer'
             ], 200);
 
 
@@ -105,6 +106,7 @@ class AuthDesignerController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
                 'designer' => $designer,
+                'role'=>'designer'
             ], 200);
 
         } catch (\Exception $e) {
@@ -153,6 +155,7 @@ class AuthDesignerController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
                 'designer' => $designer,
+                'role'=>'designer'
             ], 200);
 
         } catch (\Exception $e) {
@@ -286,6 +289,7 @@ class AuthDesignerController extends Controller
             return response()->json([
                 'message' => 'Profile updated successfully.',
                 'designer' => $designer,
+                'role'=>'designer'
             ], 200);
 
         } catch (\Exception $e) {
@@ -350,6 +354,7 @@ class AuthDesignerController extends Controller
             return response()->json([
                 'message' => 'Profile updated successfully.',
                 'designer' => $designer,
+                'role'=>'designer'
             ], 200);
 
         } catch (\Exception $e) {
@@ -431,6 +436,7 @@ class AuthDesignerController extends Controller
             return response()->json([
                 'message' => 'Username changed successfully.',
                 'designer' => $designer,
+                'role'=>'designer'
             ], 200);
 
         } catch (\Exception $e) {
