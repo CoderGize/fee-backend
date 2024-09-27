@@ -16,9 +16,14 @@ class PaymentController extends Controller
         $paymentMethod = $request->input('payment_method');
         $perPage = $request->input('per_page', 10);
 
-        $payments = Payment::with(['user', 'order'])
+        $payments = Payment::with(['user', 'designer','order'])
                 ->when($search, function ($query, $search) {
                     return $query->whereHas('user', function ($q) use ($search) {
+                        $q->where('f_name', 'like', '%' . $search . '%');
+                    });
+                })
+                ->when($search, function ($query, $search) {
+                    return $query->whereHas('designer', function ($q) use ($search) {
                         $q->where('f_name', 'like', '%' . $search . '%');
                     });
                 })

@@ -91,7 +91,15 @@
                                         @foreach ($payments as $payment)
                                             <tr>
                                                 <td class="text-sm">{{ $payment->id }}</td>
-                                                <td class="text-sm">{{ $payment->user->f_name }} {{ $payment->user->l_name }}</td>
+                                                <td class="text-sm">
+                                                    @if ($payment->user)
+                                                        {{ $payment->user->f_name }} {{ $payment->user->l_name }}
+                                                    @elseif ($payment->designer)
+                                                        {{ $payment->designer->f_name }} {{ $payment->designer->l_name }}
+                                                    @else
+                                                        N/A
+                                                    @endif
+                                                </td>
                                                 <td class="text-sm">{{ $payment->order_id }}</td>
                                                 <td class="text-sm">{{ $payment->amount }}</td>
                                                 <td class="text-sm">

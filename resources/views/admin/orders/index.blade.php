@@ -96,7 +96,16 @@
                                         @foreach ($orders as $order)
                                             <tr>
                                                 <td class="text-sm">{{ $order->id }}</td>
-                                                <td class="text-sm">{{ $order->user->f_name }} {{ $order->user->l_name }}</td>
+                                                <td class="text-sm">
+                                                    @if ($order->user)
+                                                        {{ $order->user->f_name }} {{ $order->user->l_name }}
+                                                    @elseif ($order->designer)
+                                                        {{ $order->designer->f_name }} {{ $order->designer->l_name }}
+                                                    @else
+                                                        N/A
+                                                    @endif
+                                                </td>
+
                                                 <td class="text-sm">{{ $order->total_price }}</td>
                                                 <td class="text-sm">{{ $order->quantity }}</td>
                                                 <td class="text-sm">{{ $order->payment_method }}</td>

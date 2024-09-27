@@ -30,9 +30,20 @@ class CartController extends Controller
                , 422);
                 }
 
-            $user = Auth::user();
+            $userID = $request->user_id;
+            $designerID=$request->designer_id;
 
-            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+            if(!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+            $cart = null;
+
+            if ($userID) {
+                $cart = Cart::firstOrCreate(['user_id' => $userID]);
+            } elseif ($designerID) {
+                $cart = Cart::firstOrCreate(['designer_id' => $designerID]);
+            }
 
 
             foreach ($request->cart as $item) {
@@ -114,9 +125,23 @@ class CartController extends Controller
     public function getCart(Request $request)
     {
         try {
-            $user = Auth::user();
+            $userID = $request->user_id;
+            $designerID=$request->designer_id;
 
-            $cart = Cart::with('products.images','products.categories','products.designer')->where('user_id', $user->id)->first();
+            if(!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+            $cart = null;
+
+            if ($userID) {
+
+                $cart = Cart::with('products.images','products.categories','products.designer')->where('user_id', $userID)->first();
+            } elseif ($designerID) {
+
+                $cart = Cart::with('products.images','products.categories','products.designer')->where(['designer_id' => $designerID])->first();
+            }
+
 
             if (!$cart) {
                 return response()->json([
@@ -137,19 +162,36 @@ class CartController extends Controller
         }
     }
 
-    public function deleteCart()
+    public function deleteCart(Request $request)
     {
         try {
-            $user = Auth::user();
 
-            $cart = Cart::where('user_id', $user->id)->first();
+                $userID = $request->user_id;
+                $designerID = $request->designer_id;
 
-            if (!$cart) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Cart not found.',
-                ], 404);
-            }
+
+                if (!$userID && !$designerID) {
+                    return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+                }
+
+
+                $cart = null;
+
+                if ($userID) {
+                    $cart = Cart::where('user_id', $userID)->first();
+                } elseif ($designerID) {
+                    $cart = Cart::where('designer_id', $designerID)->first();
+                }
+
+
+                if (!$cart) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Cart not found.',
+                    ], 404);
+                }
+
+
 
             $cart->delete();
 
@@ -174,37 +216,61 @@ class CartController extends Controller
             ]);
 
             if ($validator->fails()) {
-                    return response()->json(
-                        [
+                return response()->json([
                     'status' => 'error',
                     'message' => $validator->errors(),
-                ]
-               , 422);
-                }
+                ], 422);
+            }
 
-            $user = Auth::user();
 
-            $wishlist = Wishlist::where('user_id', $user->id)->first();
+            $userID = $request->user_id;
+            $designerID = $request->designer_id;
+
+
+            if (!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+
+            $wishlist = null;
+            if ($userID) {
+                $wishlist = Wishlist::where('user_id', $userID)->first();
+            } elseif ($designerID) {
+                $wishlist = Wishlist::where('designer_id', $designerID)->first();
+            }
+
+
             if ($wishlist && $wishlist->products->contains($request->product_id)) {
                 $wishlist->products()->detach($request->product_id);
             }
 
-            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+            $cart = null;
+            if ($userID) {
+                $cart = Cart::firstOrCreate(['user_id' => $userID]);
+            } elseif ($designerID) {
+                $cart = Cart::firstOrCreate(['designer_id' => $designerID]);
+            }
+
 
             $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
+
 
             $cart->products()->syncWithoutDetaching([
                 $product->id => ['quantity' => $request->quantity]
             ]);
 
+
             $cart = $cart->load('products');
+
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Product added to cart successfully.',
                 'cart' => $cart,
-                'products'=>$product
+                'product' => $product
             ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -213,55 +279,76 @@ class CartController extends Controller
         }
     }
 
+
     public function updateSingleProduct(Request $request)
     {
         try {
+
             $validator = Validator::make($request->all(), [
                 'product_id' => 'required|exists:products,id',
                 'quantity' => 'required|integer|min:0',
             ]);
 
             if ($validator->fails()) {
-                    return response()->json(
-                        [
+                return response()->json([
                     'status' => 'error',
                     'message' => $validator->errors(),
-                ]
-               , 422);
-                }
+                ], 422);
+            }
 
-            $user = Auth::user();
 
-            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+            $userID = $request->user_id;
+            $designerID = $request->designer_id;
+
+
+            if (!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+
+            $cart = null;
+            if ($userID) {
+                $cart = Cart::firstOrCreate(['user_id' => $userID]);
+            } elseif ($designerID) {
+                $cart = Cart::firstOrCreate(['designer_id' => $designerID]);
+            }
+
 
             $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
 
             if ($request->quantity == 0) {
                 $cart->products()->detach($product->id);
             } else {
+
                 $cart->products()->syncWithoutDetaching([
                     $product->id => ['quantity' => $request->quantity]
                 ]);
             }
 
+
             $cart = $cart->load('products');
+
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Product updated in cart successfully.',
                 'cart' => $cart,
-                'product'=>$product
+                'product' => $product
             ], 200);
+
         } catch (\Exception $e) {
+
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
             ], 500);
         }
     }
+
     public function removeSingleProduct(Request $request)
     {
         try {
+
             $validator = Validator::make($request->all(), [
                 'product_id' => 'required|exists:products,id',
             ]);
@@ -270,21 +357,39 @@ class CartController extends Controller
                 return response()->json($validator->errors(), 422);
             }
 
-            $user = Auth::user();
 
-            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+            $userID = $request->user_id;
+            $designerID = $request->designer_id;
+
+
+            if (!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+
+            $cart = null;
+            if ($userID) {
+                $cart = Cart::firstOrCreate(['user_id' => $userID]);
+            } elseif ($designerID) {
+                $cart = Cart::firstOrCreate(['designer_id' => $designerID]);
+            }
+
 
             $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
 
+
             $cart->products()->detach($product->id);
 
+
             $cart = $cart->load('products');
+
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Product removed from cart successfully.',
                 'cart' => $cart,
             ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -292,4 +397,5 @@ class CartController extends Controller
             ], 500);
         }
     }
+
 }

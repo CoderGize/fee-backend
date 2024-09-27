@@ -17,9 +17,14 @@ class OrderController extends Controller
         $perPage = $request->input('per_page', 10);
 
 
-        $orders = Order::with(['user', 'products'])
+        $orders = Order::with(['user', 'designer','products'])
                         ->when($search, function ($query, $search) {
                             return $query->whereHas('user', function ($q) use ($search) {
+                                $q->where('f_name', 'like', '%' . $search . '%');
+                            });
+                        })
+                        ->when($search, function ($query, $search) {
+                            return $query->whereHas('designer', function ($q) use ($search) {
                                 $q->where('f_name', 'like', '%' . $search . '%');
                             });
                         })

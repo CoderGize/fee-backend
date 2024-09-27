@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\Order;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MyFatoorahController;
 use App\Models\Coupon;
+use App\Models\Designer;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Shipment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -33,11 +35,31 @@ class OrderController extends Controller
                 ], 422);
             }
 
-            $user = Auth::user();
+            $userID = $request->user_id;
+            $designerID=$request->designer_id;
+
+            if(!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
 
             // Create Order
             $order = new Order();
-            $order->user_id = $user->id;
+            if ($userID) {
+
+                if (User::find($userID)) {
+                    $order->user_id = $userID;
+                } else {
+                    return response()->json(['error' => 'Invalid user_id'], 404);
+                }
+            } elseif ($designerID) {
+
+                if (Designer::find($designerID)) {
+                    $order->designer_id = $designerID;
+                } else {
+                    return response()->json(['error' => 'Invalid designer_id'], 404);
+                }
+            }
+
             $order->total_price = 0;
             $order->status = 'pending';
 
@@ -116,7 +138,11 @@ class OrderController extends Controller
            if($request->payment_method==="credit_card"){
 
                 $payment = new Payment();
-                $payment->user_id = $user->id;
+                if($userID){
+                    $payment->user_id = $userID;
+                }else{
+                    $payment->designer_id = $designerID;
+                }
                 $payment->order_id = $order->id;
                 $payment->amount = $order->total_price;
                 $payment->status = 'pending';
@@ -273,8 +299,20 @@ class OrderController extends Controller
     public function getUserOrders(Request $request)
     {
         try {
-            $user = Auth::user();
-            $orders = Order::where('user_id',$user->id)->with('products')->get();
+            $userID = $request->user_id;
+            $designerID=$request->designer_id;
+
+            if(!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+            $orders = Order::when($userID, function ($query, $userID) {
+                return $query->where('user_id', $userID);
+                })
+                ->when($designerID, function ($query, $designerID) {
+                    return $query->where('designer_id', $designerID);
+                })
+                ->with('products')
+                ->get();
 
             return response()->json([
                 'status' => 'success',

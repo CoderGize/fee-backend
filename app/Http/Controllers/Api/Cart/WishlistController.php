@@ -15,22 +15,41 @@ class WishlistController extends Controller
     public function getWishlist(Request $request)
     {
         try {
-            $user = Auth::user();
 
-            $wishlist = Wishlist::with('products.images','products.categories','products.designer')->where('user_id', $user->id)->first();
+            $userID = $request->user_id;
+            $designerID = $request->designer_id;
+
+
+            if (!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+
+            $wishlist = null;
+            if ($userID) {
+                $wishlist = Wishlist::with('products.images', 'products.categories', 'products.designer')
+                            ->where('user_id', $userID)->first();
+            } elseif ($designerID) {
+                $wishlist = Wishlist::with('products.images', 'products.categories', 'products.designer')
+                            ->where('designer_id', $designerID)->first();
+            }
+
 
             if (!$wishlist) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'wishlist not found.',
+                    'message' => 'Wishlist not found.',
                 ], 404);
             }
+
 
             return response()->json([
                 'status' => 'success',
                 'wishlist' => $wishlist,
             ], 200);
+
         } catch (\Exception $e) {
+
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -38,33 +57,53 @@ class WishlistController extends Controller
         }
     }
 
-    public function deleteWishlist()
+
+    public function deleteWishlist(Request $request)
     {
         try {
-            $user = Auth::user();
 
-            $wishlist = Wishlist::where('user_id', $user->id)->first();
+            $userID = $request->user_id;
+            $designerID = $request->designer_id;
+
+
+            if (!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+
+            $wishlist = null;
+            if ($userID) {
+                $wishlist = Wishlist::where('user_id', $userID)->first();
+            } elseif ($designerID) {
+                $wishlist = Wishlist::where('designer_id', $designerID)->first();
+            }
+
 
             if (!$wishlist) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'wishlist not found.',
+                    'message' => 'Wishlist not found.',
                 ], 404);
             }
 
+
             $wishlist->delete();
+
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'wishlist deleted successfully.',
+                'message' => 'Wishlist deleted successfully.',
             ], 200);
+
         } catch (\Exception $e) {
+
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
             ], 500);
         }
     }
+
 
     public function addSingleProduct(Request $request)
     {
@@ -83,15 +122,34 @@ class WishlistController extends Controller
            , 422);
             }
 
-            $user = Auth::user();
+            $userID = $request->user_id;
+            $designerID = $request->designer_id;
 
-            $cart = Cart::where('user_id', $user->id)->first();
+
+            if (!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+            $cart = null;
+            if ($userID) {
+                $cart = Cart::firstOrCreate(['user_id' => $userID]);
+            } elseif ($designerID) {
+                $cart = Cart::firstOrCreate(['designer_id' => $designerID]);
+            }
+
             if ($cart && $cart->products->contains($request->product_id)) {
                 $cart->products()->detach($request->product_id);
             }
 
-            $wishlist = Wishlist::firstOrCreate(['user_id' => $user->id]);
 
+
+
+            $wishlist = null;
+            if ($userID) {
+                $wishlist = Wishlist::where('user_id', $userID)->first();
+            } elseif ($designerID) {
+                $wishlist = Wishlist::where('designer_id', $designerID)->first();
+            }
 
 
             $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
@@ -134,9 +192,20 @@ class WishlistController extends Controller
            , 422);
             }
 
-            $user = Auth::user();
+            $userID = $request->user_id;
+            $designerID = $request->designer_id;
 
-            $wishlist = Wishlist::firstOrCreate(['user_id' => $user->id]);
+
+            if (!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+            $wishlist = null;
+            if ($userID) {
+                $wishlist = Wishlist::where('user_id', $userID)->first();
+            } elseif ($designerID) {
+                $wishlist = Wishlist::where('designer_id', $designerID)->first();
+            }
 
             $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
 
@@ -179,9 +248,20 @@ class WishlistController extends Controller
            , 422);
             }
 
-            $user = Auth::user();
+            $userID = $request->user_id;
+            $designerID = $request->designer_id;
 
-            $wishlist = Wishlist::firstOrCreate(['user_id' => $user->id]);
+
+            if (!$userID && !$designerID) {
+                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            }
+
+            $wishlist = null;
+            if ($userID) {
+                $wishlist = Wishlist::where('user_id', $userID)->first();
+            } elseif ($designerID) {
+                $wishlist = Wishlist::where('designer_id', $designerID)->first();
+            }
 
             $product = Product::with('images', 'designer', 'categories')->find($request->product_id);
 

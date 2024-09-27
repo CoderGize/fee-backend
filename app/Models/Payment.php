@@ -11,6 +11,7 @@ class Payment extends Model
 
     protected $fillable = [
         'user_id',
+        'designer_id',
         'order_id',
         'amount',
         'status',
@@ -22,6 +23,9 @@ class Payment extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function designer(){
+        return $this->belongsTo(Designer::class,'designer_id');
+    }
     public function order()
     {
         return $this->belongsTo(Order::class);
