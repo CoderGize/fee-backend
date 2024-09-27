@@ -300,7 +300,7 @@ class AuthUserController extends Controller
      {
          try {
              $validator = Validator::make($request->all(), [
-                 'f_name' => 'required|string|max:255',
+                 'f_name' => 'nullable|string|max:255',
                  'l_name' => 'nullable|string|max:255',
                  'address' => 'nullable|string',
                  'city' => 'nullable|string',
@@ -320,8 +320,8 @@ class AuthUserController extends Controller
 
              $user=User::where('id',$id)->first();
 
-             $user->f_name = $request->f_name;
-             $user->l_name = $request->l_name;
+             $user->f_name = $request->f_name ? $request->f_name :$user->f_name;
+             $user->l_name = $request->l_name ? $request->l_name :$user->l_name;
              $user->address = $request->address;
              $user->city = $request->city;
              $user->phone_number = $request->phone_number;
@@ -330,6 +330,7 @@ class AuthUserController extends Controller
              $user->locality=$request->locality;
              $user->region=$request->region;
              $user->birth_day=$request->birth_day;
+             $user->country=$request->country;
              if ($request->hasFile('image')) {
 
                 if ($user->image) {

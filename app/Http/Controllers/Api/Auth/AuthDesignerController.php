@@ -331,6 +331,11 @@ class AuthDesignerController extends Controller
             $designer->address = $request->address;
             $designer->city = $request->city;
             $designer->phone_number = $request->phone_number;
+            $designer->further_information=$request->further_information;
+            $designer->governorate=$request->governorate;
+            $designer->locality=$request->locality;
+            $designer->region=$request->region;
+            $designer->country=$request->country;
 
 
             if ($request->hasFile('image')) {
