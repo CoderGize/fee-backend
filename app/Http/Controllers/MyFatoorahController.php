@@ -96,7 +96,7 @@ class MyFatoorahController extends Controller {
             $order = Order::with('user')->findOrFail($data->CustomerReference);
             $shipment=Shipment::where('order_id',$order->order)->first();
 
-            $cart=Cart::where('user_id',$payment->user_id)->first();
+            $cart=Cart::where('user_id',$payment->user_id)->orWhere('designer_id',$payment->designer_id)->first();
 
 
 
