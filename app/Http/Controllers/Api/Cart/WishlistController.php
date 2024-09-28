@@ -43,12 +43,12 @@ class WishlistController extends Controller
             }
 
 
-            if (!$wishlist) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Wishlist not found.',
-                ], 404);
-            }
+            // if (!$wishlist) {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'message' => 'Wishlist not found.',
+            //     ], 401);
+            // }
 
 
             return response()->json([
