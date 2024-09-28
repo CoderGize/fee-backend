@@ -16,12 +16,20 @@ class WishlistController extends Controller
     {
         try {
 
-            $userID = $request->user_id;
-            $designerID = $request->designer_id;
+            $authenticatedUser = $request->user();
 
 
-            if (!$userID && !$designerID) {
-                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            $userID = null;
+            $designerID = null;
+
+            if ($authenticatedUser instanceof \App\Models\User) {
+
+                $userID = $authenticatedUser->id;
+            } elseif ($authenticatedUser instanceof \App\Models\Designer) {
+
+                $designerID = $authenticatedUser->id;
+            } else {
+                return response()->json(['error' => 'Invalid token.'], 403);
             }
 
 
@@ -62,12 +70,20 @@ class WishlistController extends Controller
     {
         try {
 
-            $userID = $request->user_id;
-            $designerID = $request->designer_id;
+            $authenticatedUser = $request->user();
 
 
-            if (!$userID && !$designerID) {
-                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            $userID = null;
+            $designerID = null;
+
+            if ($authenticatedUser instanceof \App\Models\User) {
+
+                $userID = $authenticatedUser->id;
+            } elseif ($authenticatedUser instanceof \App\Models\Designer) {
+
+                $designerID = $authenticatedUser->id;
+            } else {
+                return response()->json(['error' => 'Invalid token.'], 403);
             }
 
 
@@ -122,12 +138,20 @@ class WishlistController extends Controller
            , 422);
             }
 
-            $userID = $request->user_id;
-            $designerID = $request->designer_id;
+            $authenticatedUser = $request->user();
 
 
-            if (!$userID && !$designerID) {
-                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            $userID = null;
+            $designerID = null;
+
+            if ($authenticatedUser instanceof \App\Models\User) {
+
+                $userID = $authenticatedUser->id;
+            } elseif ($authenticatedUser instanceof \App\Models\Designer) {
+
+                $designerID = $authenticatedUser->id;
+            } else {
+                return response()->json(['error' => 'Invalid token.'], 403);
             }
 
             $cart = null;
@@ -192,12 +216,20 @@ class WishlistController extends Controller
            , 422);
             }
 
-            $userID = $request->user_id;
-            $designerID = $request->designer_id;
+            $authenticatedUser = $request->user();
 
 
-            if (!$userID && !$designerID) {
-                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            $userID = null;
+            $designerID = null;
+
+            if ($authenticatedUser instanceof \App\Models\User) {
+
+                $userID = $authenticatedUser->id;
+            } elseif ($authenticatedUser instanceof \App\Models\Designer) {
+
+                $designerID = $authenticatedUser->id;
+            } else {
+                return response()->json(['error' => 'Invalid token.'], 403);
             }
 
             $wishlist = null;
@@ -248,12 +280,20 @@ class WishlistController extends Controller
            , 422);
             }
 
-            $userID = $request->user_id;
-            $designerID = $request->designer_id;
+            $authenticatedUser = $request->user();
 
 
-            if (!$userID && !$designerID) {
-                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+            $userID = null;
+            $designerID = null;
+
+            if ($authenticatedUser instanceof \App\Models\User) {
+
+                $userID = $authenticatedUser->id;
+            } elseif ($authenticatedUser instanceof \App\Models\Designer) {
+
+                $designerID = $authenticatedUser->id;
+            } else {
+                return response()->json(['error' => 'Invalid token.'], 403);
             }
 
             $wishlist = null;

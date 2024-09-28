@@ -35,11 +35,20 @@ class OrderController extends Controller
                 ], 422);
             }
 
-            $userID = $request->user_id;
-            $designerID=$request->designer_id;
+            $authenticatedUser = $request->user();
 
-            if(!$userID && !$designerID) {
-                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+
+            $userID = null;
+            $designerID = null;
+
+            if ($authenticatedUser instanceof \App\Models\User) {
+
+                $userID = $authenticatedUser->id;
+            } elseif ($authenticatedUser instanceof \App\Models\Designer) {
+
+                $designerID = $authenticatedUser->id;
+            } else {
+                return response()->json(['error' => 'Invalid token.'], 403);
             }
 
             // Create Order
@@ -299,11 +308,20 @@ class OrderController extends Controller
     public function getUserOrders(Request $request)
     {
         try {
-            $userID = $request->user_id;
-            $designerID=$request->designer_id;
+            $authenticatedUser = $request->user();
 
-            if(!$userID && !$designerID) {
-                return response()->json(['error' => 'Either user_id or designer_id is required'], 400);
+
+            $userID = null;
+            $designerID = null;
+
+            if ($authenticatedUser instanceof \App\Models\User) {
+
+                $userID = $authenticatedUser->id;
+            } elseif ($authenticatedUser instanceof \App\Models\Designer) {
+
+                $designerID = $authenticatedUser->id;
+            } else {
+                return response()->json(['error' => 'Invalid token.'], 403);
             }
             $orders = Order::when($userID, function ($query, $userID) {
                 return $query->where('user_id', $userID);
