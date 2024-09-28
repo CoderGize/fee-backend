@@ -60,23 +60,45 @@ class MyFatoorahController extends Controller {
      */
     private function getPayLoadData($orderId)
     {
-        $order = Order::with('user')->findOrFail($orderId);
+        $order = Order::with('designer', 'user')->findOrFail($orderId);
         $callbackURL = route('myfatoorah.callback');
 
+
+        $customerName = null;
+        $customerEmail = null;
+        $customerMobile = null;
+
+        if ($order->user) {
+
+            $customerName = $order->user->f_name . ' ' . $order->user->l_name;
+            $customerEmail = $order->user->email;
+            $customerMobile = $order->user->mobile ?? '12345678';
+        } elseif ($order->designer) {
+
+            $customerName = $order->designer->f_name . ' ' . $order->designer->l_name;
+            $customerEmail = $order->designer->email;
+            $customerMobile = $order->designer->mobile ?? '12345678';
+        } else {
+
+            return response()->json(['error' => 'Order must belong to either a user or a designer'], 400);
+        }
+
+
         return [
-            'CustomerName' => $order->user->f_name . " " .$order->user->l_name,
+            'CustomerName' => $customerName,
             'InvoiceValue' => $order->total_price,
             'DisplayCurrencyIso' => 'KWD',
-            'CustomerEmail' => $order->user->email,
+            'CustomerEmail' => $customerEmail,
             'CallBackUrl' => $callbackURL,
             'ErrorUrl' => $callbackURL,
             'MobileCountryCode' => '+965',
-            'CustomerMobile' => $order->user->mobile ?? '12345678',
+            'CustomerMobile' => $customerMobile,
             'Language' => 'en',
             'CustomerReference' => $orderId,
             'SourceInfo' => 'Laravel ' . app()::VERSION . ' - MyFatoorah Package ' . MYFATOORAH_LARAVEL_PACKAGE_VERSION,
         ];
     }
+
 
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
