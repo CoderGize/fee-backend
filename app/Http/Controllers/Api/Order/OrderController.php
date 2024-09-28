@@ -24,7 +24,11 @@ class OrderController extends Controller
                 'products' => 'required|array',
                 'products.*.product_id' => 'required|exists:products,id',
                 'products.*.quantity' => 'required|integer|min:1',
-                'promo_code' => 'nullable|string'
+                'promo_code' => 'nullable|string',
+                'guest_name' => 'required_if:is_guest,true|string',
+                'guest_email' => 'required_if:is_guest,true|email',
+                'guest_phone' => 'required_if:is_guest,true|string',
+                'guest_address' => 'required_if:is_guest,true|string',
             ]);
 
             if ($validator->fails()) {
@@ -37,36 +41,43 @@ class OrderController extends Controller
 
             $authenticatedUser = $request->user();
 
-
             $userID = null;
             $designerID = null;
+            $isGuest = false;
 
-            if ($authenticatedUser instanceof \App\Models\User) {
 
+            if (!$authenticatedUser) {
+                $isGuest = true;
+            } elseif ($authenticatedUser instanceof \App\Models\User) {
                 $userID = $authenticatedUser->id;
             } elseif ($authenticatedUser instanceof \App\Models\Designer) {
-
                 $designerID = $authenticatedUser->id;
             } else {
                 return response()->json(['error' => 'Invalid token.'], 403);
             }
 
+
             // Create Order
             $order = new Order();
             if ($userID) {
-
                 if (User::find($userID)) {
                     $order->user_id = $userID;
                 } else {
                     return response()->json(['error' => 'Invalid user_id'], 404);
                 }
             } elseif ($designerID) {
-
                 if (Designer::find($designerID)) {
                     $order->designer_id = $designerID;
                 } else {
                     return response()->json(['error' => 'Invalid designer_id'], 404);
                 }
+            } elseif ($isGuest) {
+
+                $order->is_guest = true;
+                $order->guest_name = $request->guest_name;
+                $order->guest_email = $request->guest_email;
+                $order->guest_phone = $request->guest_phone;
+                $order->guest_address = $request->guest_address;
             }
 
             $order->total_price = 0;
@@ -147,10 +158,24 @@ class OrderController extends Controller
            if($request->payment_method==="credit_card"){
 
                 $payment = new Payment();
-                if($userID){
-                    $payment->user_id = $userID;
-                }else{
-                    $payment->designer_id = $designerID;
+                if ($userID) {
+                    if (User::find($userID)) {
+                        $payment->user_id = $userID;
+                    } else {
+                        return response()->json(['error' => 'Invalid user_id'], 404);
+                    }
+                } elseif ($designerID) {
+                    if (Designer::find($designerID)) {
+                        $payment->designer_id = $designerID;
+                    } else {
+                        return response()->json(['error' => 'Invalid designer_id'], 404);
+                    }
+                } elseif ($isGuest) {
+                    $payment->is_guest = true;
+                    $payment->guest_name = $request->guest_name;
+                    $payment->guest_email = $request->guest_email;
+                    $payment->guest_phone = $request->guest_phone;
+                    $payment->guest_address = $request->guest_address;
                 }
                 $payment->order_id = $order->id;
                 $payment->amount = $order->total_price;

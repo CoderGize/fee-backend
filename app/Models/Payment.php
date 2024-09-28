@@ -16,6 +16,11 @@ class Payment extends Model
         'amount',
         'status',
         'payment_method',
+        'is_guest',
+        'guest_name',
+        'guest_email',
+        'guest_phone',
+        'guest_address',
     ];
 
     public function user()

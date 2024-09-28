@@ -96,7 +96,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link rounded-3 {{ request()->is('admin/orders*') ? 'main-color' : ' ' }}"
+                <a class="nav-link rounded-3 {{ request()->is('admin/orders') ? 'main-color' : ' ' }}"
                     href="{{ url('/admin/orders') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -107,13 +107,35 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link rounded-3 {{ request()->is('admin/payments*') ? 'main-color' : ' ' }}"
+                <a class="nav-link rounded-3 {{ request()->is('admin/orders/guests') ? 'main-color' : ' ' }}"
+                    href="{{ url('/admin/orders/guests') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-shopping-cart text-sm opacity-10" style="color: rgb(42, 198, 107)"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Guest Users Orders</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ request()->is('admin/payments') ? 'main-color' : ' ' }}"
                     href="{{ url('/admin/payments') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa-solid fa-money-bill text-warning text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Payments</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ request()->is('admin/payments/guests') ? 'main-color' : ' ' }}"
+                    href="{{ url('/admin/payments/guests') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-money-bill text-warning text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Guest Users Payments</span>
                 </a>
             </li>
 

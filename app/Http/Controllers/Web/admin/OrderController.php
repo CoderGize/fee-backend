@@ -17,7 +17,8 @@ class OrderController extends Controller
         $perPage = $request->input('per_page', 10);
 
 
-        $orders = Order::with(['user', 'designer','products'])
+        $orders = Order::where('is_guest',0)
+                       ->with(['user', 'designer','products'])
                         ->when($search, function ($query, $search) {
                             return $query->whereHas('user', function ($q) use ($search) {
                                 $q->where('f_name', 'like', '%' . $search . '%');
@@ -38,7 +39,32 @@ class OrderController extends Controller
 
         return view('admin.orders.index', compact('orders'));
     }
+    public function guest(Request $request)
+    {
 
+        $search = $request->input('search');
+        $status = $request->input('status');
+        $paymentMethod = $request->input('payment_method');
+        $perPage = $request->input('per_page', 10);
+
+
+        $orders = Order::where('is_guest',1)
+                    ->with('products')
+                    ->when($search, function ($query, $search) {
+                        return $query->where('guest_name', 'like', '%' . $search . '%')
+                                    ->orWhere('guest_email', 'like', '%' . $search . '%')
+                                    ->orWhere('guest_phone', 'like', '%' . $search . '%');
+                    })
+                    ->when($status, function ($query, $status) {
+                        return $query->where('status', $status);
+                    })
+                    ->when($paymentMethod, function ($query, $paymentMethod) {
+                        return $query->where('payment_method', $paymentMethod);
+                    })
+                    ->paginate($perPage);
+
+        return view('admin.orders.guest', compact('orders'));
+    }
     public function updateStatus(Request $request, $id)
     {
 

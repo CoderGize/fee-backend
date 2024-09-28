@@ -26,6 +26,8 @@ use App\Http\Controllers\Web\Content\NewsLetterWebController;
 |
 */
 
+Route::post('guest/order/create', [OrderController::class, 'createOrder']);
+
 Route::prefix('user')->group(function () {
     Route::post('signup', [AuthUserController::class, 'register']);
     Route::post('login', [AuthUserController::class, 'login']);

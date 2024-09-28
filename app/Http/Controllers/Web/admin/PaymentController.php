@@ -16,7 +16,8 @@ class PaymentController extends Controller
         $paymentMethod = $request->input('payment_method');
         $perPage = $request->input('per_page', 10);
 
-        $payments = Payment::with(['user', 'designer','order'])
+        $payments = Payment::where('is_guest',0)
+                ->with(['user', 'designer','order'])
                 ->when($search, function ($query, $search) {
                     return $query->whereHas('user', function ($q) use ($search) {
                         $q->where('f_name', 'like', '%' . $search . '%');
@@ -37,6 +38,33 @@ class PaymentController extends Controller
 
 
         return view('admin.payments.index', compact('payments'));
+    }
+
+    public function guest(Request $request)
+    {
+
+        $search = $request->input('search');
+        $status = $request->input('status');
+        $paymentMethod = $request->input('payment_method');
+        $perPage = $request->input('per_page', 10);
+
+        $payments = Payment::where('is_guest',1)
+                ->with('order')
+                ->when($search, function ($query, $search) {
+                    return $query->where('guest_name', 'like', '%' . $search . '%')
+                                ->orWhere('guest_email', 'like', '%' . $search . '%')
+                                ->orWhere('guest_phone', 'like', '%' . $search . '%');
+                })
+                ->when($status, function ($query, $status) {
+                    return $query->where('status', $status);
+                })
+                ->when($paymentMethod, function ($query, $paymentMethod) {
+                    return $query->where('payment_method', $paymentMethod);
+                })
+                ->paginate($perPage);
+
+
+        return view('admin.payments.guest', compact('payments'));
     }
 
     public function updateStatus(Request $request, $id)

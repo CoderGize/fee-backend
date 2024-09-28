@@ -18,6 +18,11 @@ class Order extends Model
         'quantity',
         'payment_method',
         'on_cash',
+        'is_guest',
+        'guest_name',
+        'guest_email',
+        'guest_phone',
+        'guest_address',
     ];
 
     public function user()

@@ -68,19 +68,26 @@ class MyFatoorahController extends Controller {
         $customerEmail = null;
         $customerMobile = null;
 
-        if ($order->user) {
 
+        if ($order->user) {
             $customerName = $order->user->f_name . ' ' . $order->user->l_name;
             $customerEmail = $order->user->email;
             $customerMobile = $order->user->mobile ?? '12345678';
-        } elseif ($order->designer) {
+        }
 
+        elseif ($order->designer) {
             $customerName = $order->designer->f_name . ' ' . $order->designer->l_name;
             $customerEmail = $order->designer->email;
             $customerMobile = $order->designer->mobile ?? '12345678';
-        } else {
+        }
 
-            return response()->json(['error' => 'Order must belong to either a user or a designer'], 400);
+        elseif ($order->is_guest) {
+            $customerName = $order->guest_name;
+            $customerEmail = $order->guest_email;
+            $customerMobile = $order->guest_phone ?? '12345678';
+        }
+        else {
+            return response()->json(['error' => 'Order must belong to a user, designer, or guest'], 400);
         }
 
 

@@ -61,8 +61,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/coupons/delete/{id}',[CouponController::class,'destroy'])->name('admin.coupon.delete');
 
     Route::get('/admin/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
+    Route::get('/admin/payments/guests', [PaymentController::class, 'guest'])->name('admin.payments.guest');
     Route::put('/admin/payments/update-status/{id}', [PaymentController::class, 'updateStatus'])->name('admin.payments.updateStatus');
     Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/guests', [OrderController::class, 'guest'])->name('admin.orders.guest');
     Route::put('/admin/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/admin/users/delete/{id}', [UserController::class, 'delete'])->name('admin.users.delete');
