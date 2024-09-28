@@ -170,9 +170,9 @@ class WishlistController extends Controller
 
             $wishlist = null;
             if ($userID) {
-                $wishlist = Wishlist::where('user_id', $userID)->first();
+                $wishlist = Wishlist::firstOrCreate(['user_id' => $userID]);
             } elseif ($designerID) {
-                $wishlist = Wishlist::where('designer_id', $designerID)->first();
+                $wishlist = Wishlist::firstOrCreate(['designer_id' => $designerID]);
             }
 
 
