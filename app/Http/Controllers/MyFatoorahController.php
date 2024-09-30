@@ -44,7 +44,7 @@ class MyFatoorahController extends Controller {
             return response()->json([
                 'IsSuccess' => 'true',
                 'invoiceURL'=>$data['invoiceURL']
-            ]);
+            ],200);
         } catch (\Exception $e) {
             $response = ['IsSuccess' => 'false', 'Message' => $e->getMessage()];
             return response()->json($response,400);
