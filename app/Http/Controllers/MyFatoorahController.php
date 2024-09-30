@@ -47,7 +47,7 @@ class MyFatoorahController extends Controller {
             ]);
         } catch (\Exception $e) {
             $response = ['IsSuccess' => 'false', 'Message' => $e->getMessage()];
-            return response()->json($response);
+            return response()->json($response,400);
         }
     }
 
