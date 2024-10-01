@@ -231,7 +231,7 @@ class AuthDesignerController extends Controller
                , 422);
                 }
 
-            $designer = Designer::where('email', $request->email)->first();
+            $designer = Designer::where('email', $request->email)->where('verified',1)->first();
 
             if (!$designer) {
                 return response()->json([

@@ -230,12 +230,12 @@ class AuthUserController extends Controller
                , 422);
                 }
 
-             $user = User::where('email', $request->email)->first();
+             $user = User::where('email', $request->email)->where('verified',1)->first();
 
              if (!$user) {
                  return response()->json([
                      'status' => 'error',
-                     'message' => 'Invalid OTP or email.',
+                     'message' => 'Invalid email.',
                  ], 400);
              }
 
