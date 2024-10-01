@@ -219,7 +219,6 @@ class AuthDesignerController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email|max:255',
-                'otp' => 'required|integer',
                 'password' => 'required|string|min:8|confirmed',
             ]);
 
@@ -232,7 +231,7 @@ class AuthDesignerController extends Controller
                , 422);
                 }
 
-            $designer = Designer::where('email', $request->email)->where('otp', $request->otp)->first();
+            $designer = Designer::where('email', $request->email)->first();
 
             if (!$designer) {
                 return response()->json([
@@ -242,7 +241,6 @@ class AuthDesignerController extends Controller
             }
 
             $designer->password = Hash::make($request->password);
-            $designer->otp = null;
             $designer->save();
 
             return response()->json([

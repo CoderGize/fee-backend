@@ -218,7 +218,6 @@ class AuthUserController extends Controller
          try {
              $validator = Validator::make($request->all(), [
                  'email' => 'required|string|email|max:255',
-                 'otp' => 'required|integer',
                  'password' => 'required|string|min:8|confirmed',
              ]);
 
@@ -231,7 +230,7 @@ class AuthUserController extends Controller
                , 422);
                 }
 
-             $user = User::where('email', $request->email)->where('otp', $request->otp)->first();
+             $user = User::where('email', $request->email)->first();
 
              if (!$user) {
                  return response()->json([
