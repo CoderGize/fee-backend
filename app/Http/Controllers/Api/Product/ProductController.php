@@ -592,6 +592,11 @@ class ProductController extends Controller
                         $q->whereIn('categories.id', $request->categories);
                     });
                 }
+                if ($request->has('collections')) {
+                    $query->whereHas('collections', function ($q) use ($request) {
+                        $q->whereIn('collections.id', $request->collections);
+                    });
+                }
 
                 if ($request->has('price_min') && $request->has('price_max')) {
                     $query->whereBetween('price', [$request->price_min, $request->price_max]);
