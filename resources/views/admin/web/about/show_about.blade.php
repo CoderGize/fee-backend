@@ -127,24 +127,41 @@
                         </div>
 
                         <div class="row mb-3">
-
                             <div class="col-12 col-sm-6 d-block m-auto text-center">
-                                <label for="">
+                                <h6>
                                     <img src="/img/en.png" width="15px" alt="">
-                                    Why Us Text
-                                </label>
-                                <p>{{$about->whyus_text_en}}</p>
+                                    Why Us (EN)
+                                </h6>
+                                <ul>
+                                    @if(is_array($about->whyus_text_en))
+                                        @foreach($about->whyus_text_en as $key => $value)
+                                            <li><strong>{{ $key }} : </strong> {{ $value }}</li>
+                                        @endforeach
+                                    @else
+                                        <li>No data available</li>
+                                    @endif
+                                </ul>
                             </div>
 
                             <div class="col-12 col-sm-6 d-block m-auto text-center">
-                                <label for="">
+                                <h6>
                                     <img src="/img/ar.png" width="15px" alt="">
-                                    Why Us Text
-                                </label>
-                                <p>{{$about->whyus_text_ar}}</p>
+                                    Why Us (AR)
+                                </h6>
+                                <ul style="width: 600px;">
+                                    @if(is_array($about->whyus_text_ar))
+                                        @foreach($about->whyus_text_ar as $key => $value)
+                                            <li dir="rtl"><strong dir="rtl">{{ $key }}   : </strong>{{ $value }} </li>
+                                        @endforeach
+                                    @else
+                                        <li>No data available</li>
+                                    @endif
+                                </ul>
                             </div>
-
                         </div>
+
+
+
 
                     </div>
                 </div>

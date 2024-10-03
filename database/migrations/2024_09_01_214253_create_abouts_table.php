@@ -24,8 +24,8 @@ return new class extends Migration
             $table->longText('mission_ar')->nullable();
             $table->longText('whyus_title_en')->nullable();
             $table->longText('whyus_title_ar')->nullable();
-            $table->longText('whyus_text_en')->nullable();
-            $table->longText('whyus_text_ar')->nullable();
+            $table->json('whyus_text_en')->nullable();
+            $table->json('whyus_text_ar')->nullable();
             $table->timestamps();
         });
     }

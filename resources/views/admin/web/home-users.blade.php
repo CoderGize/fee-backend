@@ -18,6 +18,7 @@
                         First Visit</th>
                 </tr>
             </thead>
+
             <tbody>
                 @foreach ($user as $data)
                     <tr>

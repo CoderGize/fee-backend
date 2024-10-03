@@ -58,6 +58,8 @@ class AboutWebController extends Controller
 
                 $about->img = 'https://hooray-lb.sirv.com/fee/about/' . $hashed_image;
             }
+            $whyus_text_en = array_combine($request->whyus_text_en_keys, $request->whyus_text_en_values);
+            $whyus_text_ar = array_combine($request->whyus_text_ar_keys, $request->whyus_text_ar_values);
 
             $about->about_en = $request->about_en;
             $about->about_ar = $request->about_ar;
@@ -67,8 +69,11 @@ class AboutWebController extends Controller
             $about->mission_ar = $request->mission_ar;
             $about->whyus_title_en = $request->whyus_title_en;
             $about->whyus_title_ar = $request->whyus_title_ar;
-            $about->whyus_text_en = $request->whyus_text_en;
-            $about->whyus_text_ar = $request->whyus_text_ar;
+            // $about->whyus_text_en = $request->whyus_text_en;
+            // $about->whyus_text_ar = $request->whyus_text_ar;
+            $about->whyus_text_en = $whyus_text_en;
+            $about->whyus_text_ar = $whyus_text_ar;
+
 
             $about->save();
 
