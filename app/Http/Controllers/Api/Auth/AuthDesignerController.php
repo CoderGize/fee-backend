@@ -51,6 +51,7 @@ class AuthDesignerController extends Controller
             ]);
 
 
+
             $token = $designer->createToken('auth_token')->plainTextToken;
 
             return response()->json([

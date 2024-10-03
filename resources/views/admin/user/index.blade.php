@@ -78,7 +78,7 @@
                                                 <td class="text-sm">{{ $designer->username }}</td>
                                                 <td class="text-sm">
                                                     @if ($designer->image)
-                                                        <img src="{{ asset('storage/' . $designer->image) }}" alt="Profile Image" width="50">
+                                                        <img src="{{ asset( $designer->image) }}" alt="Profile Image" width="50">
                                                     @else
                                                         No Image
                                                     @endif
