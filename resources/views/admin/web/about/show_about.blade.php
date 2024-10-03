@@ -148,7 +148,7 @@
                                     <img src="/img/ar.png" width="15px" alt="">
                                     Why Us (AR)
                                 </h6>
-                                <ul style="width: 600px;">
+                                <ul style="width: 700px;">
                                     @if(is_array($about->whyus_text_ar))
                                         @foreach($about->whyus_text_ar as $key => $value)
                                             <li dir="rtl"><strong dir="rtl">{{ $key }}   : </strong>{{ $value }} </li>
