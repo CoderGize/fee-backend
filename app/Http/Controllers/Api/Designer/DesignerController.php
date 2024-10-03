@@ -44,7 +44,7 @@ class DesignerController extends Controller
             $soldProducts = Order::whereHas('products', function ($query) use ($designerId) {
                 $query->where('designer_id', $designerId);
             })->count();
-            $salesRate = $totalProducts > 0 ? ($soldProducts / $totalProducts) * 100 : 0;
+            $salesRate = $totalProducts > 0 ? ($soldProducts / $totalProducts) : 0;
 
 
             $topOrders = Order::whereHas('products', function ($query) use ($designerId) {

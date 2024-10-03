@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MyFatoorahController;
+use App\Http\Controllers\Web\admin\AdminController;
 use App\Http\Controllers\Web\admin\Authcontroller;
 use App\Http\Controllers\Web\admin\CategoriesController;
 use App\Http\Controllers\Web\admin\CollocationController;
@@ -51,6 +52,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/', function () {
     //     return true;
     // })->name('admin.home');
+
+    Route::get('/admin/managers', [AdminController::class, 'index'])->name('admin.managers');
+    Route::get('/admin/managers/delete/{id}', [AdminController::class, 'delete'])->name('admin.users.delete');
+    Route::post('/admin/managers/store', [AdminController::class,  'store'])->name('admin.managers.store');
+    Route::get('/admin/managers/edit/{id}',[AdminController::class,'edit'])->name('admin.managers.edit');
+    Route::put('/admin/managers/update/{id}',[AdminController::class,'update'])->name('admin.managers.update');
 
     Route::get('/admin', [DashboardController::class, 'dash'])->name('admin.home');
     Route::get('/admin/coupons',[CouponController::class,'index'])->name('admin.coupons.index');

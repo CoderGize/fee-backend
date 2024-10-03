@@ -17,6 +17,7 @@ class Authcontroller extends Controller
 
 
             if ($user->is_admin) {
+                session(['role' => $user->role]);
                 return redirect()->route('admin.home');
             } else {
                 Auth::logout();

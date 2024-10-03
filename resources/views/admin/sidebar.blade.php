@@ -23,6 +23,7 @@
                 </a>
             </div>
 
+            @if (session('role') === 'admin')
             <li class="nav-item">
                 <a class="nav-link rounded-3 {{ 'admin' == request()->path() ? 'main-color' : '' }}"
                     href="{{ url('/admin') }}">
@@ -31,6 +32,17 @@
                         <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ '/admin/managers/*' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin/managers') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-people text-primary text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Admins</span>
                 </a>
             </li>
 
@@ -149,6 +161,60 @@
                     <span class="nav-link-text ms-1">Coupon</span>
                 </a>
             </li>
+
+            @endif
+
+            @if (session('role') === 'staff')
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ 'admin' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ request()->is('admin/designers*') ? 'main-color' : ' ' }}"
+                    href="{{ url('/admin/designers') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-users text-warning text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Designers</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ request()->is('admin/products*') ? 'main-color' : ' ' }}"
+                    href="{{ url('/admin/products') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-box text-sm opacity-10" style="color: rgb(12, 52, 230)"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">products</span>
+                </a>
+            </li>
+
+            @endif
+
+            @if (session('role') === 'editor')
+            <li class="nav-item">
+                <a class="nav-link rounded-3 {{ 'admin' == request()->path() ? 'main-color' : '' }}"
+                    href="{{ url('/admin') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Dashboard</span>
+                </a>
+            </li>
+
+            @endif
+
 
         </ul>
     </div>

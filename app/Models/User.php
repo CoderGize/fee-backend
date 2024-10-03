@@ -30,7 +30,8 @@ class User extends Authenticatable
         'locality',
         'region',
         'birth_day',
-        'is_admin'
+        'is_admin',
+        "role"
     ];
 
     /**
