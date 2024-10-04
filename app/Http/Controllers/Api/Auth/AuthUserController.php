@@ -27,7 +27,7 @@ class AuthUserController extends Controller
                 'password' => 'required|string|min:8|confirmed',
                 'address' => 'nullable|string',
                 'city' => 'nullable|string|max:255',
-                'phone_number' => 'nullable|string|max:20',
+                'phone_number' => 'nullable|numeric|digits_between:10,20',
             ]);
 
             if ($validator->fails()) {
@@ -303,7 +303,7 @@ class AuthUserController extends Controller
                  'l_name' => 'nullable|string|max:255',
                  'address' => 'nullable|string',
                  'city' => 'nullable|string',
-                 'phone_number' => 'nullable|string|max:20',
+                 'phone_number' => 'nullable|numeric|digits_between:10,20',
              ]);
 
              if ($validator->fails()) {

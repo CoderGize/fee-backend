@@ -80,6 +80,7 @@
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment ID</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User phone</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order ID</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Amount</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
@@ -96,6 +97,15 @@
                                                         {{ $payment->user->f_name }} {{ $payment->user->l_name }}
                                                     @elseif ($payment->designer)
                                                         {{ $payment->designer->f_name }} {{ $payment->designer->l_name }}
+                                                    @else
+                                                        N/A
+                                                    @endif
+                                                </td>
+                                                <td class="text-sm">
+                                                    @if ($payment->user)
+                                                        +{{ $payment->user->phone_number }}
+                                                    @elseif ($payment->designer)
+                                                        +{{ $payment->designer->phone_number }}
                                                     @else
                                                         N/A
                                                     @endif

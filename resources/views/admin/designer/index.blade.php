@@ -74,6 +74,7 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Profile Image</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">First Name</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Last Name</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">phone</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Username</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created At</th>
@@ -97,6 +98,7 @@
                                                 <td class="text-sm">{{ $designer->f_name }}</td>
 
                                                 <td class="text-sm">{{ $designer->l_name }}</td>
+                                                <td class="text-sm">+{{ $designer->phone_number }}</td>
 
                                                 <td class="text-sm">{{ $designer->email }}</td>
 
