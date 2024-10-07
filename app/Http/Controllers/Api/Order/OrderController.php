@@ -354,7 +354,7 @@ class OrderController extends Controller
                 ->when($designerID, function ($query, $designerID) {
                     return $query->where('designer_id', $designerID);
                 })
-                ->with('products')
+                ->with('products.images')
                 ->get();
 
             return response()->json([
@@ -406,7 +406,7 @@ class OrderController extends Controller
 
             $order = Order::where('id', $id)
                 ->where('user_id', Auth::id())
-                ->with('products','payment','shipment')
+                ->with('products.images','payment','shipment')
                 ->firstOrFail();
 
             return response()->json([
