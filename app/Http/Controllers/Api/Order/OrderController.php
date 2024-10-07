@@ -86,6 +86,7 @@ class OrderController extends Controller
             $order->save();
 
             $totalPrice = 0;
+            $totalQuantity = 0;
 
 
             foreach ($request->products as $item) {
@@ -108,6 +109,7 @@ class OrderController extends Controller
                 ]);
 
                 $totalPrice += $quantity * $price;
+                $totalQuantity += $quantity;
             }
 
             $discountAmount = 0;
@@ -135,7 +137,7 @@ class OrderController extends Controller
                 }
             }
 
-
+            $order->quantity = $totalQuantity;
             $order->total_price = $totalPrice - $discountAmount;
             $order->discount = $discountAmount;
             $order->save();
