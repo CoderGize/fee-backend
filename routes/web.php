@@ -119,6 +119,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}/show', [ProductController::class, 'show'])->name('admin.products.show');
         Route::put('/{id}', [ProductController::class, 'update'])->name('admin.products.update');
         Route::get('/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+        Route::get('remove/image/{id}', [ProductController::class, 'remove_image'])->name('admin.products.remove_image');
 
         // Route for fetching subcategories by selected categories
         Route::get('/subcategories', [ProductController::class, 'getSubcategoriesByCategories'])->name('admin.products.getSubcategories');

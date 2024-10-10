@@ -80,13 +80,13 @@
                                     <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="price" class="form-label">Price</label>
-                                            <input type="number" name="price" class="form-control" id="price" step="0.01" value="{{ $product->price }}" required>
+                                            <input type="number" name="price" class="form-control" id="price" step="0.01" min="0" value="{{ $product->price }}" required>
                                         </div>
                                     </div>
                                     <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="sale_price" class="form-label">Sale Price</label>
-                                            <input type="number" name="sale_price" class="form-control" id="sale_price" step="0.01" value="{{ $product->sale_price }}">
+                                            <input type="number" name="sale_price" class="form-control" id="sale_price" step="0.01" min="0" value="{{ $product->sale_price }}">
                                         </div>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@
                                     <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="discount_percentage" class="form-label">Discount Percentage</label>
-                                            <input type="number" name="discount_percentage" class="form-control" id="discount_percentage" max="100" value="{{ $product->discount_percentage }}">
+                                            <input type="number" name="discount_percentage" class="form-control" id="discount_percentage" min="0"  max="100" value="{{ $product->discount_percentage }}">
                                         </div>
                                     </div>
                                 </div>
@@ -209,14 +209,26 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-12 col-sm-6">
+                                <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="images" class="form-label">Product Images</label>
                                             <input type="file" name="images[]" class="form-control" id="images" multiple onchange="previewImages()">
                                             <small class="form-text text-muted">You can select multiple images to upload.</small>
                                             <div id="image-previews" class="mt-3">
                                                 @foreach ($product->images as $image)
-                                                    <img src="{{ $image->image_path }}" alt="Product Image" style="height:100px; width:100px;" class="img-thumbnail">
+                                                    <div>
+                                                        <img src="{{ $image->image_path }}" alt="Product Image" style="height:100px; width:100px;"  class="img-thumbnail">
+                                                        @if ($image->id)
+                                                        <a href="{{ route('admin.products.remove_image', $image->id) }}"
+
+                                                        data-toggle="tooltip" data-original-title="delete blog"
+                                                        onclick="return confirm('Are you sure you want to delete this image?')">
+
+                                                        <i class="bi bi-trash"></i>
+                                                      </a>
+
+                                                        @endif
+                                                    </div>
                                                 @endforeach
                                             </div>
                                         </div>
@@ -224,7 +236,7 @@
                                     <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="quantity" class="form-label">Quantity</label>
-                                            <input type="number" name="quantity" class="form-control" id="quantity" step="0.01" value="{{ $product->quantity }}">
+                                            <input type="number" name="quantity" class="form-control" id="quantity" min="0"  step="0.01" value="{{ $product->quantity }}">
                                         </div>
                                     </div>
                                 </div>
@@ -307,6 +319,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+</script>
+<script>
+    function previewImages() {
+        const preview = document.getElementById('image-previews');
+        const files = document.getElementById('images').files;
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.marginRight = '10px';
+
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.style.background = 'none';
+                removeButton.style.border = 'none';
+                const removeIcon = document.createElement('i');
+                removeIcon.className = 'bi bi-trash';
+                removeButton.appendChild(removeIcon);
+                removeButton.style.cursor = 'pointer';
+                removeButton.onclick = function() {
+
+                    const imageContainer = img.parentNode;
+                    imageContainer.remove();
+
+
+                    const fileInput = document.getElementById('images');
+                    const filesArray = Array.prototype.slice.call(fileInput.files);
+                    const index = filesArray.indexOf(file);
+                    filesArray.splice(index, 1);
+                    fileInput.files = filesArray;
+                };
+
+                const imageContainer = document.createElement('div');
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(removeButton);
+
+                preview.appendChild(imageContainer);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 </script>
 </html>
 

@@ -69,6 +69,10 @@
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                content
+                                            </th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Date
                                             </th>
                                             <th
@@ -99,6 +103,11 @@
                                                 <td>
                                                     <p class="text-xs text-truncate font-weight-bold mb-0">
                                                         {{ $data->title_en }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs text-truncate font-weight-bold mb-0">
+                                                        {{ $data->content }}
                                                     </p>
                                                 </td>
 

@@ -188,7 +188,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-12 col-sm-6">
+                                <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="images" class="form-label">Product Images</label>
                                             <input type="file" name="images[]" class="form-control" id="images" multiple onchange="previewImages()">
@@ -289,30 +289,50 @@
 });
 
 </script>
-    <script>
+<script>
+    function previewImages() {
+        const preview = document.getElementById('image-previews');
+        const files = document.getElementById('images').files;
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.marginRight = '10px';
 
-        function previewImages() {
-            const preview = document.getElementById('image-previews');
-            preview.innerHTML = '';
-            const files = document.getElementById('images').files;
-            for (const file of files) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = '100px';
-                    img.style.height = '100px';
-                    img.style.marginRight = '10px';
-                    preview.appendChild(img);
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.style.background = 'none';
+                removeButton.style.border = 'none';
+                const removeIcon = document.createElement('i');
+                removeIcon.className = 'bi bi-trash';
+                removeButton.appendChild(removeIcon);
+                removeButton.style.cursor = 'pointer';
+                removeButton.onclick = function() {
+
+                    const imageContainer = img.parentNode;
+                    imageContainer.remove();
+
+
+                    const fileInput = document.getElementById('images');
+                    const filesArray = Array.prototype.slice.call(fileInput.files);
+                    const index = filesArray.indexOf(file);
+                    filesArray.splice(index, 1);
+                    fileInput.files = filesArray;
                 };
-                reader.readAsDataURL(file);
-            }
+
+                const imageContainer = document.createElement('div');
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(removeButton);
+
+                preview.appendChild(imageContainer);
+            };
+            reader.readAsDataURL(file);
         }
-
-
-
-
-        </script>
+    }
+</script>
     @include('admin.script')
 </body>
 </html>

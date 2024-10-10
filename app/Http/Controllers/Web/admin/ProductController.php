@@ -232,6 +232,14 @@ class ProductController extends Controller
                 $product->subcategories()->attach($subcategory->id);
             }
         }
+        $collections = $request->input('collections');
+        if ($collections) {
+            $product->collections()->detach();
+            foreach ($collections as $collectionID) {
+                $collection = Collection::firstOrCreate(['id' => $collectionID]);
+                $product->collections()->attach($collection->id);
+            }
+        }
 
 
         $product->save();
@@ -396,5 +404,11 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('message', 'Product deleted successfully!');
+    }
+
+    public function remove_image($id){
+        $image=ProductImage::findOrFail($id);
+        $image->delete();
+        return redirect()->back()->with('message', 'Image deleted successfully!');
     }
 }

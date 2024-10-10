@@ -86,6 +86,13 @@ class BlogWebController extends Controller
             $blog->name_ar = $request->name_ar;
             $blog->title_en = $request->title_en;
             $blog->title_ar = $request->title_ar;
+            $blog->content_ar_1=$request->content_ar_1;
+            $blog->content_en_1=$request->content_en_1;
+            $blog->content_ar_2=$request->content_ar_2;
+            $blog->content_en_2=$request->content_en_2;
+            $blog->sub_title_ar=$request->sub_title_ar;
+            $blog->sub_title_en=$request->sub_title_en;
+
             $blog->date = Carbon::parse($request->date)->format('F j, Y');
 
             $blog->save();
