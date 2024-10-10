@@ -144,7 +144,7 @@
                                            Sub Title
                                         </label>
                                         <input type="text" name="sub_title_ar" value="{{ $blog->sub_title_en }}"
-                                            class="form-control" required>
+                                            class="form-control" >
                                     </div>
                                 </div>
 
