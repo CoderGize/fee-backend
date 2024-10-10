@@ -92,6 +92,33 @@ class BlogWebController extends Controller
             $blog->content_en_2=$request->content_en_2;
             $blog->sub_title_ar=$request->sub_title_ar;
             $blog->sub_title_en=$request->sub_title_en;
+            $imagesData = [];
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    // Generate a unique hashed image name
+                    $hashed_image = Str::random(20) . '.' . $image->getClientOriginalExtension();
+                    $filename = '/fee/blogs/' . $hashed_image;
+
+                    // Get image content
+                    $imageContent = file_get_contents($image->getPathname());
+
+                    // Upload the image via Guzzle
+                    $response = $this->client->request('POST', "https://api.sirv.com/v2/files/upload?filename=" . urlencode($filename), [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $this->token,
+                            'Content-Type' => 'application/octet-stream',
+                        ],
+                        'body' => $imageContent,
+                    ]);
+
+                    // Store the URL of the uploaded image in $imagesData
+                    $imagesData[] = [
+                    'https://hooray-lb.sirv.com/fee/product/' . $hashed_image,
+                    ];
+                }
+                $blog->blog_images=$imagesData;
+            }
+
 
             $blog->date = Carbon::parse($request->date)->format('F j, Y');
 
@@ -168,6 +195,38 @@ class BlogWebController extends Controller
             $blog->title_en = $request->title_en;
             $blog->title_ar = $request->title_ar;
             $blog->date = Carbon::parse($request->date)->format('F j, Y');
+            $blog->content_ar_1=$request->content_ar_1;
+            $blog->content_en_1=$request->content_en_1;
+            $blog->content_ar_2=$request->content_ar_2;
+            $blog->content_en_2=$request->content_en_2;
+            $blog->sub_title_ar=$request->sub_title_ar;
+            $blog->sub_title_en=$request->sub_title_en;
+            $imagesData = [];
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    // Generate a unique hashed image name
+                    $hashed_image = Str::random(20) . '.' . $image->getClientOriginalExtension();
+                    $filename = '/fee/blogs/' . $hashed_image;
+
+                    // Get image content
+                    $imageContent = file_get_contents($image->getPathname());
+
+                    // Upload the image via Guzzle
+                    $response = $this->client->request('POST', "https://api.sirv.com/v2/files/upload?filename=" . urlencode($filename), [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $this->token,
+                            'Content-Type' => 'application/octet-stream',
+                        ],
+                        'body' => $imageContent,
+                    ]);
+
+                    // Store the URL of the uploaded image in $imagesData
+                    $imagesData[] = [
+                    'https://hooray-lb.sirv.com/fee/product/' . $hashed_image,
+                    ];
+                }
+                $blog->blog_images=$imagesData;
+            }
 
             $blog->save();
 

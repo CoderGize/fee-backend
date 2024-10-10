@@ -69,7 +69,15 @@
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                content
+                                                Sub Title
+                                            </th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Paragraph 1
+                                            </th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Paragraph 2
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -107,9 +115,35 @@
                                                 </td>
                                                 <td>
                                                     <p class="text-xs text-truncate font-weight-bold mb-0">
-                                                        {{ $data->content }}
+                                                        {{ $data->sub_title_en}}
                                                     </p>
                                                 </td>
+                                                <td>
+                                                    <p class="text-xs text-truncate font-weight-bold mb-0">
+                                                        {!! $data->content_en_1 !!}
+                                                    </p>
+                                                </td>
+
+                                                <td>
+                                                    <p class="text-xs text-truncate font-weight-bold mb-0">
+                                                        {!! $data->content_en_2 !!}
+                                                    </p>
+                                                </td>
+
+
+                                                @if($data->blog_images)
+
+                                                @foreach($data->blog_images as $blog_image)
+
+                                                    <span class="size-item"><img src="{{ $blog_image }}" alt="{{ $blog_image }}" class="product-image">/span>
+
+                                                @endforeach
+
+                                                @else
+
+                                                <span class="text-muted">N/A</span>
+
+                                                @endif
 
                                                 <td>
                                                     <p class="text-xs text-truncate font-weight-bold mb-0">

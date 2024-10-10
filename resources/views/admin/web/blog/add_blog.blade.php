@@ -70,6 +70,22 @@
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/en.png" width="15px" alt="">
+                            Sub Title
+                        </label>
+                        <input type="text" name="sub_title_en" class="form-control" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            <img src="/img/ar.png" width="15px" alt="">
+                            Sub Title
+                        </label>
+                        <input type="text" name="sub_title_ar" class="form-control" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
                           <img src="/img/en.png" width="15px" alt="">
                             paragraph 1
                         </label>
@@ -80,21 +96,21 @@
                           <img src="/img/ar.png" width="15px" alt="">
                             paragraph 1
                         </label>
-                        <textarea name="content_en_1" id="content" class="form-control" rows="10"></textarea>
+                        <textarea name="content_en_1" id="content_1" class="form-control" rows="10"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">
                           <img src="/img/en.png" width="15px" alt="">
                             paragraph 2
                         </label>
-                        <textarea name="content_ar_2" id="content" class="form-control" rows="10"></textarea>
+                        <textarea name="content_ar_2" id="content_2" class="form-control" rows="10"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">
                           <img src="/img/ar.png" width="15px" alt="">
                             paragraph 2
                         </label>
-                        <textarea name="content_en_2" id="content" class="form-control" rows="10"></textarea>
+                        <textarea name="content_en_2" id="content_3" class="form-control" rows="10"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="images" class="form-label">Paragraph Images</label>
@@ -126,28 +142,51 @@
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script>
     CKEDITOR.replace('content');
+    CKEDITOR.replace('content_1');
+    CKEDITOR.replace('content_2');
+    CKEDITOR.replace('content_3');
 </script>
 <script>
+    function previewImages() {
+        const preview = document.getElementById('image-previews');
+        const files = document.getElementById('images').files;
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.marginRight = '10px';
 
-function previewImages() {
-    const preview = document.getElementById('image-previews');
-    preview.innerHTML = '';
-    const files = document.getElementById('images').files;
-    for (const file of files) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.style.width = '100px';
-            img.style.height = '100px';
-            img.style.marginRight = '10px';
-            preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.style.background = 'none';
+                removeButton.style.border = 'none';
+                const removeIcon = document.createElement('i');
+                removeIcon.className = 'bi bi-trash';
+                removeButton.appendChild(removeIcon);
+                removeButton.style.cursor = 'pointer';
+                removeButton.onclick = function() {
+
+                    const imageContainer = img.parentNode;
+                    imageContainer.remove();
+
+
+                    const fileInput = document.getElementById('images');
+                    const filesArray = Array.prototype.slice.call(fileInput.files);
+                    const index = filesArray.indexOf(file);
+                    filesArray.splice(index, 1);
+                    fileInput.files = filesArray;
+                };
+
+                const imageContainer = document.createElement('div');
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(removeButton);
+
+                preview.appendChild(imageContainer);
+            };
+            reader.readAsDataURL(file);
+        }
     }
-}
-
-
-
-
 </script>
