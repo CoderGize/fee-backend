@@ -121,7 +121,7 @@
                                                 <td class="text-sm">
                                                     <ul>
                                                         @foreach ($order->products as $product)
-                                                            <li>{{ $product->name }} - Quantity: {{ $product->pivot->quantity }}</li>
+                                                            <li>{{ $product->pivot->quantity }} - Color: {{ $product->pivot->color }} - Size {{ $product->pivot->size }}</li>
                                                         @endforeach
                                                     </ul>
                                                 </td>
