@@ -750,7 +750,7 @@ class ProductController extends Controller
                 $perPage = $request->per_page ? $request->per_page : 10;
 
 
-                $collections = Collection::paginate($perPage);
+                $collections = Collection::with('products')->paginate($perPage);
 
 
 
@@ -779,30 +779,22 @@ class ProductController extends Controller
         public function collections_new(Request $request)
         {
             try {
+                $perPage = $request->per_page ? $request->per_page : 10;
 
-            $perPage = $request->per_page ? $request->per_page : 10;
-
-
-            $collections = Collection::paginate($perPage);
-
-
-
+                $collections = Collection::withCount('products')->paginate($perPage);
 
                 $response = [
                     'status' => 'success',
                     'data' => $collections,
                 ];
 
+                if (Auth::user()) {
+                    $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                    $response['wishlist'] = $wishlistProductIds;
+                }
 
-
-            if (Auth::user()) {
-                $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
-                $response['wishlist'] = $wishlistProductIds;
-            }
-
-            return response()->json($response, 200);
+                return response()->json($response, 200);
             } catch (\Exception $e) {
-
                 return response()->json([
                     'status' => 'error',
                     'message' => $e->getMessage(),
