@@ -127,6 +127,8 @@ class WishlistController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_id' => 'required|exists:products,id',
                 'quantity' => 'required|integer|min:1',
+                'size'=>'required|string',
+                'color'=>'required|string',
             ]);
 
             if ($validator->fails()) {
@@ -180,7 +182,10 @@ class WishlistController extends Controller
 
 
             $wishlist->products()->syncWithoutDetaching([
-                $product->id => ['quantity' => $request->quantity]
+                $product->id => [
+                    'quantity' => $request->quantity,
+                    'color'=>$request->color,
+                    'size'=>$request->size]
             ]);
 
             $wishlist = $wishlist->load('products');
@@ -205,6 +210,8 @@ class WishlistController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_id' => 'required|exists:products,id',
                 'quantity' => 'required|integer|min:0',
+                'size'=>'required|string',
+                'color'=>'required|string',
             ]);
 
             if ($validator->fails()) {
@@ -245,7 +252,10 @@ class WishlistController extends Controller
                 $wishlist->products()->detach($product->id);
             } else {
                 $wishlist->products()->syncWithoutDetaching([
-                    $product->id => ['quantity' => $request->quantity]
+                    $product->id => [
+                        'quantity' => $request->quantity,
+                        'color'=>$request->color,
+                        'size'=>$request->size]
                 ]);
             }
 

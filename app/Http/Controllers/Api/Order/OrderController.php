@@ -23,6 +23,8 @@ class OrderController extends Controller
             $validator = Validator::make($request->all(), [
                 'products' => 'required|array',
                 'products.*.product_id' => 'required|exists:products,id',
+                'products.*.color' => 'required',
+                'products.*.size' => 'required',
                 'products.*.quantity' => 'required|integer|min:1',
                 'promo_code' => 'nullable|string',
                 'guest_name' => 'required_if:is_guest,true|string',
@@ -106,6 +108,8 @@ class OrderController extends Controller
                 $order->products()->attach($product->id, [
                     'quantity' => $quantity,
                     'price' => $price,
+                    'size'=>$item->size,
+                    'color'=>$item->color
                 ]);
 
                 $totalPrice += $quantity * $price;

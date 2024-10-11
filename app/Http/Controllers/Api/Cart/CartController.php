@@ -239,6 +239,8 @@ class CartController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_id' => 'required|exists:products,id',
                 'quantity' => 'required|integer|min:1',
+                'size'=>'required|string',
+                'color'=>'required|string',
             ]);
 
             if ($validator->fails()) {
@@ -291,7 +293,10 @@ class CartController extends Controller
 
 
             $cart->products()->syncWithoutDetaching([
-                $product->id => ['quantity' => $request->quantity]
+                $product->id => [
+                    'quantity' => $request->quantity,
+                    'color'=>$request->color,
+                    'size'=>$request->size]
             ]);
 
 
@@ -321,6 +326,8 @@ class CartController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_id' => 'required|exists:products,id',
                 'quantity' => 'required|integer|min:0',
+                'size'=>'required|string',
+                'color'=>'required|string',
             ]);
 
             if ($validator->fails()) {
@@ -363,7 +370,10 @@ class CartController extends Controller
             } else {
 
                 $cart->products()->syncWithoutDetaching([
-                    $product->id => ['quantity' => $request->quantity]
+                    $product->id => [
+                    'quantity' => $request->quantity,
+                    'color'=>$request->color,
+                    'size'=>$request->size]
                 ]);
             }
 
