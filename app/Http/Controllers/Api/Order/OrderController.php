@@ -20,7 +20,7 @@ class OrderController extends Controller
     public function createOrder(Request $request)
     {
         try {
-            $validator = Validator::make($request->json()->all(), [
+            $validator = Validator::make($request->all(), [
                 'products' => 'required|array',
                 'products.*.product_id' => 'required|exists:products,id',
                 'products.*.quantity' => 'required|integer|min:1',
@@ -36,7 +36,7 @@ class OrderController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 'error',
-                    'products' => $request->json()->get('products'),
+                    'products' => $request->products,
                     'message' => $validator->errors(),
                 ], 422);
             }
@@ -108,8 +108,8 @@ class OrderController extends Controller
                 $order->products()->attach($product->id, [
                     'quantity' => $quantity,
                     'price' => $price,
-                    'size'=>$item->size,
-                    'color'=>$item->color
+                    'size' => $item['size'],
+                    'color' => $item['color']
                 ]);
 
                 $totalPrice += $quantity * $price;
