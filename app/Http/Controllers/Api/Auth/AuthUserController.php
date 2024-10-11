@@ -303,7 +303,7 @@ class AuthUserController extends Controller
                  'l_name' => 'nullable|string|max:255',
                  'address' => 'nullable|string',
                  'city' => 'nullable|string',
-                 'phone_number' => 'nullable|numeric|digits_between:10,20',
+                 'phone_number' => 'nullable|numeric|digits_between:10,25',
              ]);
 
              if ($validator->fails()) {
