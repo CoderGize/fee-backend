@@ -15,7 +15,7 @@
 
                     <div class="row">
                         <div class="col-6 fs-6 text-center mt-4">
-                            Welcome to our system <span class="fw-bold fs-5">&nbsp; {{ Auth::user()->name }}</span> !
+                            Welcome to our system <span class="fw-bold fs-5">&nbsp; {{ Auth::user()->f_name }}</span> !
                             <p>Please fill this form below to access our control management system!</p>
                         </div>
                         <div class="col-6">
