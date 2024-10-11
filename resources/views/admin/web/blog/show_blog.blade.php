@@ -3,6 +3,8 @@
 
 <head>
     @include('admin.web.css')
+
+
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -81,6 +83,10 @@
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Paragraph images
+                                            </th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Date
                                             </th>
                                             <th
@@ -95,11 +101,11 @@
                                         @forelse ($blog as $data)
                                             <tr class="text-center">
                                                 <td>
-                                                    <img src="{{ $data->img }}" class="w-25" alt="">
+                                                    <img src="{{ $data->img }}" class="w-100" alt="">
                                                 </td>
 
                                                 <td>
-                                                    <img src="{{ $data->profile }}" class="w-25" alt="">
+                                                    <img src="{{ $data->profile }}" class="w-100" alt="">
                                                 </td>
 
                                                 <td>
@@ -119,31 +125,36 @@
                                                     </p>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs text-truncate font-weight-bold mb-0">
-                                                        {!! $data->content_en_1 !!}
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ Str::limit(strip_tags($data->content_en_1), 50) }}
+                                                        <a href="#" data-bs-toggle="modal" class="btn btn-link p-0 text-xs" data-bs-target="#contentModal_{{ $data->id }}">
+                                                            ...Read more
+                                                        </a>
                                                     </p>
                                                 </td>
-
                                                 <td>
-                                                    <p class="text-xs text-truncate font-weight-bold mb-0">
-                                                        {!! $data->content_en_2 !!}
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ Str::limit(strip_tags($data->content_en_2), 50) }}
+                                                        <a href="#" data-bs-toggle="modal" class="btn btn-link p-0 text-xs" data-bs-target="#contentModal_{{ $data->id }}">
+                                                            ...Read more
+                                                        </a>
                                                     </p>
                                                 </td>
+                                                    <td>
+                                                    @if($data->blog_images)
 
+                                                    @foreach($data->blog_images as $blog_image)
 
-                                                @if($data->blog_images)
+                                                        <span class="size-item"><img src="{{ $blog_image }}" alt="{{ $blog_image }}" class="product-image"></span>
 
-                                                @foreach($data->blog_images as $blog_image)
+                                                    @endforeach
 
-                                                    <span class="size-item"><img src="{{ $blog_image }}" alt="{{ $blog_image }}" class="product-image">/span>
+                                                    @else
 
-                                                @endforeach
+                                                    <span class="text-muted">N/A</span>
 
-                                                @else
-
-                                                <span class="text-muted">N/A</span>
-
-                                                @endif
+                                                    @endif
+                                                    </td>
 
                                                 <td>
                                                     <p class="text-xs text-truncate font-weight-bold mb-0">
@@ -176,6 +187,29 @@
                                                     </a>
                                                 </td>
                                             </tr>
+                                            @foreach ($blog as $data)
+                                            <!-- Modal for content_en_1 and content_en_2 -->
+                                            <div class="modal fade" id="contentModal_{{ $data->id }}" tabindex="-1" aria-labelledby="contentModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="contentModalLabel">{{ $data->title_en }}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h6>Paragraph 1</h6>
+                                                            <p>{!! $data->content_en_1 !!}</p>
+                                                            <h6>Paragraph 2</h6>
+                                                            <p>{!! $data->content_en_2 !!}</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+
                                         @empty
                                             <tr>
                                                 <td colspan="16">
@@ -197,7 +231,7 @@
             @include('admin.web.footer')
         </div>
     </main>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     @include('admin.web.script')
 
 </body>
