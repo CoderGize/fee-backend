@@ -140,22 +140,36 @@
                                                         </a>
                                                     </p>
                                                 </td>
-                                                    <td>
-                                                    @if($data->blog_images)
+                                                <td class="">
+                                                @if ($data->blog_images)
+                                                    @php
+                                                        $blog_images = json_decode($data->blog_images, true);
+                                                    @endphp
 
-                                                    @foreach($data->blog_images as $blog_image)
+                                                    @if (is_array($blog_images) && count($blog_images) > 0)
+                                                        @php
 
-                                                        <span class="size-item"><img src="{{ $blog_image }}" alt="{{ $blog_image }}" class="product-image"></span>
+                                                            $first_blog_image = $blog_images[0];
+                                                        @endphp
 
-                                                    @endforeach
-
+                                                        @if (is_string($first_blog_image))
+                                                            <span class="size-item">
+                                                                <img src="{{ $first_blog_image }}" alt="Blog Image" class="w-100">
+                                                            </span>
+                                                        @elseif (is_array($first_blog_image) && isset($first_blog_image[0]))
+                                                            <span class="size-item">
+                                                                <img src="{{ $first_blog_image[0] }}" alt="Blog Image" class="w-100">
+                                                            </span>
+                                                        @else
+                                                            <span class="text-muted">Invalid image data</span>
+                                                        @endif
                                                     @else
-
-                                                    <span class="text-muted">N/A</span>
-
+                                                        <span class="text-muted">No images available</span>
                                                     @endif
-                                                    </td>
-
+                                                @else
+                                                    <span class="text-muted">N/A</span>
+                                                @endif
+                                            </td>
                                                 <td>
                                                     <p class="text-xs text-truncate font-weight-bold mb-0">
                                                         {{ $data->date }}

@@ -112,9 +112,7 @@ class BlogWebController extends Controller
                     ]);
 
                     // Store the URL of the uploaded image in $imagesData
-                    $imagesData[] = [
-                    'https://hooray-lb.sirv.com/fee/product/' . $hashed_image,
-                    ];
+                    $imagesData[] = 'https://hooray-lb.sirv.com/fee/blogs/' . $hashed_image;
                 }
                 $blog->blog_images=$imagesData;
             }
@@ -221,9 +219,9 @@ class BlogWebController extends Controller
                     ]);
 
                     // Store the URL of the uploaded image in $imagesData
-                    $imagesData[] = [
-                    'https://hooray-lb.sirv.com/fee/product/' . $hashed_image,
-                    ];
+                    $imagesData[] =
+                    'https://hooray-lb.sirv.com/fee/blogs/' . $hashed_image
+                    ;
                 }
                 $blog->blog_images=$imagesData;
             }
@@ -237,6 +235,40 @@ class BlogWebController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
+
+    public function removeImage(Request $request, $blogId)
+    {
+        try {
+
+            $blog = Blog::findOrFail($blogId);
+
+
+            $blogImages = json_decode($blog->blog_images, true);
+
+
+            $imageUrlToRemove = $request->input('image_url');
+
+
+            if (($key = array_search($imageUrlToRemove, $blogImages)) !== false) {
+                unset($blogImages[$key]);
+            }
+
+
+            $blogImages = array_values($blogImages);
+
+
+            $blog->blog_images = json_encode($blogImages);
+            $blog->save();
+
+            return response()->json(['success' => true, 'message' => 'Image removed successfully.']);
+
+        } catch (\Exception $e) {
+
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
 
     public function delete_blog($id)
     {

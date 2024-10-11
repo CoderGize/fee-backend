@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
     @include('admin.web.css')
 </head>
 
@@ -195,7 +197,54 @@
                                     </div>
 
                                 </div>
+                                <div class="mt-4 row">
 
+                                <div class="mb-3">
+                                            <label for="images" class="form-label">Paragraph Images</label>
+                                            <input type="file" name="images[]" class="form-control" id="images" multiple onchange="previewImages()">
+                                            <small class="form-text text-muted">You can select multiple images to upload.</small>
+                                            <div id="image-previews" class="mt-3">
+                                            @if ($blog->blog_images && is_array($decodedImages = json_decode($blog->blog_images, true)))
+                                            @if (count($decodedImages) > 0)
+                                                <div>
+                                                    @foreach ($decodedImages as $image)
+                                                        @if (is_string($image))
+                                                            <div style="display: inline-block; margin-right: 10px;">
+                                                                <img src="{{ $image }}" alt="Blog Image" style="height:100px; width:100px;" class="img-thumbnail">
+
+                                                                <button type="button" class="btn btn-danger" data-image-url="{{ $image }}" data-id="{{ $blog->id }}" onclick="deleteImage(this)">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        @elseif (is_array($image) && isset($image[0]))
+                                                            <div style="display: inline-block; margin-right: 10px;">
+                                                                <img src="{{ $image[0] }}" alt="Blog Image" style="height:100px; width:100px;" class="img-thumbnail">
+
+                                                                <button type="button" class="btn btn-danger" data-image-url="{{ $image[0] }}" data-id="{{ $blog->id }}" onclick="deleteImage(this)">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        @else
+                                                            <p>Invalid image data.</p>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <p>No images available to display.</p>
+                                            @endif
+                                        @else
+                                            <p>No images available to display.</p>
+                                        @endif
+
+
+
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
 
                                 <div class="d-flex justify-content-center">
                                     <button type="submit" class="btn mt-3 btn-dark">Submit</button>
@@ -237,8 +286,48 @@
     CKEDITOR.replace('content_1');
     CKEDITOR.replace('content_2');
     CKEDITOR.replace('content_3');
+    function deleteImage(button) {
+    const imageUrl = button.getAttribute('data-image-url');
+    const blogId = button.getAttribute('data-id');
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfToken) {
+        console.error('CSRF token not found in the document.');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete this image?')) {
+        // Make the AJAX request to delete the image
+        fetch(`{{ url('/admin/web/blog_image_remove') }}/${blogId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+            },
+            body: JSON.stringify({
+                image_url: imageUrl,
+                blog_id: blogId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Successfully deleted the image, now remove the image from the UI
+                button.parentElement.remove(); // Removes the entire div containing the image and button
+            } else {
+                alert('Error: Could not delete image.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+
 </script>
 <script>
+
     function previewImages() {
         const preview = document.getElementById('image-previews');
         const files = document.getElementById('images').files;
@@ -260,11 +349,11 @@
                 removeButton.appendChild(removeIcon);
                 removeButton.style.cursor = 'pointer';
                 removeButton.onclick = function() {
-
+                    // Remove the image and the button
                     const imageContainer = img.parentNode;
                     imageContainer.remove();
 
-
+                    // Remove the corresponding file from the input
                     const fileInput = document.getElementById('images');
                     const filesArray = Array.prototype.slice.call(fileInput.files);
                     const index = filesArray.indexOf(file);

@@ -196,6 +196,7 @@ Route::prefix('/admin/web')->group(function ()
     Route::get('/update_blog/{id}', [BlogWebController::class, 'update_blog']);
     Route::post('/update_blog_confirm/{id}', [BlogWebController::class, 'update_blog_confirm']);
     Route::get('/delete_blog/{id}', [BlogWebController::class, 'delete_blog']);
+    Route::post('/blog_image_remove/{id}', [BlogWebController::class, 'removeImage'])->name('admin.blogs.remove_image');
 
     // {{ Contact }}
     Route::get('/show_contact', [ContactWebController::class, 'show_contact']);
