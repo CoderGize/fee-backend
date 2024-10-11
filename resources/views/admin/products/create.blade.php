@@ -186,9 +186,30 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                  <div class="col-12 col-sm-6">
+                                   <div class="mb-3">
+                                        <label for="exampleFormControlInput1" class="form-label">
+                                        <img src="/img/en.png" width="15px" alt="">
+                                            paragraph
+                                        </label>
+                                        <textarea name="content_en" id="content" class="form-control" rows="10"></textarea>
+                                    </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                    <div class="mb-3">
+                                        <label for="exampleFormControlInput1" class="form-label">
+                                        <img src="/img/ar.png" width="15px" alt="">
+                                            paragraph
+                                        </label>
+                                        <textarea name="content_ar" id="content_1" class="form-control" rows="10"></textarea>
+                                    </div>
+                                    </div>
+                                </div>
+
 
                                 <div class="row">
-                                <div class="col-12 col-sm-6">
+                                  <div class="col-12 col-sm-6">
                                         <div class="mb-3">
                                             <label for="images" class="form-label">Product Images</label>
                                             <input type="file" name="images[]" class="form-control" id="images" multiple onchange="previewImages()">
@@ -218,6 +239,13 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('content');
+    CKEDITOR.replace('content_1');
+    CKEDITOR.replace('content_2');
+    CKEDITOR.replace('content_3');
+</script>
 
 
 

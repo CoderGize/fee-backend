@@ -240,7 +240,8 @@ class ProductController extends Controller
                 $product->collections()->attach($collection->id);
             }
         }
-
+        $product->content_en = $request->content_en;
+        $product->content_ar = $request->content_ar;
 
         $product->save();
 
@@ -308,6 +309,8 @@ class ProductController extends Controller
         $product->discount_percentage = $request->discount_percentage;
         $product->discount_status = $request->discount_status ? true : false;
         $product->quantity = $request->quantity;
+        $product->content_en = $request->content_en;
+        $product->content_ar = $request->content_ar;
         if ($request->colors) {
             $colors = [];
             foreach ($request->colors as $color) {

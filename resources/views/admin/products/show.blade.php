@@ -202,6 +202,11 @@
                                     <span class="text-muted">N/A</span>
                                 @endif
                             </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Paragraph:</span>
+                                <p>{!! $product->content_en !!}</p>
+                            </div>
+
                         </div>
                     </div>
                 </div>
