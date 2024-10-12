@@ -393,7 +393,9 @@ class ProductController extends Controller
 
                 if (Auth::user()) {
                     $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                    $cartProductIds = Auth::user()->cart ? Auth::user()->cart->products()->pluck('product_id')->toArray() : [];
                     $response['wishlist'] = $wishlistProductIds;
+                    $response['cart'] = $cartProductIds;
                 }
 
                 return response()->json($response, 200);
@@ -479,7 +481,9 @@ class ProductController extends Controller
 
             if (Auth::user()) {
                 $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                $cartProductIds = Auth::user()->cart ? Auth::user()->cart->products()->pluck('product_id')->toArray() : [];
                 $response['wishlist'] = $wishlistProductIds;
+                $response['cart'] = $cartProductIds;
             }
 
             return response()->json($response, 200);
@@ -643,9 +647,11 @@ class ProductController extends Controller
                     'designer'=>$designer
                 ];
 
-                if (Auth::check()) {
+                if (Auth::user()) {
                     $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                    $cartProductIds = Auth::user()->cart ? Auth::user()->cart->products()->pluck('product_id')->toArray() : [];
                     $response['wishlist'] = $wishlistProductIds;
+                    $response['cart'] = $cartProductIds;
                 }
 
                 return response()->json($response, 200);
