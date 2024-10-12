@@ -103,16 +103,23 @@ class OrderController extends Controller
                 }
                 $quantity = $item['quantity'];
                 $price = $product->price;
-                $order->quantity =$quantity;
-                $order->payment_method=$request->payment_method;
+                $discountAmount = 0;
+
+
+                if ($product->discount_status) {
+                    $discountAmount = ($product->discount_percentage / 100) * $price * $quantity;
+                }
+                $finalPrice = ($price * $quantity) - $discountAmount;
+
+                $order->quantity = $quantity;
+                $order->payment_method = $request->payment_method;
                 $order->products()->attach($product->id, [
                     'quantity' => $quantity,
-                    'price' => $price,
+                    'price' => $finalPrice,
                     'size' => $item['size'],
-                    'color' => $item['color']
+                    'color' => $item['color'],
                 ]);
-
-                $totalPrice += $quantity * $price;
+                $totalPrice += $finalPrice;
                 $totalQuantity += $quantity;
             }
 
