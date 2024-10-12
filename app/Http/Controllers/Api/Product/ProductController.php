@@ -756,6 +756,41 @@ class ProductController extends Controller
             }
         }
 
+        public function most_sold_product(Request $request)
+        {
+            try {
+                $mostSoldProducts = Product::select('products.*')
+                    ->with('images')
+                    ->join('order_product', 'products.id', '=', 'order_product.product_id')
+                    ->selectRaw('SUM(order_product.quantity) as total_sold')
+                    ->groupBy('products.id')
+                    ->orderBy('total_sold', 'desc')
+                    ->take(10)
+                    ->get();
+                $response = [
+                    'status' => 'success',
+                    'data' => $mostSoldProducts,
+                ];
+
+                if (Auth::user()) {
+                    $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                    $cartProductIds = Auth::user()->cart ? Auth::user()->cart->products()->pluck('product_id')->toArray() : [];
+                    $response['wishlist'] = $wishlistProductIds;
+                    $response['cart'] = $cartProductIds;
+                }
+
+
+                return response()->json($response, 200);
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
+
         public function updateDiscount(Request $request, $productId)
         {
             try {

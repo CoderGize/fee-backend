@@ -154,10 +154,10 @@ class CartController extends Controller
 
             if ($userID) {
 
-                $cart = Cart::with('products.images','products.categories','products.designer')->where('user_id', $userID)->first();
+                $cart = Cart::with('products.images')->where('user_id', $userID)->first();
             } elseif ($designerID) {
 
-                $cart = Cart::with('products.images','products.categories','products.designer')->where(['designer_id' => $designerID])->first();
+                $cart = Cart::with('products.images')->where(['designer_id' => $designerID])->first();
             }
 
 

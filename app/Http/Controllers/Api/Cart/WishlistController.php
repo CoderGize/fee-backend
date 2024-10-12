@@ -35,10 +35,10 @@ class WishlistController extends Controller
 
             $wishlist = null;
             if ($userID) {
-                $wishlist = Wishlist::with('products.images', 'products.categories', 'products.designer')
+                $wishlist = Wishlist::with('products.images')
                             ->where('user_id', $userID)->first();
             } elseif ($designerID) {
-                $wishlist = Wishlist::with('products.images', 'products.categories', 'products.designer')
+                $wishlist = Wishlist::with('products.images')
                             ->where('designer_id', $designerID)->first();
             }
 

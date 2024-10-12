@@ -41,6 +41,7 @@ Route::prefix('user')->group(function () {
 
     Route::get('/designer', [DesignerController::class, 'search']);
     Route::get('/new/products', [ProductController::class, 'new_user']);
+    Route::get('/most/sold/new/products', [ProductController::class, 'most_sold_product']);
     Route::get('/collections', [ProductController::class, 'collections_new']);
     Route::get('/categories/new', [CategoryController::class, 'index_new']);
     Route::get('/categories/{categoryId}/subcategories', [CategoryController::class, 'getSubcategories']);
@@ -91,6 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('user')->group(function (){
         Route::get('/designer/products', [ProductController::class, 'getDesignerProductsForUsers']);
         Route::get('products/{id}', [ProductController::class, 'getProductById']);
+        Route::get('/most/sold/products', [ProductController::class, 'most_sold_product']);
         Route::get('products', [ProductController::class, 'index']);
         Route::delete('logout', [AuthUserController::class, 'logout']);
         Route::post('update-profile', [AuthUserController::class, 'updateProfile']);
@@ -157,6 +159,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 | Web Content API
 |--------------------------------------------------------------------------
 */
+
 Route::get('/get-about', [ContentApiController::class, 'getAbout']);
 Route::get('/get-become-designer', [ContentApiController::class, 'getBecomeDesigner']);
 Route::get('/get-become-designer-benefit', [ContentApiController::class, 'getBecomeDesignerBenefit']);
