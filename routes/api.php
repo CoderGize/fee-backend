@@ -35,7 +35,7 @@ Route::prefix('user')->group(function () {
     Route::post('forgot-password', [AuthUserController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthUserController::class, 'resetPassword']);
     Route::get('/designer/new/products', [ProductController::class, 'getDesignerProductsForUsers_new']);
-    Route::get('products/{id}', [ProductController::class, 'getProductById']);
+    Route::get('products/new/{id}', [ProductController::class, 'getProductById_new']);
 
 
 
@@ -90,7 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('user')->group(function (){
         Route::get('/designer/products', [ProductController::class, 'getDesignerProductsForUsers']);
-
+        Route::get('products/{id}', [ProductController::class, 'getProductById']);
         Route::get('products', [ProductController::class, 'index']);
         Route::delete('logout', [AuthUserController::class, 'logout']);
         Route::post('update-profile', [AuthUserController::class, 'updateProfile']);

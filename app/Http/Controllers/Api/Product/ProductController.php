@@ -693,14 +693,49 @@ class ProductController extends Controller
         }
 
 
+        public function getProductById_new($productId)
+        {
+            try {
+                $product = Product::with('images', 'designer', 'categories')->findOrFail($productId);
+                $response = [
+                    'status' => 'success',
+                    'data' => $product,
+                ];
+
+
+                if (Auth::user()) {
+                    $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                    $cartProductIds = Auth::user()->cart ? Auth::user()->cart->products()->pluck('product_id')->toArray() : [];
+                    $response['wishlist'] = $wishlistProductIds;
+                    $response['cart'] = $cartProductIds;
+                }
+
+                return response()->json($response, 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
         public function getProductById($productId)
         {
             try {
                 $product = Product::with('images', 'designer', 'categories')->findOrFail($productId);
-                return response()->json([
+                $response = [
                     'status' => 'success',
                     'data' => $product,
-                ], 200);
+                ];
+
+                if (Auth::user()) {
+                    $wishlistProductIds = Auth::user()->wishlist ? Auth::user()->wishlist->products()->pluck('product_id')->toArray() : [];
+                    $cartProductIds = Auth::user()->cart ? Auth::user()->cart->products()->pluck('product_id')->toArray() : [];
+                    $response['wishlist'] = $wishlistProductIds;
+                    $response['cart'] = $cartProductIds;
+                }
+
+                return response()->json($response, 200);
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => 'error',
