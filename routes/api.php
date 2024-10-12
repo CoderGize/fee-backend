@@ -171,6 +171,7 @@ Route::get('/get-show', [ContentApiController::class, 'getShow']);
 Route::get('/get-showroom', [ContentApiController::class, 'getShowroom']);
 Route::get('/get-social', [ContentApiController::class, 'getSocial']);
 Route::get('/get-testimonial', [ContentApiController::class, 'getTestimonial']);
+Route::get('/get-homepage', [ContentApiController::class, 'getHomepage']);
 
 Route::post('/add-newsletter', [NewsLetterWebController::class, 'add_newsletter']);
 Route::post('/add-designletter', [DesignLetterWebController::class, 'add_designletter']);

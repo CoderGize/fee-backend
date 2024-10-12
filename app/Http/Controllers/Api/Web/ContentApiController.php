@@ -18,9 +18,36 @@ use App\Models\Show;
 use App\Models\Showroom;
 use App\Models\Social;
 use App\Models\Testimonial;
+use App\Mail\Contactform;
+use Illuminate\Support\Facades\Mail;
 
 class ContentApiController extends Controller
 {
+  	public function contact_form(Request $request)
+    {
+      try
+      {
+	     $contactData = [
+           'name' => $request->name,
+           'email' => $request->email,
+           'message' => $request->message
+         ];
+
+		Mail::to('anthony@codergize.com')->send(new Contactform($contactData));
+
+        return response()->json([
+                            'status' => 200,
+                            'message' => 'Email Sent'
+                        ]);
+      }
+      catch (\Exception $e)
+      {
+        return response()->json([
+        'error' => $e->getMessage()
+        ]);
+      }
+    }
+
     public function getAbout()
     {
         $about = About::find(1);
@@ -118,4 +145,37 @@ class ContentApiController extends Controller
 
         return response()->json($testimonial);
     }
+
+  public function getHomepage()
+  {
+    $landing = Landing::latest()->get();
+    $carousel = Carousel::latest()->get();
+    $showroom = Showroom::latest()->get();
+    $testimonial = Testimonial::latest()->get();
+    $blog = Blog::latest()->get();
+	$insta = Instagrid::latest()->get();
+	$about = About::find(1);
+    $social = Social::find(1);
+    $contact = ContactWeb::find(1);
+	$download = Download::find(1);
+	$show = Show::find(1);
+
+    $data = [
+      'response' => [
+      	'landing_data' => $landing,
+        'carousel_data' => $carousel,
+        'showroom_data' => $showroom,
+        'testimonial_data' => $testimonial,
+        'blog_data' => $blog,
+        'insta_grid_data' => $insta,
+        'about_data' => $about,
+        'social_data' => $social,
+        'contact_data' => $contact,
+        'download_data' => $download,
+        'show_data' => $show
+      ]
+    ];
+
+	return response()->json($data);
+  }
 }
