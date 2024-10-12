@@ -728,12 +728,21 @@ class ProductController extends Controller
                     'data' => $product,
                 ];
 
-                if (Auth::user()) {
-                    $wishlistProducts = Auth::user()->wishlist ? Auth::user()->wishlist->products()->select('product_id', 'color', 'size')->get()->toArray() : [];
-                    $cartProducts = Auth::user()->cart ? Auth::user()->cart->products()->select('product_id', 'color', 'size')->get()->toArray() : [];
 
-                    $response['wishlist'] = $wishlistProducts;
-                    $response['cart'] = $cartProducts;
+                if (Auth::user()) {
+
+                    $wishlistProduct = Auth::user()->wishlist
+                        ? Auth::user()->wishlist->products()->where('product_id', $productId)->select('product_id', 'color', 'size')->first()
+                        : null;
+
+
+                    $cartProduct = Auth::user()->cart
+                        ? Auth::user()->cart->products()->where('product_id', $productId)->select('product_id', 'color', 'size')->first()
+                        : null;
+
+
+                    $response['wishlist'] = $wishlistProduct ? $wishlistProduct->toArray() : null;
+                    $response['cart'] = $cartProduct ? $cartProduct->toArray() : null;
                 }
 
 
