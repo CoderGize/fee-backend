@@ -13,8 +13,10 @@ class PaymentController extends Controller
 
         $search = $request->input('search');
         $status = $request->input('status');
+        $status_shipment = $request->input('status_shipment');
         $paymentMethod = $request->input('payment_method');
         $perPage = $request->input('per_page', 10);
+
 
         $payments = Payment::where('is_guest',0)
                 ->with(['user', 'designer','order'])
@@ -33,6 +35,10 @@ class PaymentController extends Controller
                 })
                 ->when($paymentMethod, function ($query, $paymentMethod) {
                     return $query->where('payment_method', $paymentMethod);
+                })
+                ->when($search, function ($query, $search) {
+                    return $query->where('f_name', $search)
+                                ->orWhere('order_email', $search);
                 })
                 ->paginate($perPage);
 

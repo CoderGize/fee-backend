@@ -80,6 +80,7 @@
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment ID</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User EMail</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User phone</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order ID</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Amount</th>
@@ -93,22 +94,13 @@
                                             <tr>
                                                 <td class="text-sm">{{ $payment->id }}</td>
                                                 <td class="text-sm">
-                                                    @if ($payment->user)
-                                                        {{ $payment->user->f_name }} {{ $payment->user->l_name }}
-                                                    @elseif ($payment->designer)
-                                                        {{ $payment->designer->f_name }} {{ $payment->designer->l_name }}
-                                                    @else
-                                                        N/A
-                                                    @endif
+                                                   {{$payment->f_name}} {{$payment->l_name}}
                                                 </td>
                                                 <td class="text-sm">
-                                                    @if ($payment->user)
-                                                        +{{ $payment->user->phone_number }}
-                                                    @elseif ($payment->designer)
-                                                        +{{ $payment->designer->phone_number }}
-                                                    @else
-                                                        N/A
-                                                    @endif
+                                                    {{$payment->order_email}}
+                                                </td>
+                                                <td class="text-sm">
+                                                    {{$payment->phone}}
                                                 </td>
                                                 <td class="text-sm">{{ $payment->order_id }}</td>
                                                 <td class="text-sm">{{ $payment->amount }}</td>

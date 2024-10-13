@@ -93,7 +93,7 @@
                                         @foreach ($payments as $payment)
                                             <tr>
                                                 <td class="text-sm">{{ $payment->id }}</td>
-                                                <td class="text-sm">{{ $payment->guest_name ?? 'N/A' }}</td>
+                                                <td class="text-sm">{{ $payment->guest_name .' '. $payment->guest_l_name ?? 'N/A' }}</td>
                                                 <td class="text-sm">{{ $payment->guest_email ?? 'N/A' }}</td>
                                                 <td class="text-sm">{{ $payment->guest_phone ?? 'N/A' }}</td>
                                                 <td class="text-sm">{{ $payment->order_id }}</td>
