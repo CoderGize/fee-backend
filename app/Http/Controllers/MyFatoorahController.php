@@ -70,19 +70,19 @@ class MyFatoorahController extends Controller {
 
 
         if ($order->user) {
-            $customerName = $order->user->f_name . ' ' . $order->user->l_name;
-            $customerEmail = $order->user->email;
-            $customerMobile = $order->user->mobile ?? '12345678';
+            $customerName = $order->f_name . ' ' . $order->l_name;
+            $customerEmail = $order->order_email;
+            $customerMobile = $order->phone ?? '12345678';
         }
 
         elseif ($order->designer) {
-            $customerName = $order->designer->f_name . ' ' . $order->designer->l_name;
+            $customerName = $order->f_name . ' ' . $order->l_name;
             $customerEmail = $order->designer->email;
             $customerMobile = $order->designer->mobile ?? '12345678';
         }
 
         elseif ($order->is_guest) {
-            $customerName = $order->guest_name;
+            $customerName = $order->guest_name .' '.$order->guest_l_name;
             $customerEmail = $order->guest_email;
             $customerMobile = $order->guest_phone ?? '12345678';
         }
@@ -204,14 +204,14 @@ class MyFatoorahController extends Controller {
 
 
 
-            $redirectUrl = 'https://fee-website.vercel.app/payment/response?' . http_build_query($queryParams);
+            $redirectUrl = 'https://fee-website.netlify.app/payment/response?' . http_build_query($queryParams);
 
 
             return redirect()->away($redirectUrl);
 
         } catch (\Exception $e) {
 
-            $redirectUrl = 'https://fee-website.vercel.app/payment/response?status=error&message=' . urlencode($e->getMessage());
+            $redirectUrl = 'https://fee-website.netlify.app/payment/response?status=error&message=' . urlencode($e->getMessage());
             return redirect()->away($redirectUrl);
         }
     }
