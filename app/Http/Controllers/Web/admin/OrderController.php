@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Shipment;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -13,12 +14,13 @@ class OrderController extends Controller
 
         $search = $request->input('search');
         $status = $request->input('status');
+        $status_shipment = $request->input('status_shipment');
         $paymentMethod = $request->input('payment_method');
         $perPage = $request->input('per_page', 10);
 
 
         $orders = Order::where('is_guest',0)
-                       ->with(['user', 'designer','products'])
+                       ->with(['user', 'designer','products','shipment'])
                         ->when($search, function ($query, $search) {
                             return $query->whereHas('user', function ($q) use ($search) {
                                 $q->where('f_name', 'like', '%' . $search . '%');
@@ -29,11 +31,20 @@ class OrderController extends Controller
                                 $q->where('f_name', 'like', '%' . $search . '%');
                             });
                         })
+                        ->when($status_shipment, function ($query, $status_shipment) {
+                            return $query->whereHas('shipment', function ($q) use ($status_shipment) {
+                                $q->where('delivery_status', $status_shipment);
+                            });
+                        })
                         ->when($status, function ($query, $status) {
                             return $query->where('status', $status);
                         })
                         ->when($paymentMethod, function ($query, $paymentMethod) {
                             return $query->where('payment_method', $paymentMethod);
+                        })
+                        ->when($search, function ($query, $search) {
+                            return $query->where('f_name', $search)
+                                        ->orWhere('order_email', $search);
                         })
                         ->paginate($perPage);
 
@@ -49,7 +60,7 @@ class OrderController extends Controller
 
 
         $orders = Order::where('is_guest',1)
-                    ->with('products')
+                    ->with('products','shipment')
                     ->when($search, function ($query, $search) {
                         return $query->where('guest_name', 'like', '%' . $search . '%')
                                     ->orWhere('guest_email', 'like', '%' . $search . '%')
@@ -76,5 +87,18 @@ class OrderController extends Controller
         ]);
 
         return redirect()->back()->with('message', 'Order status updated successfully.');
+    }
+
+    public function updateShipmentStatus(Request $request, $id)
+    {
+
+        $shipment = Shipment::where('order_id',$id)->first();
+
+
+        $shipment->update([
+            'delivery_status' => $request->input('status'),
+        ]);
+
+        return redirect()->back()->with('message', 'shipment status updated successfully.');
     }
 }

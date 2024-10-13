@@ -50,6 +50,14 @@
                                             <option value="expired" {{ request()->status == 'expired' ? 'selected' : '' }}>Expired</option>
                                         </select>
                                     </div>
+                                    <div class="form-group mb-0 me-2">
+                                        <select name="status" class="form-control">
+                                            <option value="">Shipment Status</option>
+                                            <option value="pending" {{ request()->status_shipment == 'canceled' ? 'selected' : '' }}>Canceled</option>
+                                            <option value="paid" {{ request()->status_shipment == 'not delivered' ? 'selected' : '' }}>Not Delivered</option>
+                                            <option value="delivered" {{ request()->status_shipment == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                        </select>
+                                    </div>
 
                                     <div class="form-group mb-0 me-2">
                                         <select name="payment_method" class="form-control">
@@ -83,12 +91,18 @@
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order ID</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order Email</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User Phone</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Price</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment Street</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment state</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment Apartment Floor</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment City</th>4
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Method</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ON Cash</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment status</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Products</th>
                                             <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th> -->
                                         </tr>
@@ -98,26 +112,53 @@
                                             <tr>
                                                 <td class="text-sm">{{ $order->id }}</td>
                                                 <td class="text-sm">
-                                                    @if ($order->user)
-                                                        {{ $order->user->f_name }} {{ $order->user->l_name }}
-                                                    @elseif ($order->designer)
-                                                        {{ $order->designer->f_name }} {{ $order->designer->l_name }}
-                                                    @else
-                                                        N/A
-                                                    @endif
+                                                   {{$order->f_name}} {{$order->l_name}}
                                                 </td>
                                                 <td class="text-sm">
-                                                    @if ($order->user)
-                                                        +{{ $order->user->phone_number }}
-                                                    @elseif ($order->designer)
-                                                        +{{ $order->designer->phone_number }}
-                                                    @else
-                                                        N/A
-                                                    @endif
+                                                    {{$order->order_email}}
+                                                </td>
+                                                <td class="text-sm">
+                                                    {{$order->phone}}
                                                 </td>
 
                                                 <td class="text-sm">{{ $order->total_price }}</td>
                                                 <td class="text-sm">{{ $order->quantity }}</td>
+                                                <td class="text-sm">
+                                                    @if ($order->shipment)
+                                                    {{ $order->shipment->street_address}}
+
+                                                    @else
+                                                    N/A
+                                                    @endif
+
+                                                </td>
+                                                <td class="text-sm">
+                                                    @if ($order->shipment)
+                                                    {{ $order->shipment->state_or_province}}
+
+                                                    @else
+                                                    N/A
+                                                    @endif
+
+                                                </td>
+                                                <td class="text-sm">
+                                                    @if ($order->shipment)
+                                                    {{ $order->shipment->apartment_floor}}
+
+                                                    @else
+                                                    N/A
+                                                    @endif
+
+                                                </td>
+                                                <td class="text-sm">
+                                                    @if ($order->shipment)
+                                                    {{ $order->shipment->city}}
+
+                                                    @else
+                                                    N/A
+                                                    @endif
+
+                                                </td>
                                                 <td class="text-sm">{{ $order->payment_method }}</td>
                                                 <td class="text-sm">{{ $order->on_cash ? "YES" : "NO" }}</td>
                                                 <td class="text-sm">
@@ -133,6 +174,24 @@
                                                         </select>
                                                     </form>
                                                 </td>
+                                                <td class="text-sm">
+                                                    <form action="{{ url('admin/shipment/update-status', $order->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <select name="status" class="form-select" onchange="this.form.submit()">
+                                                            @if ($order->shipment)
+                                                                <option value="not delivered" {{ $order->shipment->delivery_status == 'not delivered' ? 'selected' : '' }}>Not Delivered</option>
+                                                                <option value="delivered" {{ $order->shipment->delivery_status == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                                                <option value="canceled" {{ $order->shipment->delivery_status == 'canceled' ? 'selected' : '' }}>Canceled</option>
+                                                            @else
+                                                                <option value="not delivered" selected>Not Delivered</option>
+                                                                <option value="delivered">Delivered</option>
+                                                                <option value="canceled">Canceled</option>
+                                                            @endif
+                                                        </select>
+                                                    </form>
+                                                </td>
+
                                                 <td class="text-sm">
                                                     <ul>
                                                         @foreach ($order->products as $product)

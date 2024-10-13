@@ -73,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/admin/orders/guests', [OrderController::class, 'guest'])->name('admin.orders.guest');
     Route::put('/admin/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::put('/admin/shipment/update-status/{id}', [OrderController::class, 'updateShipmentStatus'])->name('admin.shipment.updateStatus');
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/admin/users/delete/{id}', [UserController::class, 'delete'])->name('admin.users.delete');
     Route::get('/admin/designers', [DesignerController::class, 'index'])->name('admin.designer.index');
