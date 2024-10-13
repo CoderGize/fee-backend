@@ -164,6 +164,7 @@ Route::get('/get-about', [ContentApiController::class, 'getAbout']);
 Route::get('/get-become-designer', [ContentApiController::class, 'getBecomeDesigner']);
 Route::get('/get-become-designer-benefit', [ContentApiController::class, 'getBecomeDesignerBenefit']);
 Route::get('/get-blog', [ContentApiController::class, 'getBlog']);
+Route::get('/get-blog/single/{id}', [ContentApiController::class, 'getBlogId']);
 Route::get('/get-carousel', [ContentApiController::class, 'getCarousel']);
 Route::get('/get-contact', [ContentApiController::class, 'getContactWeb']);
 Route::get('/get-designer-story', [ContentApiController::class, 'getDesignerStory']);

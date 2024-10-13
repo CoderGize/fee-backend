@@ -76,11 +76,34 @@ class ContentApiController extends Controller
         return response()->json($carousel);
     }
 
-    public function getBlog()
+    public function getBlog(Request $request)
     {
-        $blog = Blog::latest()->get();
+        try{
+        $perPage = $request->per_page ? $request->per_page : 10;
+        $blog = Blog::latest()->paginate($perPage);
 
         return response()->json($blog);
+        }catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getBlogId($id)
+    {
+        try{
+
+        $blog = Blog::find($id);
+
+        return response()->json($blog);
+        }catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function getContactWeb()
