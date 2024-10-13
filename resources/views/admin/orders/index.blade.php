@@ -98,7 +98,7 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment Street</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment state</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment Apartment Floor</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment City</th>4
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment City</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Method</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ON Cash</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>

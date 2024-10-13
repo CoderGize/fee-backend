@@ -57,17 +57,24 @@ class OrderController extends Controller
         $status = $request->input('status');
         $paymentMethod = $request->input('payment_method');
         $perPage = $request->input('per_page', 10);
+        $status_shipment = $request->input('status_shipment');
 
 
         $orders = Order::where('is_guest',1)
                     ->with('products','shipment')
                     ->when($search, function ($query, $search) {
                         return $query->where('guest_name', 'like', '%' . $search . '%')
+                                    ->orWhere('guest_l_name', 'like', '%' . $search . '%')
                                     ->orWhere('guest_email', 'like', '%' . $search . '%')
                                     ->orWhere('guest_phone', 'like', '%' . $search . '%');
                     })
                     ->when($status, function ($query, $status) {
                         return $query->where('status', $status);
+                    })
+                    ->when($status_shipment, function ($query, $status_shipment) {
+                        return $query->whereHas('shipment', function ($q) use ($status_shipment) {
+                            $q->where('delivery_status', $status_shipment);
+                        });
                     })
                     ->when($paymentMethod, function ($query, $paymentMethod) {
                         return $query->where('payment_method', $paymentMethod);

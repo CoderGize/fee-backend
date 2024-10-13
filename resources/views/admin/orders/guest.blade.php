@@ -58,6 +58,13 @@
                                             <option value="cash" {{ request()->payment_method == 'on_cash' ? 'selected' : '' }}>Cash</option>
                                         </select>
                                     </div>
+                                    <div class="form-group mb-0 me-2">
+                                        <select name="payment_method" class="form-control">
+                                            <option value="">Select Payment Method</option>
+                                            <option value="credit_card" {{ request()->payment_method == 'credit_card' ? 'selected' : '' }}>Credit Card</option>
+                                            <option value="cash" {{ request()->payment_method == 'on_cash' ? 'selected' : '' }}>Cash</option>
+                                        </select>
+                                    </div>
 
                                     <div class="form-group mb-0 me-2">
                                         <select name="per_page" class="form-control">
@@ -87,9 +94,14 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Guest Phone</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Price</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment Street</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment state</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment Apartment Floor</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment City</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payment Method</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ON Cash</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shipment status</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Products</th>
                                             <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th> -->
                                         </tr>
@@ -98,11 +110,47 @@
                                         @foreach ($orders as $order)
                                             <tr>
                                                 <td class="text-sm">{{ $order->id }}</td>
-                                                <td class="text-sm">{{ $order->guest_name ?? 'N/A' }}</td>
+                                                <td class="text-sm">{{ $order->guest_name . $order->guest_l_name ?? 'N/A' }}</td>
                                                 <td class="text-sm">{{ $order->guest_email ?? 'N/A' }}</td>
                                                 <td class="text-sm">{{ $order->guest_phone ?? 'N/A' }}</td>
                                                 <td class="text-sm">{{ $order->total_price }}</td>
                                                 <td class="text-sm">{{ $order->quantity }}</td>
+                                                <td class="text-sm">
+                                                    @if ($order->shipment)
+                                                    {{ $order->shipment->street_address}}
+
+                                                    @else
+                                                    N/A
+                                                    @endif
+
+                                                </td>
+                                                <td class="text-sm">
+                                                    @if ($order->shipment)
+                                                    {{ $order->shipment->state_or_province}}
+
+                                                    @else
+                                                    N/A
+                                                    @endif
+
+                                                </td>
+                                                <td class="text-sm">
+                                                    @if ($order->shipment)
+                                                    {{ $order->shipment->apartment_floor}}
+
+                                                    @else
+                                                    N/A
+                                                    @endif
+
+                                                </td>
+                                                <td class="text-sm">
+                                                    @if ($order->shipment)
+                                                    {{ $order->shipment->city}}
+
+                                                    @else
+                                                    N/A
+                                                    @endif
+
+                                                </td>
                                                 <td class="text-sm">{{ $order->payment_method }}</td>
                                                 <td class="text-sm">{{ $order->on_cash ? "YES" : "NO" }}</td>
                                                 <td class="text-sm">
@@ -115,6 +163,23 @@
                                                             <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
                                                             <option value="failed" {{ $order->status == 'failed' ? 'selected' : '' }}>Failed</option>
                                                             <option value="expired" {{ $order->status == 'expired' ? 'selected' : '' }}>Expired</option>
+                                                        </select>
+                                                    </form>
+                                                </td>
+                                                <td class="text-sm">
+                                                    <form action="{{ url('admin/shipment/update-status', $order->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <select name="status" class="form-select" onchange="this.form.submit()">
+                                                            @if ($order->shipment)
+                                                                <option value="not delivered" {{ $order->shipment->delivery_status == 'not delivered' ? 'selected' : '' }}>Not Delivered</option>
+                                                                <option value="delivered" {{ $order->shipment->delivery_status == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                                                <option value="canceled" {{ $order->shipment->delivery_status == 'canceled' ? 'selected' : '' }}>Canceled</option>
+                                                            @else
+                                                                <option value="not delivered" selected>Not Delivered</option>
+                                                                <option value="delivered">Delivered</option>
+                                                                <option value="canceled">Canceled</option>
+                                                            @endif
                                                         </select>
                                                     </form>
                                                 </td>
