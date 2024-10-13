@@ -27,7 +27,11 @@ class OrderController extends Controller
                 'products.*.color' => 'required|string',
                 'products.*.size' => 'required|string',
                 'promo_code' => 'nullable|string',
+                'f_name'=>'nullable|string',
+                'l_name'=>'nullable|string',
+                'order_email'=>'nullable|email',
                 'guest_name' => 'required_if:is_guest,true|string',
+                'guest_l_name' => 'required_if:is_guest,true|string',
                 'guest_email' => 'required_if:is_guest,true|email',
                 'guest_phone' => 'required_if:is_guest,true|string',
                 'guest_address' => 'required_if:is_guest,true|string',
@@ -62,12 +66,20 @@ class OrderController extends Controller
             // Create Order
             $order = new Order();
             if ($userID) {
+                $order->f_name = $request->f_name;
+                $order->l_name = $request->l_name;
+                $order->order_email = $request->order_email;
+                $order->phone = $request->phone;
                 if (User::find($userID)) {
                     $order->user_id = $userID;
                 } else {
                     return response()->json(['error' => 'Invalid user_id'], 404);
                 }
             } elseif ($designerID) {
+                $order->f_name = $request->f_name;
+                $order->l_name = $request->l_name;
+                $order->order_email = $request->order_email;
+                $order->phone = $request->phone;
                 if (Designer::find($designerID)) {
                     $order->designer_id = $designerID;
                 } else {
@@ -77,6 +89,7 @@ class OrderController extends Controller
 
                 $order->is_guest = true;
                 $order->guest_name = $request->guest_name;
+                $order->guest_l_name = $request->guest_l_name;
                 $order->guest_email = $request->guest_email;
                 $order->guest_phone = $request->guest_phone;
                 $order->guest_address = $request->guest_address;
@@ -162,9 +175,10 @@ class OrderController extends Controller
                 $shipment->order_id = $order->id;
                 $shipment->tracking_number = "FEE_tracking_number" . $order->id;
                 $shipment->carrier = $request->carrier ?? 'Default'; // Use a default carrier if none is provided
-                $shipment->name = $request->name ?? '';
+                $shipment->name = $request->f_name.' '. $request->l_name ?? '';
                 $shipment->street_address = $request->street_address ?? '';
                 $shipment->city = $request->city ?? '';
+                $shipment->apartment_floor = $request->apartment_floor ?? '';
                 $shipment->state_or_province = $request->state_or_province ?? '';
                 $shipment->save();
             }
@@ -172,12 +186,20 @@ class OrderController extends Controller
 
                 $payment = new Payment();
                 if ($userID) {
+                    $payment->f_name = $request->f_name;
+                    $payment->l_name = $request->l_name;
+                    $payment->order_email = $request->order_email;
+                    $payment->phone = $request->phone;
                     if (User::find($userID)) {
                         $payment->user_id = $userID;
                     } else {
                         return response()->json(['error' => 'Invalid user_id'], 404);
                     }
                 } elseif ($designerID) {
+                    $payment->f_name = $request->f_name;
+                    $payment->l_name = $request->l_name;
+                    $payment->order_email = $request->order_email;
+                    $payment->phone = $request->phone;
                     if (Designer::find($designerID)) {
                         $payment->designer_id = $designerID;
                     } else {
@@ -186,9 +208,11 @@ class OrderController extends Controller
                 } elseif ($isGuest) {
                     $payment->is_guest = true;
                     $payment->guest_name = $request->guest_name;
+                    $payment->guest_l_name = $request->guest_l_name;
                     $payment->guest_email = $request->guest_email;
                     $payment->guest_phone = $request->guest_phone;
                     $payment->guest_address = $request->guest_address;
+
                 }
                 $payment->order_id = $order->id;
                 $payment->amount = $order->total_price;
