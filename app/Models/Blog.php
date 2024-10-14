@@ -28,6 +28,6 @@ class Blog extends Model
     ];
 
     protected $casts = [
-        'blog_images' => 'arrays',
+        'blog_images' => 'array',
     ];
 }
