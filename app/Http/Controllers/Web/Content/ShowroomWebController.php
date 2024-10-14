@@ -38,12 +38,15 @@ class ShowroomWebController extends Controller
         $show = Show::find(1);
 
         $product = Product::all();
+        $products = Product::all();
 
         return view('admin.web.showroom.show_showroom', compact(
             'showroom',
             'showroom_count',
             'show',
-            'product'
+            'product',
+            'products'
+
         ));
     }
 
@@ -53,7 +56,7 @@ class ShowroomWebController extends Controller
         {
             $showroom = new Showroom;
 
-            $product = Product::find($request->product_1_id);
+            $product = Product::find($request->product_id);
 
             $image = $request->file('img');
 

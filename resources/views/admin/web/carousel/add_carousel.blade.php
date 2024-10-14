@@ -27,13 +27,23 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="designer_id" class="form-label">Products</label>
+                        <select name="product_id" id="product_id" class="form-control" required>
+                            @foreach($products as $product)
+                                <option value="{{ $product->id }}">{{ $product->name }} {{ $product->name_ar }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <!-- <div class="mb-3">
                         <label for="meal1Input" class="form-label">Product</label>
                         <input type="text" id="meal1Input" class="form-control" required
                             autocomplete="off">
                         <ul id="meal1Suggestions" class="list-group"
                             style="position: absolute; z-index: 1000; width: 100%; display: none;"></ul>
                         <input type="hidden" id="meal1Id" name="product_1_id">
-                    </div>
+                    </div> -->
 
                     {{-- <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">

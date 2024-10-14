@@ -36,7 +36,8 @@ class CarouselWebController extends Controller
         $show = Show::find(1);
 
         $product = Product::all();
-        return view('admin.web.carousel.show_carousel', compact('carousel', 'show', 'product'));
+        $products = Product::all();
+        return view('admin.web.carousel.show_carousel', compact('carousel', 'show', 'product','products'));
     }
 
     public function add_carousel(Request $request)
@@ -45,7 +46,7 @@ class CarouselWebController extends Controller
         {
             $carousel = new Carousel;
 
-            $product = Product::find($request->product_1_id);
+            $product = Product::find($request->product_id);
 
             $image = $request->file('img');
 
