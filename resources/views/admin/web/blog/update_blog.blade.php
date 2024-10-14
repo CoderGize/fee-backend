@@ -204,37 +204,38 @@
                                             <input type="file" name="images[]" class="form-control" id="images" multiple onchange="previewImages()">
                                             <small class="form-text text-muted">You can select multiple images to upload.</small>
                                             <div id="image-previews" class="mt-3">
-                                            @if ($blog->blog_images && is_array($decodedImages = json_decode($blog->blog_images, true)))
-                                            @if (count($decodedImages) > 0)
-                                                <div>
-                                                    @foreach ($decodedImages as $image)
-                                                        @if (is_string($image))
-                                                            <div style="display: inline-block; margin-right: 10px;">
-                                                                <img src="{{ $image }}" alt="Blog Image" style="height:100px; width:100px;" class="img-thumbnail">
+                                            @if ($blog->blog_images && is_array($blog->blog_images))
+                                                @if (count($blog->blog_images) > 0)
+                                                    <div>
+                                                        @foreach ($blog->blog_images as $image)
+                                                            @if (is_string($image))
+                                                                <div style="display: inline-block; margin-right: 10px;">
+                                                                    <img src="{{ $image }}" alt="Blog Image" style="height:100px; width:100px;" class="img-thumbnail">
 
-                                                                <button type="button" class="btn btn-danger" data-image-url="{{ $image }}" data-id="{{ $blog->id }}" onclick="deleteImage(this)">
-                                                                    <i class="bi bi-trash"></i>
-                                                                </button>
-                                                            </div>
-                                                        @elseif (is_array($image) && isset($image[0]))
-                                                            <div style="display: inline-block; margin-right: 10px;">
-                                                                <img src="{{ $image[0] }}" alt="Blog Image" style="height:100px; width:100px;" class="img-thumbnail">
+                                                                    <button type="button" class="btn btn-danger" data-image-url="{{ $image }}" data-id="{{ $blog->id }}" onclick="deleteImage(this)">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            @elseif (is_array($image) && isset($image[0]))
+                                                                <div style="display: inline-block; margin-right: 10px;">
+                                                                    <img src="{{ $image[0] }}" alt="Blog Image" style="height:100px; width:100px;" class="img-thumbnail">
 
-                                                                <button type="button" class="btn btn-danger" data-image-url="{{ $image[0] }}" data-id="{{ $blog->id }}" onclick="deleteImage(this)">
-                                                                    <i class="bi bi-trash"></i>
-                                                                </button>
-                                                            </div>
-                                                        @else
-                                                            <p>Invalid image data.</p>
-                                                        @endif
-                                                    @endforeach
-                                                </div>
+                                                                    <button type="button" class="btn btn-danger" data-image-url="{{ $image[0] }}" data-id="{{ $blog->id }}" onclick="deleteImage(this)">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            @else
+                                                                <p>Invalid image data.</p>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <p>No images available to display.</p>
+                                                @endif
                                             @else
                                                 <p>No images available to display.</p>
                                             @endif
-                                        @else
-                                            <p>No images available to display.</p>
-                                        @endif
+
 
 
 
