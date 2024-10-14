@@ -141,15 +141,9 @@
                                                     </p>
                                                 </td>
                                                 <td class="">
-                                                @if ($data->blog_images)
-                                                    @php
-                                                        $blog_images = json_decode($data->blog_images, true);
-                                                    @endphp
-
-                                                    @if (is_array($blog_images) && count($blog_images) > 0)
+                                                    @if (is_array($data->blog_images) && count($data->blog_images) > 0)
                                                         @php
-
-                                                            $first_blog_image = $blog_images[0];
+                                                            $first_blog_image = $data->blog_images[0];
                                                         @endphp
 
                                                         @if (is_string($first_blog_image))
@@ -166,10 +160,8 @@
                                                     @else
                                                         <span class="text-muted">No images available</span>
                                                     @endif
-                                                @else
-                                                    <span class="text-muted">N/A</span>
-                                                @endif
-                                            </td>
+                                                </td>
+
                                                 <td>
                                                     <p class="text-xs text-truncate font-weight-bold mb-0">
                                                         {{ $data->date }}
