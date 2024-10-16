@@ -156,13 +156,19 @@ class WishlistController extends Controller
 
             $cart = null;
             if ($userID) {
-                $cart = Cart::firstOrCreate(['user_id' => $userID]);
+                $cart = Cart::where(['user_id' => $userID]);
+
             } elseif ($designerID) {
-                $cart = Cart::firstOrCreate(['designer_id' => $designerID]);
+                $cart = Cart::where(['designer_id' => $designerID]);
             }
 
             if ($cart && $cart->products->contains($request->product_id)) {
-                $cart->products()->detach($request->product_id);
+
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'product can not be added to wishlist.',
+                    ], 404);
+
             }
 
 
