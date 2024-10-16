@@ -478,8 +478,15 @@ class AuthUserController extends Controller
          try {
              $id = Auth::id();
              $user = User::where('id', $id)
-                 ->with('orders.products.images.designer.categories', 'cart.products.images.designer.categories')
-                 ->first();
+                    ->with([
+                        'orders.products.designer',
+                        'orders.products.categories',
+                        'orders.products.images',
+                        'cart.products.designer',
+                        'cart.products.categories',
+                        'cart.products.images'
+                    ])
+                    ->first();
 
              if (!$user) {
                  return response()->json([
