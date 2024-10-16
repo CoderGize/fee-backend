@@ -93,7 +93,7 @@ class MyFatoorahController extends Controller {
 
         return [
             'CustomerName' => $customerName,
-            'InvoiceValue' => $order->total_price,
+            'InvoiceValue' => $order->total_price *0.307,
             'DisplayCurrencyIso' => 'KWD',
             'CustomerEmail' => $customerEmail,
             'CallBackUrl' => $callbackURL,
