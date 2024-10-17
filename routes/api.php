@@ -123,6 +123,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('wishlist/update/single', [WishlistController::class, 'updateSingleProduct']);
         Route::post('wishlist/remove/single', [WishlistController::class, 'removeSingleProduct']);
         Route::get('wishlists',[WishlistController::class,"getWishlist"]);
+        Route::delete('wishlists',[WishlistController::class,"deleteWishlist"]);
 
 
 
