@@ -52,14 +52,20 @@ class AuthUserController extends Controller
             ]);
 
 
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $token = mt_rand(1000,9999);
 
-            return response()->json([
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user' => $user,
-                'role'=>'user'
-            ], 200);
+               $user->otp=$token;
+
+               $data = [
+                   "pin" => $token
+               ];
+               Mail::to($request->email)->send(new SendOTP($data));
+
+               $user->save();
+
+               return response()->json([
+                'message'=>"otp sent to email ".$user->email
+            ],200);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -96,7 +102,25 @@ class AuthUserController extends Controller
                     'message' => 'Invalid email or password.',
                 ], 401);
             }
+            if (!$user->verified) {
 
+
+               $token = mt_rand(1000,9999);
+
+               $user->otp=$token;
+
+               $data = [
+                   "pin" => $token
+               ];
+               Mail::to($request->email)->send(new SendOTP($data));
+
+               $user->save();
+
+                   return response()->json([
+                       'status' => 'Not Verified',
+                       'message' => 'Email is not verified. and the otp send  via '.$request->email,
+                   ], 403);
+               }
 
 
             $token = $user->createToken('auth_token')->plainTextToken;
