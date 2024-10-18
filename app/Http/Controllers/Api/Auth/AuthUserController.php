@@ -112,13 +112,14 @@ class AuthUserController extends Controller
                $data = [
                    "pin" => $token
                ];
-               Mail::to($request->email)->send(new SendOTP($data));
+              
+                Mail::to($user->email)->send(new SendOTP($data)); 
 
                $user->save();
 
                    return response()->json([
                        'status' => 'Not Verified',
-                       'message' => 'Email is not verified. and the otp send  via '.$request->email,
+                       'message' => 'Email is not verified. and the otp send  via '.$user->email,
                    ], 403);
                }
 
